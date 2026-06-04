@@ -25,6 +25,18 @@
       "Vite",
       "Webpack",
       "Responsive Design"
+    ],
+    "backend_apis": [
+      "FastAPI",
+      "Express.js",
+      "Node.js",
+      "Django",
+      "Flask",
+      "Spring Boot",
+      "REST APIs",
+      "GraphQL",
+      "gRPC",
+      "AsyncIO"
     ]
   },
   "lpu_course_mappings": {},
