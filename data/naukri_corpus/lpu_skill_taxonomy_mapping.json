@@ -37,6 +37,17 @@
       "GraphQL",
       "gRPC",
       "AsyncIO"
+    ],
+    "databases": [
+      "PostgreSQL",
+      "MongoDB",
+      "MySQL",
+      "Redis",
+      "SQLite",
+      "DynamoDB",
+      "Cassandra",
+      "Elasticsearch",
+      "SQLAlchemy"
     ]
   },
   "lpu_course_mappings": {},
