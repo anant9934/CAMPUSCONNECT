@@ -48,6 +48,18 @@
       "Cassandra",
       "Elasticsearch",
       "SQLAlchemy"
+    ],
+    "cloud_devops": [
+      "Docker",
+      "Kubernetes",
+      "AWS",
+      "Google Cloud",
+      "Azure",
+      "CI/CD",
+      "GitHub Actions",
+      "Linux",
+      "Nginx",
+      "Terraform"
     ]
   },
   "lpu_course_mappings": {},
