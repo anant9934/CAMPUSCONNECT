@@ -72,6 +72,14 @@
       "LLMs",
       "NLP",
       "Computer Vision"
+    ],
+    "mobile_app": [
+      "React Native",
+      "Flutter",
+      "Android SDK",
+      "Kotlin",
+      "Swift",
+      "iOS Development"
     ]
   },
   "lpu_course_mappings": {},
