@@ -60,6 +60,18 @@
       "Linux",
       "Nginx",
       "Terraform"
+    ],
+    "ai_machine_learning": [
+      "PyTorch",
+      "TensorFlow",
+      "Scikit-Learn",
+      "Pandas",
+      "NumPy",
+      "HuggingFace",
+      "LangChain",
+      "LLMs",
+      "NLP",
+      "Computer Vision"
     ]
   },
   "lpu_course_mappings": {},
