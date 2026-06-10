@@ -80,8 +80,30 @@
       "Kotlin",
       "Swift",
       "iOS Development"
+    ],
+    "software_engineering": [
+      "Data Structures",
+      "Algorithms",
+      "Object Oriented Design",
+      "System Design",
+      "Git",
+      "Unit Testing",
+      "Agile",
+      "Scrum"
     ]
   },
   "lpu_course_mappings": {},
-  "aliases": {}
+  "aliases": {
+    "k8s": "Kubernetes",
+    "ts": "TypeScript",
+    "js": "JavaScript",
+    "py": "Python",
+    "react.js": "React",
+    "nextjs": "Next.js",
+    "postgres": "PostgreSQL",
+    "mongo": "MongoDB",
+    "sklearn": "Scikit-Learn",
+    "tf": "TensorFlow",
+    "dsa": "Data Structures & Algorithms"
+  }
 }
