@@ -92,7 +92,28 @@
       "Scrum"
     ]
   },
-  "lpu_course_mappings": {},
+  "lpu_course_mappings": {
+    "CSE101": {
+      "title": "Computer Programming",
+      "skills": [
+        "C",
+        "Algorithms",
+        "Problem Solving",
+        "Control Flow"
+      ],
+      "year": 1
+    },
+    "CSE121": {
+      "title": "Object Oriented Programming",
+      "skills": [
+        "C++",
+        "Object Oriented Design",
+        "STL",
+        "Memory Management"
+      ],
+      "year": 1
+    }
+  },
   "aliases": {
     "k8s": "Kubernetes",
     "ts": "TypeScript",
