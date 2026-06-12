@@ -112,6 +112,27 @@
         "Memory Management"
       ],
       "year": 1
+    },
+    "CSE205": {
+      "title": "Data Structures and Algorithms",
+      "skills": [
+        "Data Structures",
+        "Algorithms",
+        "Trees",
+        "Graphs",
+        "Sorting"
+      ],
+      "year": 2
+    },
+    "INT213": {
+      "title": "Python Programming",
+      "skills": [
+        "Python",
+        "Scripting",
+        "OOP",
+        "File I/O"
+      ],
+      "year": 2
     }
   },
   "aliases": {
