@@ -133,6 +133,38 @@
         "File I/O"
       ],
       "year": 2
+    },
+    "CSE316": {
+      "title": "Operating Systems",
+      "skills": [
+        "Linux",
+        "Operating Systems",
+        "Process Scheduling",
+        "Threads",
+        "Memory Management"
+      ],
+      "year": 3
+    },
+    "CSE325": {
+      "title": "Cloud Computing",
+      "skills": [
+        "AWS",
+        "Cloud Computing",
+        "Docker",
+        "Virtualization"
+      ],
+      "year": 3
+    },
+    "CSE306": {
+      "title": "Computer Networks",
+      "skills": [
+        "TCP/IP",
+        "Computer Networks",
+        "HTTP",
+        "Sockets",
+        "DNS"
+      ],
+      "year": 3
     }
   },
   "aliases": {
