@@ -165,6 +165,29 @@
         "DNS"
       ],
       "year": 3
+    },
+    "CAP450": {
+      "title": "Advanced Web Technologies",
+      "skills": [
+        "React",
+        "Node.js",
+        "Express.js",
+        "REST APIs",
+        "Full Stack Development"
+      ],
+      "year": 4
+    },
+    "CSE408": {
+      "title": "Machine Learning",
+      "skills": [
+        "Machine Learning",
+        "Scikit-Learn",
+        "Pandas",
+        "NumPy",
+        "Regression",
+        "Classification"
+      ],
+      "year": 4
     }
   },
   "aliases": {
