@@ -188,6 +188,17 @@
         "Classification"
       ],
       "year": 4
+    },
+    "MGT101": {
+      "title": "Professional Communication & Interview Skills",
+      "skills": [
+        "Communication",
+        "Agile",
+        "Scrum",
+        "Interview Preparation",
+        "Team Collaboration"
+      ],
+      "year": 3
     }
   },
   "aliases": {
