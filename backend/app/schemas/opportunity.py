@@ -38,3 +38,14 @@ class JobPostingResponse(JobPostingBase):
 
     class Config:
         from_attributes = True
+
+class StudentProfile(BaseModel):
+    student_id: str
+    full_name: str
+    cgpa: float
+    standing_backlogs: int = 0
+    branch: str = "B.Tech CSE"
+    graduation_year: int = 2026
+    skills: List[str] = Field(default_factory=list)
+    preferred_locations: List[str] = Field(default_factory=list)
+    resume_summary: Optional[str] = None
