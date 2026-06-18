@@ -49,3 +49,25 @@ class StudentProfile(BaseModel):
     skills: List[str] = Field(default_factory=list)
     preferred_locations: List[str] = Field(default_factory=list)
     resume_summary: Optional[str] = None
+
+class OpportunityMatchResult(BaseModel):
+    job_id: int
+    job_title: str
+    company_name: str
+    location: str
+    salary_text: str
+    match_score: float  # 0 to 100%
+    is_eligible: bool
+    eligibility_notes: List[str] = Field(default_factory=list)
+    matched_skills: List[str] = Field(default_factory=list)
+    missing_skills: List[str] = Field(default_factory=list)
+    recommended_courses: List[str] = Field(default_factory=list)
+    apply_url: Optional[str] = None
+
+class SkillGapAnalysis(BaseModel):
+    target_role: str
+    overall_fit_percentage: float
+    acquired_skills: List[str]
+    missing_skills: List[str]
+    curriculum_gap_solutions: Dict[str, str]
+    preparation_roadmap: List[str]
