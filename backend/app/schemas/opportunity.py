@@ -71,3 +71,24 @@ class SkillGapAnalysis(BaseModel):
     missing_skills: List[str]
     curriculum_gap_solutions: Dict[str, str]
     preparation_roadmap: List[str]
+
+class PlacementDriveInfo(BaseModel):
+    id: int
+    company_name: str
+    role_title: str
+    drive_date: datetime
+    venue: str
+    eligible_branches: List[str]
+    min_cgpa: float
+    ctc_offered: str
+    registration_deadline: datetime
+    instructions: Optional[str] = None
+    contact_email: Optional[str] = None
+
+class JobSearchQuery(BaseModel):
+    keyword: Optional[str] = None
+    location: Optional[str] = None
+    min_salary: Optional[float] = None
+    work_mode: Optional[str] = None
+    skills: Optional[List[str]] = None
+    experience_max: Optional[float] = None
