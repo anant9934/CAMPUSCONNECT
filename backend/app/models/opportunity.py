@@ -33,3 +33,18 @@ class JobPosting(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class StudentProfileModel(Base):
+    __tablename__ = "student_profiles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(String(50), unique=True, index=True, nullable=False)
+    full_name = Column(String(255), nullable=False)
+    cgpa = Column(Float, nullable=False)
+    standing_backlogs = Column(Integer, default=0)
+    branch = Column(String(100), default="B.Tech CSE")
+    graduation_year = Column(Integer, default=2026)
+    skills = Column(JSON, default=list)
+    preferred_locations = Column(JSON, default=list)
+    resume_summary = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
