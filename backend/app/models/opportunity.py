@@ -48,3 +48,18 @@ class StudentProfileModel(Base):
     preferred_locations = Column(JSON, default=list)
     resume_summary = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class OpportunityMatchModel(Base):
+    __tablename__ = "opportunity_matches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(String(50), nullable=False, index=True)
+    job_id = Column(Integer, ForeignKey("job_postings.id"), nullable=False)
+    match_score = Column(Float, nullable=False)
+    is_eligible = Column(Boolean, default=True)
+    matched_skills = Column(JSON, default=list)
+    missing_skills = Column(JSON, default=list)
+    eligibility_notes = Column(JSON, default=list)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    job = relationship("JobPosting")
