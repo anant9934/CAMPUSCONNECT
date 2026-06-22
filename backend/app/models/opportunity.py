@@ -63,3 +63,19 @@ class OpportunityMatchModel(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     job = relationship("JobPosting")
+
+class CampusPlacementDrive(Base):
+    __tablename__ = "campus_placement_drives"
+
+    id = Column(Integer, primary_key=True, index=True)
+    company_name = Column(String(255), nullable=False, index=True)
+    role_title = Column(String(255), nullable=False)
+    drive_date = Column(DateTime, nullable=False)
+    venue = Column(String(255), nullable=False)
+    eligible_branches = Column(JSON, default=list)
+    min_cgpa = Column(Float, default=6.5)
+    ctc_offered = Column(String(100), nullable=False)
+    registration_deadline = Column(DateTime, nullable=False)
+    instructions = Column(Text, nullable=True)
+    contact_email = Column(String(255), default="placements@lpu.co.in")
+    is_active = Column(Boolean, default=True)
