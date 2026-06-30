@@ -213,5 +213,7 @@
     "sklearn": "Scikit-Learn",
     "tf": "TensorFlow",
     "dsa": "Data Structures & Algorithms"
-  }
+  },
+  "total_categories": 8,
+  "total_lpu_courses": 10
 }
