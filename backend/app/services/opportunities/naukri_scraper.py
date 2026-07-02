@@ -22,3 +22,12 @@ class NaukriOpportunityScraper:
         title_match = re.search(r'<title>(.*?)</title>', raw_html, re.IGNORECASE)
         title = title_match.group(1).strip() if title_match else "Software Engineer"
         return {"raw_title": title, "parsed": True}
+
+    def get_request_headers(self, idx: int = 0) -> Dict[str, str]:
+        ua = self.user_agents[idx % len(self.user_agents)]
+        return {
+            "User-Agent": ua,
+            "Accept": "application/json, text/html, */*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Referer": "https://www.naukri.com/"
+        }
