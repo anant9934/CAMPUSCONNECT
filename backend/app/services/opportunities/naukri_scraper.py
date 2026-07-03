@@ -31,3 +31,14 @@ class NaukriOpportunityScraper:
             "Accept-Language": "en-US,en;q=0.9",
             "Referer": "https://www.naukri.com/"
         }
+
+    def extract_dom_fields(self, html_text: str) -> Dict[str, str]:
+        company = "Unknown"
+        comp_m = re.search(r'class="companyName">([^<]+)<', html_text)
+        if comp_m:
+            company = comp_m.group(1).strip()
+        loc = "Punjab/Delhi"
+        loc_m = re.search(r'class="loc">([^<]+)<', html_text)
+        if loc_m:
+            loc = loc_m.group(1).strip()
+        return {"company": company, "location": loc}
