@@ -42,3 +42,15 @@ class NaukriOpportunityScraper:
         if loc_m:
             loc = loc_m.group(1).strip()
         return {"company": company, "location": loc}
+
+    def extract_salary_text(self, text: str) -> Optional[str]:
+        patterns = [
+            r'(\d+(?:\.\d+)?\s*(?:-\s*\d+(?:\.\d+)?)?\s*(?:LPA|PA|P\.A\.))',
+            r'(₹\s*[\d,]+\s*(?:-\s*[\d,]+)?\s*(?:/month|per month|monthly)?)',
+            r'(\d+k\s*-\s*\d+k\s*/\s*mo)'
+        ]
+        for pat in patterns:
+            m = re.search(pat, text, re.IGNORECASE)
+            if m:
+                return m.group(1)
+        return None
