@@ -62,3 +62,10 @@ class NaukriOpportunityScraper:
         if re.search(r'fresher|intern', text, re.IGNORECASE):
             return {"min": 0.0, "max": 1.0}
         return {"min": 0.0, "max": 2.0}
+
+    def extract_skill_tags(self, text: str, known_skills: List[str]) -> List[str]:
+        found = []
+        for skill in known_skills:
+            if re.search(r'\b' + re.escape(skill) + r'\b', text, re.IGNORECASE):
+                found.append(skill)
+        return list(dict.fromkeys(found))
