@@ -54,3 +54,11 @@ class NaukriOpportunityScraper:
             if m:
                 return m.group(1)
         return None
+
+    def extract_experience_range(self, text: str) -> Dict[str, float]:
+        m = re.search(r'(\d+)\s*-\s*(\d+)\s*(?:yrs|years)', text, re.IGNORECASE)
+        if m:
+            return {"min": float(m.group(1)), "max": float(m.group(2))}
+        if re.search(r'fresher|intern', text, re.IGNORECASE):
+            return {"min": 0.0, "max": 1.0}
+        return {"min": 0.0, "max": 2.0}
