@@ -69,3 +69,6 @@ class NaukriOpportunityScraper:
             if re.search(r'\b' + re.escape(skill) + r'\b', text, re.IGNORECASE):
                 found.append(skill)
         return list(dict.fromkeys(found))
+
+    def is_stale_listing(self, posted_days_ago: int, max_days: int = 45) -> bool:
+        return posted_days_ago > max_days
