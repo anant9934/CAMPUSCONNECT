@@ -32,3 +32,11 @@ class JobNormalizer:
             max_val = float(mo_m.group(2).replace(",", "")) * 12.0 if mo_m.group(2) else min_val
             return min_val, max_val, "monthly"
         return 360000.0, 500000.0, "annual"
+
+    def normalize_location(self, loc_str: str) -> str:
+        loc_lower = loc_str.lower()
+        for cluster, places in self.location_clusters.items():
+            for p in places:
+                if p in loc_lower:
+                    return cluster
+        return "Other"
