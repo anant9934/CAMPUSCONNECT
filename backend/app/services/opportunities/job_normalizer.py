@@ -40,3 +40,21 @@ class JobNormalizer:
                 if p in loc_lower:
                     return cluster
         return "Other"
+
+    def normalize_job_title(self, raw_title: str) -> str:
+        t = raw_title.strip()
+        if re.search(r'frontend|react|angular|vue|ui developer', t, re.IGNORECASE):
+            return "Frontend Developer"
+        if re.search(r'backend|python|fastapi|django|node|java developer', t, re.IGNORECASE):
+            return "Backend Developer"
+        if re.search(r'full stack|fullstack', t, re.IGNORECASE):
+            return "Full Stack Engineer"
+        if re.search(r'machine learning|ml|data scientist|ai engineer', t, re.IGNORECASE):
+            return "AI / Machine Learning Engineer"
+        if re.search(r'data analyst|business analyst', t, re.IGNORECASE):
+            return "Data Analyst"
+        if re.search(r'devops|cloud|sre', t, re.IGNORECASE):
+            return "DevOps & Cloud Engineer"
+        if re.search(r'qa|sdet|test automation', t, re.IGNORECASE):
+            return "QA Automation Engineer"
+        return "Software Engineer"
