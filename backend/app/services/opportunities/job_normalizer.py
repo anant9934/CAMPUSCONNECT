@@ -58,3 +58,11 @@ class JobNormalizer:
         if re.search(r'qa|sdet|test automation', t, re.IGNORECASE):
             return "QA Automation Engineer"
         return "Software Engineer"
+
+    def resolve_skill_alias(self, skill: str) -> str:
+        aliases = {
+            "k8s": "Kubernetes", "ts": "TypeScript", "js": "JavaScript", "py": "Python",
+            "react.js": "React", "nextjs": "Next.js", "postgres": "PostgreSQL", "mongo": "MongoDB",
+            "sklearn": "Scikit-Learn", "tf": "TensorFlow", "dsa": "Data Structures & Algorithms"
+        }
+        return aliases.get(skill.lower(), skill)
