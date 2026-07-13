@@ -75,3 +75,9 @@ class JobNormalizer:
         if re.search(r'm\.?tech', text, re.IGNORECASE):
             return "M.Tech"
         return "Any Graduate"
+
+    def parse_passout_years(self, text: str) -> List[int]:
+        matches = re.findall(r'\b(202[4-9])\b', text)
+        if matches:
+            return sorted(list(set(int(m) for m in matches)))
+        return [2025, 2026, 2027]
