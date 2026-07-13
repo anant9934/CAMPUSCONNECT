@@ -66,3 +66,12 @@ class JobNormalizer:
             "sklearn": "Scikit-Learn", "tf": "TensorFlow", "dsa": "Data Structures & Algorithms"
         }
         return aliases.get(skill.lower(), skill)
+
+    def parse_degree(self, text: str) -> str:
+        if re.search(r'b\.?tech|b\.?e', text, re.IGNORECASE):
+            return "B.Tech"
+        if re.search(r'mca', text, re.IGNORECASE):
+            return "MCA"
+        if re.search(r'm\.?tech', text, re.IGNORECASE):
+            return "M.Tech"
+        return "Any Graduate"
