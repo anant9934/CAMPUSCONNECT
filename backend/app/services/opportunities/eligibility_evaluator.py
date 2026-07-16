@@ -39,3 +39,6 @@ class EligibilityEvaluator:
             reasons.append(f"Batch {student_year} not in eligible graduation years: {eligible_years}")
 
         return is_eligible, reasons
+
+    def convert_percentage_to_cgpa(self, percentage: float) -> float:
+        return round(percentage / 9.5, 2)
