@@ -45,3 +45,13 @@ class EligibilityEvaluator:
 
     def can_clear_backlog_before_drive(self, backlogs: int, months_until_drive: int) -> bool:
         return backlogs <= 1 and months_until_drive >= 3
+
+    def normalize_branch_code(self, branch_str: str) -> str:
+        b = branch_str.upper()
+        if "CSE" in b or "COMPUTER SCIENCE" in b:
+            return "B.Tech CSE"
+        if "IT" in b or "INFORMATION TECH" in b:
+            return "B.Tech IT"
+        if "ECE" in b or "ELECTRONICS" in b:
+            return "B.Tech ECE"
+        return branch_str
