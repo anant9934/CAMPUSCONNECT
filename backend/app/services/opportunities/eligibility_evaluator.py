@@ -55,3 +55,9 @@ class EligibilityEvaluator:
         if "ECE" in b or "ELECTRONICS" in b:
             return "B.Tech ECE"
         return branch_str
+
+    def check_diversity_hiring(self, job_criteria: Dict[str, Any], candidate_info: Dict[str, Any]) -> bool:
+        target_gender = job_criteria.get("preferred_gender")
+        if target_gender and candidate_info.get("gender") != target_gender:
+            return False
+        return True
