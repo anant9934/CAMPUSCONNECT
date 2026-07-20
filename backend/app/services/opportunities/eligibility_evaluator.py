@@ -61,3 +61,10 @@ class EligibilityEvaluator:
         if target_gender and candidate_info.get("gender") != target_gender:
             return False
         return True
+
+    def composite_eligibility_score(self, cgpa: float, backlogs: int, branch_match: bool) -> float:
+        score = 0.0
+        score += min(cgpa / 10.0, 1.0) * 50.0
+        score += 30.0 if backlogs == 0 else (15.0 if backlogs == 1 else 0.0)
+        score += 20.0 if branch_match else 5.0
+        return round(score, 1)
