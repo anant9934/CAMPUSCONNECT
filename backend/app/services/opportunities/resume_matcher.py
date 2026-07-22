@@ -30,3 +30,14 @@ class OpportunityResumeMatcher:
             "matched_skills": matched,
             "missing_skills": missing
         }
+
+    def weighted_match_score(
+        self,
+        candidate_skills: List[str],
+        mandatory_skills: List[str],
+        optional_skills: List[str]
+    ) -> float:
+        res_mand = self.match_skills(candidate_skills, mandatory_skills)
+        res_opt = self.match_skills(candidate_skills, optional_skills)
+        score = (res_mand["match_score"] * 0.75) + (res_opt["match_score"] * 0.25)
+        return round(score, 1)
