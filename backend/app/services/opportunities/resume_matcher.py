@@ -41,3 +41,17 @@ class OpportunityResumeMatcher:
         res_opt = self.match_skills(candidate_skills, optional_skills)
         score = (res_mand["match_score"] * 0.75) + (res_opt["match_score"] * 0.25)
         return round(score, 1)
+
+    def analyze_skill_gap(
+        self,
+        candidate_skills: List[str],
+        required_skills: List[str]
+    ) -> Dict[str, Any]:
+        res = self.match_skills(candidate_skills, required_skills)
+        missing = res["missing_skills"]
+        gap_severity = "LOW" if len(missing) <= 1 else ("MEDIUM" if len(missing) <= 3 else "HIGH")
+        return {
+            "missing_skills": missing,
+            "gap_severity": gap_severity,
+            "readiness_percentage": res["match_score"]
+        }
