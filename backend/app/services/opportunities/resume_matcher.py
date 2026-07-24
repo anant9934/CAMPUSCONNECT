@@ -55,3 +55,21 @@ class OpportunityResumeMatcher:
             "gap_severity": gap_severity,
             "readiness_percentage": res["match_score"]
         }
+
+    def recommend_lpu_courses_for_gaps(
+        self,
+        missing_skills: List[str],
+        course_mappings: Dict[str, Any]
+    ) -> List[Dict[str, str]]:
+        recommendations = []
+        missing_lower = [m.lower() for m in missing_skills]
+        for course_code, info in course_mappings.items():
+            course_skills = [s.lower() for s in info.get("skills", [])]
+            overlap = set(missing_lower).intersection(set(course_skills))
+            if overlap:
+                recommendations.append({
+                    "course_code": course_code,
+                    "title": info.get("title", ""),
+                    "covers_skills": list(overlap)
+                })
+        return recommendations
