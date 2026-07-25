@@ -73,3 +73,9 @@ class OpportunityResumeMatcher:
                     "covers_skills": list(overlap)
                 })
         return recommendations
+
+    def candidate_percentile_rank(self, score: float, peer_scores: List[float]) -> float:
+        if not peer_scores:
+            return 100.0
+        lower_count = sum(1 for s in peer_scores if s < score)
+        return round((lower_count / len(peer_scores)) * 100.0, 1)
