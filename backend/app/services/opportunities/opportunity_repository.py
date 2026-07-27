@@ -14,3 +14,9 @@ class OpportunityRepository:
         self.normalizer = JobNormalizer()
         self.eligibility = EligibilityEvaluator()
         self.matcher = OpportunityResumeMatcher(self.normalizer)
+
+    def add_job(self, job: Dict[str, Any]) -> None:
+        # Deduplicate by company and title
+        key = f"{job['company_name'].lower()}:{job['title'].lower()}"
+        if not any(f"{j['company_name'].lower()}:{j['title'].lower()}" == key for j in self.jobs):
+            self.jobs.append(job)
