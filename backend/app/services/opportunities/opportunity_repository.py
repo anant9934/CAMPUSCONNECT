@@ -73,3 +73,16 @@ class OpportunityRepository:
             ))
         matches.sort(key=lambda m: (m.is_eligible, m.match_score), reverse=True)
         return matches[:limit]
+
+    def load_seed_corpus(self, filepath: str) -> int:
+        import json
+        count = 0
+        try:
+            with open(filepath, "r") as f:
+                for line in f:
+                    if line.strip():
+                        self.add_job(json.loads(line))
+                        count += 1
+        except Exception:
+            pass
+        return count
