@@ -1,0 +1,5 @@
+from app.services.opportunities.job_normalizer import JobNormalizer
+from app.services.opportunities.eligibility_evaluator import EligibilityEvaluator
+from app.services.opportunities.resume_matcher import OpportunityResumeMatcher
+from app.services.opportunities.opportunity_repository import OpportunityRepository
+from app.services.opportunities.naukri_scraper import NaukriOpportunityScraper
