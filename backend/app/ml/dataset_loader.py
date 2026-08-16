@@ -19,3 +19,14 @@ class DatasetLoader:
                     if "instruction" in entry and "response" in entry:
                         self.data.append(entry)
         return self.data
+
+    def profile_token_lengths(self) -> Dict[str, float]:
+        if not self.data:
+            self.load_dataset()
+        lens = [len(d["instruction"].split()) + len(d["response"].split()) for d in self.data]
+        return {
+            "count": len(lens),
+            "avg_words": sum(lens) / len(lens) if lens else 0.0,
+            "max_words": max(lens) if lens else 0,
+            "min_words": min(lens) if lens else 0
+        }
