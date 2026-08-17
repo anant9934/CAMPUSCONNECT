@@ -30,3 +30,7 @@ class DatasetLoader:
             "max_words": max(lens) if lens else 0,
             "min_words": min(lens) if lens else 0
         }
+
+    def format_for_alpaca(self, entry: Dict[str, str]) -> str:
+        sys_prompt = entry.get("system", "You are CampusConnect Career Advisor.")
+        return f"### System:\n{sys_prompt}\n\n### Instruction:\n{entry['instruction']}\n\n### Response:\n{entry['response']}"
