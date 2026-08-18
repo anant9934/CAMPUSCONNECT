@@ -34,3 +34,11 @@ class DatasetLoader:
     def format_for_alpaca(self, entry: Dict[str, str]) -> str:
         sys_prompt = entry.get("system", "You are CampusConnect Career Advisor.")
         return f"### System:\n{sys_prompt}\n\n### Instruction:\n{entry['instruction']}\n\n### Response:\n{entry['response']}"
+
+    def train_val_test_split(self, train_ratio=0.8, val_ratio=0.1) -> Tuple[List[Dict], List[Dict], List[Dict]]:
+        if not self.data:
+            self.load_dataset()
+        n = len(self.data)
+        n_train = int(n * train_ratio)
+        n_val = int(n * val_ratio)
+        return self.data[:n_train], self.data[n_train:n_train+n_val], self.data[n_train+n_val:]
