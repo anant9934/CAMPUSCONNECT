@@ -42,3 +42,15 @@ class DatasetLoader:
         n_train = int(n * train_ratio)
         n_val = int(n * val_ratio)
         return self.data[:n_train], self.data[n_train:n_train+n_val], self.data[n_train+n_val:]
+
+    def deduplicate(self) -> int:
+        seen = set()
+        unique = []
+        for d in self.data:
+            h = d["instruction"].strip().lower()
+            if h not in seen:
+                seen.add(h)
+                unique.append(d)
+        removed = len(self.data) - len(unique)
+        self.data = unique
+        return removed
