@@ -54,3 +54,9 @@ class DatasetLoader:
         removed = len(self.data) - len(unique)
         self.data = unique
         return removed
+
+    def sanitize_pii(self, text: str) -> str:
+        import re
+        text = re.sub(r'\b\d{10}\b', '[PHONE]', text)
+        text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '[EMAIL]', text)
+        return text
