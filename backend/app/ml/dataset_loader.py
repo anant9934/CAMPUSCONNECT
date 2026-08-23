@@ -60,3 +60,10 @@ class DatasetLoader:
         text = re.sub(r'\b\d{10}\b', '[PHONE]', text)
         text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '[EMAIL]', text)
         return text
+
+    def extract_vocabulary(self) -> List[str]:
+        vocab = set()
+        for d in self.data:
+            for word in d["instruction"].split() + d["response"].split():
+                vocab.add(word.lower().strip(",.?!()[]"))
+        return sorted(list(vocab))
