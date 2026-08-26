@@ -1,1 +1,2 @@
 {"query": "Software engineering intern in Mohali with Python and SQL", "expected_top_role": "Software Engineer Intern", "expected_top_company": "Infosys", "expected_skills": ["Python", "SQL"]}
+{"query": "React and TypeScript frontend roles in Gurugram", "expected_top_role": "Frontend Developer Intern", "expected_top_company": "Zomato", "expected_skills": ["React", "TypeScript"]}
