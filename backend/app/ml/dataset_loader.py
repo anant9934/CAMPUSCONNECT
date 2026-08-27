@@ -73,3 +73,7 @@ class DatasetLoader:
             "instruction": [d["instruction"] for d in self.data],
             "response": [d["response"] for d in self.data]
         }
+
+    def log_dataset_statistics(self) -> str:
+        p = self.profile_token_lengths()
+        return f"Samples: {p['count']}, Avg Words: {p['avg_words']:.1f}, Max: {p['max_words']}"
