@@ -67,3 +67,9 @@ class DatasetLoader:
             for word in d["instruction"].split() + d["response"].split():
                 vocab.add(word.lower().strip(",.?!()[]"))
         return sorted(list(vocab))
+
+    def to_huggingface_dict(self) -> Dict[str, List[str]]:
+        return {
+            "instruction": [d["instruction"] for d in self.data],
+            "response": [d["response"] for d in self.data]
+        }
