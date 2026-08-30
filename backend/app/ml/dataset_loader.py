@@ -77,3 +77,7 @@ class DatasetLoader:
     def log_dataset_statistics(self) -> str:
         p = self.profile_token_lengths()
         return f"Samples: {p['count']}, Avg Words: {p['avg_words']:.1f}, Max: {p['max_words']}"
+
+    def stream_batches(self, batch_size=8):
+        for i in range(0, len(self.data), batch_size):
+            yield self.data[i:i+batch_size]
