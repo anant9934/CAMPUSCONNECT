@@ -23,3 +23,13 @@ class TrainingConfig:
     bnb_4bit_quant_type: str = "nf4"
     bnb_4bit_compute_dtype: str = "bfloat16"
     output_dir: str = "checkpoints/naukri_career_adapter"
+
+    def to_peft_config_dict(self) -> dict:
+        return {
+            "r": self.lora_r,
+            "lora_alpha": self.lora_alpha,
+            "lora_dropout": self.lora_dropout,
+            "target_modules": self.target_modules,
+            "bias": "none",
+            "task_type": "CAUSAL_LM"
+        }
