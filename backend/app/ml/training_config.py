@@ -33,3 +33,11 @@ class TrainingConfig:
             "bias": "none",
             "task_type": "CAUSAL_LM"
         }
+
+    def to_bitsandbytes_4bit_config(self) -> dict:
+        return {
+            "load_in_4bit": True,
+            "bnb_4bit_quant_type": self.bnb_4bit_quant_type,
+            "bnb_4bit_compute_dtype": self.bnb_4bit_compute_dtype,
+            "bnb_4bit_use_double_quant": True
+        }
