@@ -41,3 +41,9 @@ class TrainingConfig:
             "bnb_4bit_compute_dtype": self.bnb_4bit_compute_dtype,
             "bnb_4bit_use_double_quant": True
         }
+
+    def to_bitsandbytes_8bit_config(self) -> dict:
+        return {
+            "load_in_8bit": True,
+            "llm_int8_threshold": 6.0
+        }
