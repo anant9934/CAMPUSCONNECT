@@ -12,3 +12,6 @@ class LoRADomainFineTuner:
     def __init__(self, config: TrainingConfig = None):
         self.config = config or TrainingConfig()
         self.training_logs: List[Dict[str, Any]] = []
+
+    def get_effective_batch_size(self) -> int:
+        return self.config.per_device_train_batch_size * self.config.gradient_accumulation_steps
