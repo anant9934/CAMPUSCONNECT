@@ -33,3 +33,6 @@ class LoRADomainFineTuner:
             "training_samples": len(train_set),
             "adapter_saved": True
         }
+
+    def calculate_perplexity(self, cross_entropy_loss: float) -> float:
+        return round(math.exp(cross_entropy_loss), 3)
