@@ -36,3 +36,8 @@ class LoRADomainFineTuner:
 
     def calculate_perplexity(self, cross_entropy_loss: float) -> float:
         return round(math.exp(cross_entropy_loss), 3)
+
+    def should_early_stop(self, val_losses: List[float], patience: int = 2) -> bool:
+        if len(val_losses) < patience + 1:
+            return False
+        return val_losses[-1] >= val_losses[-patience-1]
