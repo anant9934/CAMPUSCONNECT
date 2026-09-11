@@ -41,3 +41,8 @@ class LoRADomainFineTuner:
         if len(val_losses) < patience + 1:
             return False
         return val_losses[-1] >= val_losses[-patience-1]
+
+    def export_adapter_config(self, filepath: str) -> None:
+        cfg = self.config.to_peft_config_dict()
+        with open(filepath, "w") as f:
+            json.dump(cfg, f, indent=2)
