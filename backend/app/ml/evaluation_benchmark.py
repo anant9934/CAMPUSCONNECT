@@ -30,3 +30,9 @@ class EvaluationBenchmark:
             return 0.0
         mse = sum((p - a) ** 2 for p, a in zip(predicted, actual)) / len(predicted)
         return round(math.sqrt(mse), 2)
+
+    def role_classification_accuracy(self, predicted_roles: List[str], actual_roles: List[str]) -> float:
+        if not predicted_roles or len(predicted_roles) != len(actual_roles):
+            return 0.0
+        correct = sum(1 for p, a in zip(predicted_roles, actual_roles) if p.lower() == a.lower())
+        return round((correct / len(predicted_roles)) * 100.0, 2)
