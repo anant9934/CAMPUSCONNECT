@@ -24,3 +24,9 @@ class EvaluationBenchmark:
         gt_lower = set(g.lower() for g in ground_truth)
         hits = sum(1 for p in top_k if p in gt_lower)
         return round((hits / len(top_k)) * 100.0, 2)
+
+    def salary_prediction_rmse(self, predicted: List[float], actual: List[float]) -> float:
+        if not predicted or len(predicted) != len(actual):
+            return 0.0
+        mse = sum((p - a) ** 2 for p, a in zip(predicted, actual)) / len(predicted)
+        return round(math.sqrt(mse), 2)
