@@ -36,3 +36,9 @@ class EvaluationBenchmark:
             return 0.0
         correct = sum(1 for p, a in zip(predicted_roles, actual_roles) if p.lower() == a.lower())
         return round((correct / len(predicted_roles)) * 100.0, 2)
+
+    def eligibility_prediction_accuracy(self, predicted_elig: List[bool], actual_elig: List[bool]) -> float:
+        if not predicted_elig or len(predicted_elig) != len(actual_elig):
+            return 0.0
+        correct = sum(1 for p, a in zip(predicted_elig, actual_elig) if p == a)
+        return round((correct / len(predicted_elig)) * 100.0, 2)
