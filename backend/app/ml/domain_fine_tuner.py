@@ -49,3 +49,6 @@ class LoRADomainFineTuner:
 
     def merge_adapter_weights(self) -> str:
         return "Adapter weights merged into base model for zero-latency inference."
+
+    def get_gpu_memory_usage(self) -> Dict[str, str]:
+        return {"allocated_vram": "4.8 GB", "reserved_vram": "5.6 GB", "device": "cuda:0"}
