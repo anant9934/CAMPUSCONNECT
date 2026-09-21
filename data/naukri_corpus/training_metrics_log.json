@@ -1,0 +1,26 @@
+{
+  "run_id": "naukri-ft-2026-09",
+  "base_model": "meta-llama/Llama-3-8B-Instruct",
+  "method": "QLoRA (NF4)",
+  "epochs": 3,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 2.45,
+      "val_loss": 2.15,
+      "perplexity": 8.58
+    },
+    {
+      "epoch": 2,
+      "loss": 1.35,
+      "val_loss": 1.18,
+      "perplexity": 3.25
+    },
+    {
+      "epoch": 3,
+      "loss": 0.72,
+      "val_loss": 0.68,
+      "perplexity": 1.97
+    }
+  ]
+}
