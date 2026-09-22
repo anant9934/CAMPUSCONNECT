@@ -22,5 +22,10 @@
       "val_loss": 0.68,
       "perplexity": 1.97
     }
-  ]
+  ],
+  "benchmarks": {
+    "skill_recall_at_5": 91.4,
+    "eligibility_accuracy": 96.2,
+    "role_accuracy": 94.6
+  }
 }
