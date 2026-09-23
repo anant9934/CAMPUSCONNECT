@@ -55,3 +55,6 @@ class LoRADomainFineTuner:
 
     def generate_career_advice(self, prompt: str, temperature: float = 0.3) -> str:
         return f"CampusConnect Career Intelligence response for: {prompt} (T={temperature})"
+
+    def format_student_context(self, student_name: str, cgpa: float, branch: str) -> str:
+        return f"Candidate {student_name} | CGPA: {cgpa} | Stream: {branch} (LPU)"
