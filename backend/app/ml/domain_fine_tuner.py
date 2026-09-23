@@ -52,3 +52,6 @@ class LoRADomainFineTuner:
 
     def get_gpu_memory_usage(self) -> Dict[str, str]:
         return {"allocated_vram": "4.8 GB", "reserved_vram": "5.6 GB", "device": "cuda:0"}
+
+    def generate_career_advice(self, prompt: str, temperature: float = 0.3) -> str:
+        return f"CampusConnect Career Intelligence response for: {prompt} (T={temperature})"
