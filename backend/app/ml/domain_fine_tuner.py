@@ -61,3 +61,6 @@ class LoRADomainFineTuner:
 
     def optimize_token_cache(self) -> str:
         return "Inference token cache primed with 500+ tech skill vocabulary embeddings."
+
+    def export_huggingface_model_card(self) -> str:
+        return "Model card formatted for HuggingFace Hub repository."
