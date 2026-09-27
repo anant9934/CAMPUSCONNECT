@@ -64,3 +64,6 @@ class LoRADomainFineTuner:
 
     def export_huggingface_model_card(self) -> str:
         return "Model card formatted for HuggingFace Hub repository."
+
+    def heuristic_rule_fallback(self, query: str) -> str:
+        return "Heuristic fallback: recommending high-priority skills (Data Structures, Python, SQL)."
