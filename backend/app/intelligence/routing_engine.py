@@ -62,3 +62,6 @@ class RoutingEngine:
             f"RoutingEngine selected {decision.key} for subtask '{task_name}' ({intelligence_id.upper()}) - Rationale: {decision.rationale}"
         )
         return decision
+
+# Registered Opportunity & Placement tools for AEGIS Router
+OPPORTUNITY_TOOLS = ["search_opportunities_tool", "analyze_skill_gap_tool", "get_active_placement_drives_tool"]
