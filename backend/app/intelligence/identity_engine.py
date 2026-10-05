@@ -148,3 +148,5 @@ class IdentityEngine:
     @classmethod
     def list_identities(cls) -> list:
         return list(cls._identities.values())
+
+# HERMES capability expansion: Placement Cell (T&P), Drive Venues, and UMS NOC
