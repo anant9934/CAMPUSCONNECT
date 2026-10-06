@@ -152,3 +152,5 @@ class IdentityEngine:
 # HERMES capability expansion: Placement Cell (T&P), Drive Venues, and UMS NOC
 
 # FORGE capability expansion: Technical skill gaps, project roadmaps, and LeetCode/DSA prep
+
+# NOVA capability expansion: Fast internship searches, stipends, and company profiles
