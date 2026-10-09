@@ -18,3 +18,12 @@ def search_opportunities(
     min_salary: Optional[float] = Query(None)
 ):
     return repo.search_jobs(keyword=keyword, location=location, min_salary=min_salary)
+
+@router.post("/match", response_model=List[OpportunityMatchResult])
+def match_student_opportunities(student: StudentProfile):
+    return repo.match_student(
+        student_skills=student.skills,
+        student_cgpa=student.cgpa,
+        student_backlogs=student.standing_backlogs,
+        student_branch=student.branch
+    )
