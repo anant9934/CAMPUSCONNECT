@@ -27,3 +27,12 @@ def match_student_opportunities(student: StudentProfile):
         student_backlogs=student.standing_backlogs,
         student_branch=student.branch
     )
+
+@router.get("/taxonomy")
+def get_skill_taxonomy():
+    import json
+    try:
+        with open("data/naukri_corpus/lpu_skill_taxonomy_mapping.json", "r") as f:
+            return json.load(f)
+    except Exception:
+        return {"status": "empty"}
