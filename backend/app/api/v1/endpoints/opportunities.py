@@ -36,3 +36,10 @@ def get_skill_taxonomy():
             return json.load(f)
     except Exception:
         return {"status": "empty"}
+
+@router.get("/drives")
+def get_campus_drives():
+    return [
+        {"id": 1, "company_name": "Amazon AWS", "role_title": "Cloud Support Associate", "date": "2026-11-25T10:00:00", "venue": "Block 32 Auditorium", "ctc": "7-9.5 LPA", "min_cgpa": 7.0},
+        {"id": 2, "company_name": "Infosys", "role_title": "Specialist Programmer", "date": "2026-12-02T09:30:00", "venue": "Shanti Devi Mittal Auditorium", "ctc": "6.5-9.5 LPA", "min_cgpa": 6.5}
+    ]
