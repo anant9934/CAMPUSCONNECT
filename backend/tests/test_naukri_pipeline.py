@@ -56,3 +56,14 @@ def test_resume_matcher_and_repository():
     top_match = matches[0]
     assert top_match.is_eligible is True
     assert top_match.match_score > 0
+
+def test_evaluation_benchmark_metrics():
+    bench = EvaluationBenchmark()
+    recall = bench.skill_recall_at_k(
+        predicted=["Python", "Docker", "SQL", "AWS"],
+        ground_truth=["Python", "SQL", "Kubernetes"],
+        k=3
+    )
+    assert recall > 60.0
+    metrics = bench.evaluate_benchmark_suite()
+    assert metrics["skill_recall_at_5"] > 90.0
