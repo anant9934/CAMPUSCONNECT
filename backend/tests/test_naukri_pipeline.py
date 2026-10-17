@@ -39,3 +39,20 @@ def test_eligibility_evaluator():
     )
     assert is_elig2 is False
     assert any("backlog" in r.lower() for r in reasons2)
+
+def test_resume_matcher_and_repository():
+    repo = OpportunityRepository()
+    repo.load_seed_corpus("data/naukri_corpus/job_postings_tech_punjab_delhi.jsonl")
+    assert len(repo.jobs) >= 5
+
+    # Match student
+    matches = repo.match_student(
+        student_skills=["Python", "SQL", "FastAPI", "React"],
+        student_cgpa=8.0,
+        student_backlogs=0,
+        student_branch="B.Tech CSE"
+    )
+    assert len(matches) > 0
+    top_match = matches[0]
+    assert top_match.is_eligible is True
+    assert top_match.match_score > 0
