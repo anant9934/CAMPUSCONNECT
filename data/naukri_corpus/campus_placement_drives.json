@@ -1,0 +1,20 @@
+[
+  {
+    "id": 3,
+    "company_name": "Capgemini",
+    "role_title": "Exceller Analyst",
+    "drive_date": "2026-12-10T09:00:00",
+    "venue": "Baldev Raj Mittal Auditorium",
+    "ctc_offered": "4.25 - 7.5 LPA",
+    "min_cgpa": 6.0
+  },
+  {
+    "id": 4,
+    "company_name": "TCS Digital",
+    "role_title": "Digital Innovator",
+    "drive_date": "2026-12-15T09:00:00",
+    "venue": "Uni-Mall Block 15 Conference Hall",
+    "ctc_offered": "7.0 - 9.0 LPA",
+    "min_cgpa": 7.0
+  }
+]
