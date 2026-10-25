@@ -68,3 +68,7 @@ class EligibilityEvaluator:
         score += 30.0 if backlogs == 0 else (15.0 if backlogs == 1 else 0.0)
         score += 20.0 if branch_match else 5.0
         return round(score, 1)
+
+    def normalize_lateral_entry_cgpa(self, diploma_percentage: float, btech_cgpa: float) -> float:
+        diploma_cgpa = diploma_percentage / 9.5
+        return round((diploma_cgpa * 0.4) + (btech_cgpa * 0.6), 2)
