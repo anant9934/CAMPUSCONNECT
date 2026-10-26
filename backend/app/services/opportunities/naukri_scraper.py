@@ -72,3 +72,10 @@ class NaukriOpportunityScraper:
 
     def is_stale_listing(self, posted_days_ago: int, max_days: int = 45) -> bool:
         return posted_days_ago > max_days
+
+    def parse_internshala_stipend(self, snippet: str) -> Optional[float]:
+        import re
+        m = re.search(r'₹\s*([\d,]+)\s*/month', snippet)
+        if m:
+            return float(m.group(1).replace(",", ""))
+        return None
