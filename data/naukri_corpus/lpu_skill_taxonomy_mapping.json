@@ -90,6 +90,13 @@
       "Unit Testing",
       "Agile",
       "Scrum"
+    ],
+    "cloud_certifications": [
+      "AWS Certified Solutions Architect",
+      "AWS Certified Developer",
+      "CKA (Certified Kubernetes Administrator)",
+      "Google Cloud Associate Cloud Engineer",
+      "Microsoft Certified: Azure Fundamentals"
     ]
   },
   "lpu_course_mappings": {
