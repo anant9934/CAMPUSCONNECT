@@ -67,3 +67,14 @@ def test_evaluation_benchmark_metrics():
     assert recall > 60.0
     metrics = bench.evaluate_benchmark_suite()
     assert metrics["skill_recall_at_5"] > 90.0
+
+def test_lateral_entry_cgpa():
+    evaluator = EligibilityEvaluator()
+    combined = evaluator.normalize_lateral_entry_cgpa(diploma_percentage=85.0, btech_cgpa=8.0)
+    assert combined > 7.5
+
+def test_interview_evaluator():
+    from app.services.opportunities.interview_evaluator import InterviewEvaluator
+    ev = InterviewEvaluator()
+    qs = ev.get_standard_behavioral_questions()
+    assert len(qs) >= 3
