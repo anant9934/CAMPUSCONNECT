@@ -86,3 +86,7 @@ class OpportunityRepository:
         except Exception:
             pass
         return count
+
+    def get_remote_high_stipend_jobs(self, min_stipend: float = 30000.0) -> List[Dict[str, Any]]:
+        annual_min = min_stipend * 12.0
+        return [j for j in self.jobs if j.get("work_mode") == "remote" and (j.get("min_salary") or 0) >= annual_min]
