@@ -1,0 +1,15 @@
+record_type,purpose,required_fields,retrieval_trigger,safety_rule
+faq,Question-answer content,"canonical_question, paraphrases, answer, category",User asks a direct campus question,Approved evidence only
+policy,Formal rules and policies,"policy_name, clause, version, effective_from, effective_to, applicability","User asks eligibility, rules, penalties, procedure",Use current effective policy; conflict => escalate
+process,Step-by-step procedure,"process_name, preconditions, steps, required_documents, fee_if_verified, deadline_if_verified",User asks how to do a UMS action,Distinguish guidance from execution
+service_catalog,UMS feature/menu inventory,"module, service_label, menu_path, action_type, auth_required",User asks where/how to use a UMS service,Screenshot menu label is not a verified process
+action_workflow,Navigation and handoff workflow,"intent, entry_path, fields_required, confirmation, handoff_url",User wants booking/application/submission,No final action without authorised integration and explicit confirmation
+office_contact,Office or support contact,"office, role, official_email, phone, hours, source, verified_at",User asks whom to contact,Sensitive contacts require review and visible source
+campus_place,Building/room/facility location,"place_name, building, floor, map_coordinates, opening_hours, accessibility",User asks for navigation/directions,Need verified map/floor/route data
+booking_resource,Reservable resource,"resource_type, capacity, availability_source, rules, booking_path, confirmation_status",User wants to reserve room/slot/hostel/doctor,Availability must come from live authorised system
+academic_calendar,Term and exam dates,"session, programme, batch, event_type, start_date, end_date, tentative_flag",User asks when something happens,Filter by programme/batch and date; prefer latest source
+event_notice,Dynamic event/notice,"title, description, audience, starts_at, ends_at, venue, registration_url, source",User asks what is happening on campus,Expire after end date and verify event status
+student_record_schema,Personal UMS data types,"record_type, owner, access_scope, source_system, consent",User asks personal attendance/fee/result,Never access via public RAG; separate authenticated connector
+document_chunk,PDF/Docx/notice chunk,"document_id, page, section, text, source_url, version",RAG evidence retrieval,Preserve exact provenance
+announcement,Notice or update,"notice_id, publisher, published_at, valid_until, text, attachment",User asks latest news or notice,Freshness and expiry required
+directory,Department/faculty/office directory,"department, role, public_name, official_email, office_location, source",User asks where/who to contact,Only public and approved contact data

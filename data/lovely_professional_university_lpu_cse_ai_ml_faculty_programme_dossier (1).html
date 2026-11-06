@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lovely Professional University (LPU) — CSE AI &amp; ML Faculty &amp; Programme Dossier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@400;500;600&family=Google+Sans+Flex:opsz,wght@8..144,400;8..144,500;8..144,600;8..144,700&display=swap" rel="stylesheet">
+  <style>
+    /* Tier 3 · Utilitarian (Deep Research Reference Dossier) · Answer-first split hero · Section order: Hero -> Faculty Directory Table -> AI/ML Visiting & Industry Faculty -> AI/ML Programme Portfolio & Curriculum -> Fee & Scholarship SVG Chart + Table -> Residential & Placement Metrics -> Sources · Fonts: Google Sans Flex + Google Sans Code · Palette: Cool Technical Grey (#F4F6F8) + Deep Cobalt (#1E40AF / #1D4ED8) · Image radius: 0px · Emphasis moment: ₹64L top placement & 65+ catalogued CSE faculty · Signature element: Full-width multi-column open faculty directory & scholarship decay SVG chart · Chart type: Grouped horizontal scholarship comparison bar chart */
+    :root {
+      --paper: #F4F6F8;
+      --ink: #0F1216;
+      --ink2: #262C36;
+      --mute: #4A5568;
+      --hair: #CBD5E1;
+      --accent: #1D4ED8;
+      --accent-text: #1E3A8A;
+      --accent-2: #0F766E;
+      --accent-2-text: #115E59;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      padding: 68px clamp(24px, 10.4vw, 112px) 92px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent-text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    a:hover {
+      color: var(--ink);
+    }
+
+    .grid-12 {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+
+    .sec-s {
+      margin-top: 68px;
+      padding-top: 32px;
+      border-top: 1px solid var(--hair);
+    }
+
+    h1 {
+      font-size: clamp(38px, 4.2vw, 54px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      text-wrap: balance;
+      margin-bottom: 18px;
+    }
+
+    .deck {
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--ink2);
+      max-width: 68ch;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      font-size: clamp(24px, 2.5vw, 32px);
+      font-weight: 700;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-wrap: balance;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--ink2);
+      margin-bottom: 16px;
+      max-width: 68ch;
+    }
+
+    .hero-split {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      align-items: end;
+      padding-bottom: 36px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .hero-main {
+      grid-column: 1 / 9;
+    }
+
+    .hero-metric-col {
+      grid-column: 9 / 13;
+      border-left: 1px solid var(--hair);
+      padding-left: 24px;
+    }
+
+    .giant-num {
+      font-size: clamp(48px, 5vw, 68px);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--accent-text);
+      font-family: 'Google Sans Code', monospace;
+      white-space: nowrap;
+    }
+
+    .metric-caption {
+      font-size: 15px;
+      color: var(--ink2);
+      margin-top: 8px;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--hair);
+    }
+
+    .kpi-val {
+      font-family: 'Google Sans Code', monospace;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .kpi-desc {
+      font-size: 14px;
+      color: var(--mute);
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    th {
+      font-family: 'Google Sans Code', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      color: var(--mute);
+      padding: 12px 12px 12px 0;
+      border-bottom: 2px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 11px 12px 11px 0;
+      border-bottom: 1px solid var(--hair);
+      color: var(--ink2);
+      vertical-align: top;
+    }
+
+    .num {
+      font-family: 'Google Sans Code', monospace;
+      white-space: nowrap;
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .multi-col-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .col-block {
+      border-top: 1px solid var(--hair);
+      padding-top: 16px;
+    }
+
+    ul.clean-list, ol.clean-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    ul.clean-list li, ol.clean-list li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 10px;
+      color: var(--ink2);
+      font-size: 15px;
+    }
+
+    ul.clean-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    ol.clean-list {
+      counter-reset: item;
+    }
+
+    ol.clean-list li {
+      padding-left: 28px;
+    }
+
+    ol.clean-list li::before {
+      counter-increment: item;
+      content: counter(item) ".";
+      position: absolute;
+      left: 0;
+      font-family: 'Google Sans Code', monospace;
+      font-size: 13px;
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    .split-sec {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+
+    .split-left {
+      grid-column: 1 / 5;
+    }
+
+    .split-right {
+      grid-column: 5 / 13;
+    }
+
+    figure {
+      margin: 28px 0;
+      width: 100%;
+    }
+
+    .fig-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    figcaption {
+      font-size: 13px;
+      color: var(--mute);
+      margin-top: 10px;
+    }
+
+    .full-bleed-band {
+      margin-left: calc(-1 * clamp(24px, 10.4vw, 112px));
+      margin-right: calc(-1 * clamp(24px, 10.4vw, 112px));
+      padding: 44px clamp(24px, 10.4vw, 112px);
+      background-color: #E2E8F0;
+      border-top: 1px solid var(--hair);
+      border-bottom: 1px solid var(--hair);
+      margin-top: 68px;
+    }
+
+    .pull-quote {
+      font-size: clamp(24px, 2.6vw, 34px);
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--ink);
+      letter-spacing: -0.015em;
+      max-width: 48ch;
+    }
+
+    .pull-attr {
+      font-size: 14px;
+      color: var(--mute);
+      margin-top: 12px;
+    }
+
+    @media (max-width: 960px) {
+      .hero-main, .hero-metric-col, .split-left, .split-right {
+        grid-column: 1 / 13;
+      }
+      .hero-metric-col {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid var(--hair);
+        padding-top: 16px;
+      }
+      .kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .multi-col-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero-split">
+    <div class="hero-main">
+      <h1>LPU’s CSE AI &amp; ML Ecosystem Pairs 70+ Catalogued Faculty and Industry Practitioners with a ₹2.0L-Per-Semester Tiered Curriculum</h1>
+      <p class="deck">
+        Compiled from Lovely Professional University’s official School of Computer Science and Engineering records, conference rosters, and 2026–2027 admissions disclosures, this reference dossier aggregates every publicly indexed CSE academic leader, professor, AI/ML visiting expert, specialized degree track, course syllabus module, and fee-to-scholarship tier.
+      </p>
+    </div>
+    <div class="hero-metric-col">
+      <div class="giant-num">₹64.0L</div>
+      <div class="metric-caption">
+        Highest reported placement package for <a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">B.Tech. CSE (AI &amp; ML)</a>, alongside a ₹14.97L average for the top 10% cohort across 1,500+ recruiters.
+      </div>
+    </div>
+  </header>
+
+  <div class="kpi-strip">
+    <div>
+      <div class="kpi-val">2,500+</div>
+      <div class="kpi-desc">Indexed research publications &amp; 17,250+ Scopus citations in CSE (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">LPU CSE AI &amp; ML</a>)</div>
+    </div>
+    <div>
+      <div class="kpi-val">597+</div>
+      <div class="kpi-desc">Patents filed/granted and 100+ conferences &amp; workshops hosted (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">LPU Research</a>)</div>
+    </div>
+    <div>
+      <div class="kpi-val">₹2,00,000</div>
+      <div class="kpi-desc">Base tuition fee per semester before LPUNEST/JEE/Board scholarships (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">LPU Fee Structure</a>)</div>
+    </div>
+    <div>
+      <div class="kpi-val">2,600+</div>
+      <div class="kpi-desc">Dream &amp; Super Dream placement offers across CSE cohorts (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">LPU Placements</a>)</div>
+    </div>
+  </div>
+
+  <section class="sec-s">
+    <h2>School of Computer Science &amp; Engineering Faculty Directory</h2>
+    <p>
+      LPU’s <a href="https://www.lpu.in/faculty/" target="_blank" rel="noopener noreferrer">School of Computer Science and Engineering</a> is led by Executive Dean Dr. Rajeev Sobti and Dean Dr. Neeraj Sharma, supported by Deputy and Associate Deans, Heads of Department (HODs), Professors, and Technical Committee faculty documented across official staff profiles, <a href="https://www.lpu.in/blog/author/mohit-arora/" target="_blank" rel="noopener noreferrer">LPU faculty publication blogs</a>, and the <a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a> organizing roster.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Faculty Name</th>
+          <th>Emp Code</th>
+          <th>Designation &amp; Role</th>
+          <th>Documented Focus / Committee / Research Area</th>
+          <th>Official Profile / Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dr. Rajeev Sobti</strong></td>
+          <td class="num">11011</td>
+          <td>Professor &amp; Senior / Executive Dean</td>
+          <td>Executive leadership of School of Computer Science &amp; Engineering; Executive Chair, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/faculty/" target="_blank" rel="noopener noreferrer">LPU Faculty Directory</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Neeraj Sharma</strong></td>
+          <td class="num">32821</td>
+          <td>Professor &amp; Dean</td>
+          <td>Optimized probabilistic neural networks (OPNN) &amp; ML disease detection; Convener, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=32821" target="_blank" rel="noopener noreferrer">Staff Profile 32821</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Rachit Garg</strong></td>
+          <td class="num">25708</td>
+          <td>Deputy Dean</td>
+          <td>Convener &amp; Organizing Secretary/Chair, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=25708" target="_blank" rel="noopener noreferrer">Staff Profile 25708</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Mohit Arora</strong></td>
+          <td class="num">15980</td>
+          <td>Professor &amp; HOD</td>
+          <td>AI vs. ML vs. Deep Learning, B.Tech. CSE (AI &amp; ML) &amp; AI/Data Analytics curriculum guidance</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=15980" target="_blank" rel="noopener noreferrer">Staff Profile 15980</a> · <a href="https://www.lpu.in/blog/author/mohit-arora/" target="_blank" rel="noopener noreferrer">Author Profile</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Vikas Verma</strong></td>
+          <td class="num">—</td>
+          <td>Assistant Professor &amp; Associate Dean</td>
+          <td>Human-Computer Interaction (HCI), UX Design, B.Tech. CSE (AI &amp; System Design); Technical Chair</td>
+          <td><a href="https://www.lpu.in/blog/author/vikasverma/" target="_blank" rel="noopener noreferrer">Author Profile</a></td>
+        </tr>
+        <tr>
+          <td><strong>Prof. Sami Anand</strong></td>
+          <td class="num">—</td>
+          <td>Assistant Professor &amp; Associate Dean</td>
+          <td>CSE Career Architecture &amp; Technical Chair, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/blog/author/samianand/" target="_blank" rel="noopener noreferrer">Author Profile</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Arun Malik</strong></td>
+          <td class="num">17442</td>
+          <td>Professor</td>
+          <td>Big Data &amp; AI Analytics, International Credit Transfer (2+2), M.Tech. CSE; Technical Chair</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=17442" target="_blank" rel="noopener noreferrer">Staff Profile 17442</a> · <a href="https://www.lpu.in/blog/author/arunmalik/" target="_blank" rel="noopener noreferrer">Author Profile</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Aarti</strong></td>
+          <td class="num">—</td>
+          <td>Professor</td>
+          <td>Applied AI, AI &amp; Data Analytics, AI Ethics, Robotics &amp; Automation, Cyber Security &amp; Blockchain</td>
+          <td><a href="https://www.lpu.in/blog/author/aarti/" target="_blank" rel="noopener noreferrer">Author Profile</a></td>
+        </tr>
+        <tr>
+          <td><strong>Prof. Deepali Bhagat</strong></td>
+          <td class="num">—</td>
+          <td>Professor</td>
+          <td>First-year CSE programming pedagogy, coding roadmaps, and AI research transition</td>
+          <td><a href="https://www.lpu.in/blog/author/deepali/" target="_blank" rel="noopener noreferrer">Author Profile</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Manik</strong></td>
+          <td class="num">23538</td>
+          <td>Professor</td>
+          <td>Technical Co-Chair, ICAESE 2026 (190+ indexed contributions/metrics listed)</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=23538" target="_blank" rel="noopener noreferrer">Staff Profile 23538</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Vijay Kumar Garg</strong></td>
+          <td class="num">14085</td>
+          <td>Professor</td>
+          <td>Registration and Promotion Chair, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=14085" target="_blank" rel="noopener noreferrer">Staff Profile 14085</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Max Bhatia</strong></td>
+          <td class="num">—</td>
+          <td>Associate Professor</td>
+          <td>CSE Academic Author &amp; Registration/Promotion Chair, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/blog/author/max-bhatia/" target="_blank" rel="noopener noreferrer">Author Profile</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Rajeev Kumar Patial</strong></td>
+          <td class="num">12301</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Registration and Promotion Chair, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=12301" target="_blank" rel="noopener noreferrer">Staff Profile 12301</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Nitin K. Mishra</strong></td>
+          <td class="num">12710</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Computer Science &amp; Engineering Regular Faculty</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=12710" target="_blank" rel="noopener noreferrer">Staff Profile 12710</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Navneet Malik</strong></td>
+          <td class="num">14335</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Local Scientific Committee, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=14335" target="_blank" rel="noopener noreferrer">Staff Profile 14335</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Sudhanshu Prakash Tiwari</strong></td>
+          <td class="num">15813</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Local Scientific Committee, ICAESE 2026</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=15813" target="_blank" rel="noopener noreferrer">Staff Profile 15813</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Rahul Saha</strong></td>
+          <td class="num">18818</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Computer Science &amp; Engineering Research &amp; Regular Faculty</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=18818" target="_blank" rel="noopener noreferrer">Staff Profile 18818</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Sukanta Ghosh</strong></td>
+          <td class="num">19539</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Computer Science &amp; Engineering Regular Faculty</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=19539" target="_blank" rel="noopener noreferrer">Staff Profile 19539</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Manmohan Sharma</strong></td>
+          <td class="num">21909</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Computer Science &amp; Engineering Regular Faculty</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=21909" target="_blank" rel="noopener noreferrer">Staff Profile 21909</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Dhiraj Kapila</strong></td>
+          <td class="num">23509</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Computer Science &amp; Engineering Regular Faculty</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=23509" target="_blank" rel="noopener noreferrer">Staff Profile 23509</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Amit Kumar Thakur</strong></td>
+          <td class="num">25010</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Computer Science &amp; Engineering Regular Faculty</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=25010" target="_blank" rel="noopener noreferrer">Staff Profile 25010</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dr. Vinay Anand</strong></td>
+          <td class="num">34786</td>
+          <td>Faculty Member (CSE)</td>
+          <td>Technological integration of solar energy in EVs and adoption analysis</td>
+          <td><a href="https://www.lpu.in/faculty/staff-profile.php?EmpCode=34786" target="_blank" rel="noopener noreferrer">Staff Profile 34786</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Additional School of Computer Science &amp; Engineering Faculty by Committee Role</h3>
+    <p>
+      Beyond the individual staff profile pages above, LPU’s <a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">School of Computer Science and Engineering ICAESE 2026 Committee Roster</a> lists over 50 additional regular CSE faculty members across specialized academic and scientific functions:
+    </p>
+
+    <div class="multi-col-list">
+      <div class="col-block">
+        <h3>Executive &amp; Technical Chairs</h3>
+        <ul class="clean-list">
+          <li><strong>Prof. Amandeep Nagpal</strong> — Executive Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Prateek Aggarwal</strong> — Technical Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Dalwinder Singh</strong> — Technical Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Mr. Rajkaran Singh</strong> — Technical &amp; Registration Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Pranjal Sharma</strong> — Organizing Coordinator, Publication &amp; Social Media Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Ms. Kamalpreet Kaur</strong> — Organizing Coordinator &amp; Publication Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Mr. Gaurav Pushkarana</strong> — Web Chair &amp; Registration Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Balwinder Kaur Dhaliwal</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Shailendra Kumar Singh</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Senthil Kumar J</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Suruchi Talwar</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Dimple Nagpal</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Manjot Kaur</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Vipin Kumar</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Anshu Sharma</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Dhanpartap Singh</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Navneet Kaur</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Jeevan Bala</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+        </ul>
+      </div>
+
+      <div class="col-block">
+        <h3>Technical &amp; Scientific Committees</h3>
+        <ul class="clean-list">
+          <li><strong>Dr. Ramandeep Sandhu</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Soni Singh</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Salil</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Jaibir Singh</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Karthick Panneerselvam</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Ms. Amandeep Kaur</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Mr. Tejinder Thind</strong> — Technical Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Prof. Kewal Krishan</strong> — Technical &amp; Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Divya</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Varsha</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Vinay Bhardwaj</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Amritpal Singh</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Avinash Kaur</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Puneet Thapar</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Usha Mittal</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Harpreet Kaur</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Baljit Singh Saini</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Vishu</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. G. Akilarasu</strong> — Local Scientific Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+        </ul>
+      </div>
+
+      <div class="col-block">
+        <h3>Registration, Promotion &amp; Operations Chairs</h3>
+        <ul class="clean-list">
+          <li><strong>Dr. Harwant Singh Arri</strong> — Registration &amp; Discipline Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Varun Dogra</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Robin Prakash Mathur</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Mr. Janpreet Singh</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Ms. Harjeet Kaur</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Mr. Pushpendra Kumar Petriya</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Chirag Sharma</strong> — Registration &amp; Stage Conduct Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Manjeet Kaur</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Virat Devaser</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Parminder Singh</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Gurpinder Singh</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Ajit Kumar Shrivastava</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Ms. Pawandeep Kaur</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Deepak Kumar</strong> — Registration &amp; Promotion Chair (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Harminder Singh Saggu</strong> — Registration &amp; Discipline Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Shilpa Sharma</strong> — Session Conduct &amp; Local Arrangement (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Gursharan Singh</strong> — Hospitality &amp; Local Arrangement (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Gauri Mathur</strong> — Hospitality &amp; Local Arrangement (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Dr. Makul Mahajan</strong> — Local Arrangement Committee (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+          <li><strong>Ms. Manbir Kaur, Ms. Komal Arora, Mr. Ajay Kaler, Mr. Atul Malhotra, Mr. Jagdeep Singh, Mr. Rajeshwar Kumar, Mr. Sudha Shankar Prasad</strong> — Operations &amp; Session Committees (<a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">ICAESE 2026</a>)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-s split-sec">
+    <div class="split-left">
+      <h2>Industry Professors of Practice &amp; AI/ML Visiting Experts</h2>
+      <p>
+        Because LPU delivers several CSE AI &amp; ML tracks in collaboration with corporate partners (Microsoft, IBM, Futurense, Quantiphi), the university embeds corporate practitioners directly into instructional delivery via its <a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a> and <a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a> rosters.
+      </p>
+    </div>
+    <div class="split-right">
+      <div class="multi-col-list" style="grid-template-columns: repeat(2, 1fr); margin-top: 0;">
+        <div class="col-block">
+          <h3>AI, ML &amp; Data Science Visiting Experts</h3>
+          <ul class="clean-list">
+            <li><strong>Anand Maurya</strong> — Subject Matter Expert - Machine Learning, IBM (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Vikas Budhani</strong> — Subject Matter Expert - Machine Learning, IBM (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Ashwin Ramkishor Pal</strong> — Data Scientist and Trainer, IBM (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Aman Bakshi</strong> — Data Analyst, IBM (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Ravi Kumar Verma</strong> — Software Engineer and Trainer, IBM (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Prateek Narang</strong> — Senior Software Engineering Lead, Google (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Madhav Dubey</strong> — Senior Data Science Instructor, TransOrg Analytics (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Sheetal Sharma</strong> — Data Science Instructor, TransOrg Analytics (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Anoop Garg</strong> — Co-Founder, Programming Pathshala (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+            <li><strong>Awadesh Kumar Shukla &amp; Sujeet Kumar</strong> — Lead Consultant &amp; Trainer, Quick Heal Technologies (<a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Visiting Experts</a>)</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h3>Computing &amp; Tech Professors of Practice</h3>
+          <ul class="clean-list">
+            <li><strong>Rocky Bhatia</strong> — Senior Computer Scientist, Adobe (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Yudhishthira Kundu</strong> — Senior Director, Intel Corporation (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Rishi Pratap Singh</strong> — Senior Director, Infosys (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Mohini Palchowdhury</strong> — Global Head - People &amp; Culture, Quantiphi (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Jaswinder Singh</strong> — Director of Engineering, Quick Heal (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Deependra Singh</strong> — Director, GoDaddy (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Gagandeep Singh Bhasin</strong> — Director of Digital &amp; Technology, CBRE Group (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Tarik Deep Singh</strong> — Vice President - Technology, Infinite Computer Solutions (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Praveen Pantula</strong> — Director - Talent Acquisition, EPAM Systems (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+            <li><strong>Sumeet Naik</strong> — AVP - Talent Acquisition, Cognizant (<a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Professors of Practice</a>)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-s">
+    <h2>CSE AI &amp; Machine Learning Degree Portfolio &amp; Curriculum Architecture</h2>
+    <p>
+      Under the School of Computer Science and Engineering, LPU segments its artificial intelligence and machine learning offerings into specialized 4-year B.Tech. degrees (plus a 3-year Lateral Entry track), industry-collaborative programmes, and work-integrated tracks. Students in the standard <a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">B.Tech. (Computer Science and Engineering)</a> can also elect <strong>Artificial Intelligence &amp; Machine Learning</strong> or <strong>Data Science</strong> as a specialization track or minor alongside 13 other computing tracks (Cloud Computing, Full Stack Web Development, Cyber Security, Informatica, Internet of Robotic Things, Mobile Application Development, UI/UX Design, Game Design, Quality Engineering &amp; Test Automation, Software Methodologies &amp; Testing, Robotic Process Automation, BFSI, and DevOps &amp; Agile Systems Engineering).
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Programme Title</th>
+          <th>Category &amp; Partner</th>
+          <th>Duration</th>
+          <th>Core Technical Stack &amp; Curriculum Progression</th>
+          <th>Programme Page</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>B.Tech. (CSE - Artificial Intelligence and Machine Learning)</strong></td>
+          <td>Specialized Programme</td>
+          <td class="num">4 Years (8 Sem)</td>
+          <td>Python Programming, C Structured Programming, DBMS &amp; SQL, Differential Equations &amp; Vector Calculus, Software Engineering, DSA, Probability &amp; Statistics, AI &amp; Expert Systems, Deep Learning</td>
+          <td><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Official Course Page</a></td>
+        </tr>
+        <tr>
+          <td><strong>B.Tech. (CSE - AI &amp; ML) [Lateral Entry]</strong></td>
+          <td>Lateral Entry (Post-Diploma)</td>
+          <td class="num">3 Years (6 Sem)</td>
+          <td>Data Structures &amp; Algorithms, OOP, Operating Systems, Computer Networks, Artificial Intelligence &amp; Expert Systems, Probability &amp; Statistics, Mathematical &amp; Optimisation Techniques for ML</td>
+          <td><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning-lateral-entry" target="_blank" rel="noopener noreferrer">Lateral Entry Page</a></td>
+        </tr>
+        <tr>
+          <td><strong>B.Tech. (CSE - Generative Artificial Intelligence) [Gen AI]</strong></td>
+          <td>Industry Collaborative (Microsoft)</td>
+          <td class="num">4 Years (8 Sem)</td>
+          <td>C &amp; Python, DSA II, Exploratory Data Analysis, OOP with Java, Backend with FastAPI, Applied ML, Gen AI &amp; Prompt Engineering, Deep Learning, NLP, Agentic AI, RAG &amp; Vector Databases, ML in Production, Responsible AI</td>
+          <td><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-genrative-artificial-intelligence" target="_blank" rel="noopener noreferrer">Gen AI Course Page</a></td>
+        </tr>
+        <tr>
+          <td><strong>B.Tech. (CSE - AI and Data Engineering)</strong></td>
+          <td>Work Integrated (Futurense)</td>
+          <td class="num">4 Years (8 Sem)</td>
+          <td>Programming, Data Structures, Databases, Data Analytics, AI, Machine Learning, Deep Learning, NLP, Big Data Technologies, Generative AI, Large Language Models (LLMs), and RAG</td>
+          <td><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-data-engineering" target="_blank" rel="noopener noreferrer">AI &amp; Data Engg Page</a></td>
+        </tr>
+        <tr>
+          <td><strong>B.Tech. (CSE - Data Science with ML)</strong></td>
+          <td>Specialized Programme</td>
+          <td class="num">4 Years (8 Sem)</td>
+          <td>Programming, Data Structures &amp; Algorithms, Database Systems, Statistics &amp; Data Analytics, Artificial Intelligence, and Machine Learning modeling</td>
+          <td><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-specialization-in-data-science-ml-and-ai" target="_blank" rel="noopener noreferrer">Data Science &amp; ML Page</a></td>
+        </tr>
+        <tr>
+          <td><strong>B.Tech. (CSE - AI and Data Analytics)</strong></td>
+          <td>Work Integrated Programme</td>
+          <td class="num">4 Years (8 Sem)</td>
+          <td>AI foundations, predictive statistical modeling, big data pipelines, and business/data analytics</td>
+          <td><a href="https://www.lpu.in/programmes/b-tech-computer-science-engineering-artificial-intelligence-and-data-analytics" target="_blank" rel="noopener noreferrer">AI &amp; Data Analytics Page</a></td>
+        </tr>
+        <tr>
+          <td><strong>Other Specialized AI Tracks in CSE</strong></td>
+          <td>Specialized / Immersion / Collaborative</td>
+          <td class="num">4 Years (8 Sem)</td>
+          <td>Includes <em>B.Tech. (CSE - AI and System Design) with Global Tech Immersion</em>, <em>B.Tech. (CSE - AI and Cloud Computing)</em>, <em>B.Tech. (CSE - AI and Data Science)</em>, <em>B.Tech. (CSE - AI and Robotics)</em>, <em>B.Tech. (CSE - AI and Fintech)</em>, <em>B.Tech. (CSE - AI and DevOps)</em>, and <em>B.Tech. (Hons.) (CSE - Applied AI)</em></td>
+          <td><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">CSE Programme Index</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="multi-col-list" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="col-block">
+        <h3>Year 1 Foundation &amp; Core Modules (B.Tech. CSE - AI &amp; ML)</h3>
+        <ul class="clean-list">
+          <li><strong>Autumn Term (Semester 1):</strong> Python Programming (functions, data structures, classes), Orientation to Computing-I, Internet Programming Laboratory (HTML/CSS &amp; data flow), Mathematics for Engineers, Basic Electrical and Electronics Engineering + Lab (DC/AC circuits, combinational &amp; sequential digital logic), and Engineering Physics (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Curriculum Syllabus</a>).</li>
+          <li><strong>Spring Term (Semester 2):</strong> Computer Programming (modular C programming), Database Management Systems (relational algebra, normalization, transactions, SQL &amp; procedural SQL), Differential Equations and Vector Calculus (ODEs, PDEs, numerical methods), Orientation to Computing-II (niche tech readiness), Software Engineering (SDLC models &amp; effort estimation), Engineering Drawing with AutoCAD, Environmental Studies, and Language Elective 1 (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Curriculum Syllabus</a>).</li>
+        </ul>
+      </div>
+      <div class="col-block">
+        <h3>Years 2–4 Advanced AI, ML &amp; GenAI Progression</h3>
+        <ul class="clean-list">
+          <li><strong>Year 2 Core &amp; Applied ML:</strong> Data Structures &amp; Algorithms II, Object-Oriented Programming with Java, Exploratory Data Analysis (EDA), Probability &amp; Statistics, Applied Machine Learning, Generative AI: Foundations &amp; Prompt Engineering, Web Development Foundations, and Backend Development with FastAPI (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-genrative-artificial-intelligence" target="_blank" rel="noopener noreferrer">Gen AI &amp; AI/ML Syllabus</a>).</li>
+          <li><strong>Years 3–4 Specialized AI Engineering:</strong> Operating Systems, Computer Networks, Mathematical &amp; Optimisation Techniques for ML, Artificial Intelligence &amp; Expert Systems, Deep Learning, Natural Language Processing (NLP), Large Language Models (LLMs), Retrieval-Augmented Generation (RAG) &amp; Vector Databases, Agentic AI, ML in Production, Responsible AI, Open Minors, and Industry Capstone Projects (<a href="https://www.lpu.in/international/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning-lateral-entry" target="_blank" rel="noopener noreferrer">Advanced Modules</a>).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-s">
+    <h2>Tuition Fee Structure, LPUNEST Cut-Offs &amp; Phased Scholarship Decay</h2>
+    <p>
+      The base tuition fee for <a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">B.Tech. (CSE - Artificial Intelligence and Machine Learning)</a> is <strong>₹2,00,000 per semester</strong> (₹16,00,000 across 8 semesters before scholarship), plus an examination fee of <strong>₹5,000 per semester</strong> and a one-time uniform fee of <strong>₹4,000</strong>. For international applicants, the listed fee for B.Tech. CSE (Generative AI) is <strong>$4,500 per semester</strong> (<a href="https://www.lpu.in/international/programmes/engineering/b-tech-cse-genrative-artificial-intelligence" target="_blank" rel="noopener noreferrer">LPU International</a>) and ₹1,80,000–₹2,00,000 per semester for regional international tiers (<a href="https://www.lpu.in/international/programmes/engineering/b-tech-cse-artificial-intelligence-and-data-engineering" target="_blank" rel="noopener noreferrer">AI &amp; Data Engg International</a>).
+    </p>
+    <p>
+      LPU awards scholarships based on LPUNEST scores, 10th/12th aggregate marks, or JEE (Main) percentiles. Crucially, the scholarship percentage varies across five admission phases—peaking at <strong>60% off (₹80,000 net tuition/semester)</strong> during the Till 2nd June window and stepping down to <strong>45% off (₹1,10,000 net tuition/semester)</strong> from 1st August onwards for Category A+ qualifiers. National Rank Holders and Board Toppers under <strong>LPU RISE</strong> receive a 100% waiver on both programme fees and 4-seater non-AC hostel accommodation.
+    </p>
+
+    <figure>
+      <div class="fig-title">Early admission (by June 2) cuts net per-semester CSE AI &amp; ML tuition by up to ₹30,000 compared to August enrollment</div>
+      <svg viewBox="0 0 720 420" width="100%" role="img" aria-label="Net tuition fee per semester after scholarship across admission phases for Category A+, A, B, and C">
+        <!-- Gridlines -->
+        <line x1="180" y1="50" x2="180" y2="350" stroke="#CBD5E1" stroke-width="1" />
+        <line x1="300" y1="50" x2="300" y2="350" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="3,3" />
+        <line x1="420" y1="50" x2="420" y2="350" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="3,3" />
+        <line x1="540" y1="50" x2="540" y2="350" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="3,3" />
+        <line x1="660" y1="50" x2="660" y2="350" stroke="#CBD5E1" stroke-width="1" />
+
+        <!-- Axis labels (Scale: 0 to 200,000 INR -> 180 to 660 px => 480px = 200k => 2.4px per 1k) -->
+        <text x="180" y="38" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568" text-anchor="middle">₹0</text>
+        <text x="300" y="38" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568" text-anchor="middle">₹50k</text>
+        <text x="420" y="38" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568" text-anchor="middle">₹100k</text>
+        <text x="540" y="38" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568" text-anchor="middle">₹150k</text>
+        <text x="660" y="38" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568" text-anchor="middle">₹200k Base</text>
+
+        <!-- Row 1: Category A+ (≥95% Boards / JEE ≥97%ile) -->
+        <text x="168" y="88" font-family="Google Sans Flex, sans-serif" font-size="14" font-weight="600" fill="#0F1216" text-anchor="end">Category A+ (≥95%)</text>
+        <!-- Peak (Till June 2): 80k net (60% off) -> width 192 -->
+        <rect x="180" y="68" width="192" height="16" fill="#1D4ED8" />
+        <text x="380" y="81" font-family="Google Sans Code, monospace" font-size="13" font-weight="600" fill="#1E3A8A">₹80k (60% off · Peak Window)</text>
+        <!-- Aug 1 Onwards: 110k net (45% off) -> width 264 -->
+        <rect x="180" y="88" width="264" height="16" fill="#64748B" />
+        <text x="452" y="101" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568">₹110k (45% off · Aug 1+)</text>
+
+        <!-- Row 2: Category A (90-94.99% Boards / JEE 95-97%ile) -->
+        <text x="168" y="160" font-family="Google Sans Flex, sans-serif" font-size="14" font-weight="600" fill="#0F1216" text-anchor="end">Category A (90–94.9%)</text>
+        <!-- Peak (Till June 2): 110k net (45% off) -> width 264 -->
+        <rect x="180" y="140" width="264" height="16" fill="#1D4ED8" />
+        <text x="452" y="153" font-family="Google Sans Code, monospace" font-size="13" font-weight="600" fill="#1E3A8A">₹110k (45% off · Peak Window)</text>
+        <!-- Aug 1 Onwards: 140k net (30% off) -> width 336 -->
+        <rect x="180" y="160" width="336" height="16" fill="#64748B" />
+        <text x="524" y="173" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568">₹140k (30% off · Aug 1+)</text>
+
+        <!-- Row 3: Category B (85-89.99% Boards / JEE 90-95%ile) -->
+        <text x="168" y="232" font-family="Google Sans Flex, sans-serif" font-size="14" font-weight="600" fill="#0F1216" text-anchor="end">Category B (85–89.9%)</text>
+        <!-- Peak (Till June 2): 130k net (35% off) -> width 312 -->
+        <rect x="180" y="212" width="312" height="16" fill="#1D4ED8" />
+        <text x="500" y="225" font-family="Google Sans Code, monospace" font-size="13" font-weight="600" fill="#1E3A8A">₹130k (35% off · Peak Window)</text>
+        <!-- Aug 1 Onwards: 160k net (20% off) -> width 384 -->
+        <rect x="180" y="232" width="384" height="16" fill="#64748B" />
+        <text x="572" y="245" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568">₹160k (20% off · Aug 1+)</text>
+
+        <!-- Row 4: Category C (75-84.99% Boards / JEE 80-90%ile) -->
+        <text x="168" y="304" font-family="Google Sans Flex, sans-serif" font-size="14" font-weight="600" fill="#0F1216" text-anchor="end">Category C (75–84.9%)</text>
+        <!-- Peak (Till June 2): 150k net (25% off) -> width 360 -->
+        <rect x="180" y="284" width="360" height="16" fill="#1D4ED8" />
+        <text x="548" y="297" font-family="Google Sans Code, monospace" font-size="13" font-weight="600" fill="#1E3A8A">₹150k (25% off · Peak Window)</text>
+        <!-- Aug 1 Onwards: 180k net (10% off) -> width 432 -->
+        <rect x="180" y="304" width="432" height="16" fill="#64748B" />
+        <text x="620" y="317" font-family="Google Sans Code, monospace" font-size="13" fill="#4A5568">₹180k (10%)</text>
+
+        <text x="180" y="388" font-family="Google Sans Flex, sans-serif" font-size="13" fill="#4A5568">Net payable tuition fee per semester in INR (excluding ₹5,000/sem exam fee). Base tuition: ₹2,00,000/semester.</text>
+      </svg>
+      <figcaption>Source: LPU B.Tech. (CSE - Artificial Intelligence and Machine Learning) Official Fee &amp; Scholarship Schedule (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">lpu.in</a>).</figcaption>
+    </figure>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Scholarship Tier &amp; Eligibility Criteria</th>
+          <th>Till Apr 25 / Jul 31</th>
+          <th>Till Jun 2 (Peak)</th>
+          <th>Till Jun 30</th>
+          <th>From Aug 1 Onwards</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>LPU RISE (100% Waiver):</strong> National Rank Holders, Confirmed Elite Institution Seats, School Board Toppers (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">LPU RISE</a>)</td>
+          <td class="num">₹0 Net (100% Off + Hostel)</td>
+          <td class="num">₹0 Net (100% Off + Hostel)</td>
+          <td class="num">₹0 Net (100% Off + Hostel)</td>
+          <td class="num">₹0 Net (100% Off + Hostel)</td>
+        </tr>
+        <tr>
+          <td><strong>Category A+:</strong> LPUNEST ≥ Cat A+ (with ≥80% in 10th/12th) OR ≥95% in 10th/12th OR JEE Main ≥97%ile</td>
+          <td class="num">₹1,00,000 Net (50% Off)</td>
+          <td class="num">₹80,000 Net (60% Off)</td>
+          <td class="num">₹90,000 Net (55% Off)</td>
+          <td class="num">₹1,10,000 Net (45% Off)</td>
+        </tr>
+        <tr>
+          <td><strong>Category A:</strong> LPUNEST ≥ Cat A (with ≥70% in 10th/12th) OR 90%–94.99% in 10th/12th OR JEE Main 95–96.99%ile (Tentative Cut-off: ~360/400)</td>
+          <td class="num">₹1,40,000 Net (30% Off) / ₹1,30,000 (Jul)</td>
+          <td class="num">₹1,10,000 Net (45% Off)</td>
+          <td class="num">₹1,20,000 Net (40% Off)</td>
+          <td class="num">₹1,40,000 Net (30% Off)</td>
+        </tr>
+        <tr>
+          <td><strong>Category B:</strong> LPUNEST ≥ Cat B OR 85%–89.99% in 10th/12th OR JEE Main 90–94.99%ile (Tentative Cut-off: ~292/400)</td>
+          <td class="num">₹1,50,000 Net (25% Off)</td>
+          <td class="num">₹1,30,000 Net (35% Off)</td>
+          <td class="num">₹1,40,000 Net (30% Off)</td>
+          <td class="num">₹1,60,000 Net (20% Off)</td>
+        </tr>
+        <tr>
+          <td><strong>Category C:</strong> LPUNEST ≥ Cat C OR 75%–84.99% in 10th/12th OR JEE Main 80–89.99%ile (Tentative Cut-off: ~200/400)</td>
+          <td class="num">₹1,60,000 Net (20% Off) / ₹1,70,000 (Jul)</td>
+          <td class="num">₹1,50,000 Net (25% Off)</td>
+          <td class="num">₹1,60,000 Net (20% Off)</td>
+          <td class="num">₹1,80,000 Net (10% Off)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="full-bleed-band">
+    <div class="pull-quote">
+      “Student Tanishq Upmanu raised ₹1.2 Crore from the M3M Foundation for his drone &amp; ROS startup Kraizel Industries, while student Vansh Devgan’s team earned a ₹15 Lakh bug bounty from Microsoft Edge.”
+    </div>
+    <div class="pull-attr">
+      Documented Student Achievements in LPU School of Computer Science &amp; Engineering (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">LPU B.Tech. CSE AI &amp; ML Portal</a>)
+    </div>
+  </div>
+
+  <section class="sec-s">
+    <h2>Eligibility, LPUNEST 2027 Timeline &amp; Residential Cost Matrix (2026–2027)</h2>
+    <p>
+      Admission to B.Tech. (CSE - AI &amp; ML) requires passing 10+2 with <strong>60% aggregate marks</strong> (calculated across the best five subjects including mandatory <strong>Physics, Mathematics, and English</strong>) plus qualifying <strong>LPUNEST</strong>, <strong>CUET (UG)</strong> (minimum 225 marks across English, Mathematics, Physics, and Chemistry), or <strong>JEE (Main)</strong> (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Eligibility Criteria</a>). A 10% aggregate relaxation applies to applicants from North-East states and Sikkim, and a 5% relaxation applies to Defence personnel dependents and wards of Kashmiri migrants.
+    </p>
+
+    <div class="multi-col-list">
+      <div class="col-block">
+        <h3>LPUNEST 2027 Schedule &amp; Application Costs</h3>
+        <ul class="clean-list">
+          <li><strong>Registration Open:</strong> 29 September 2026 (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Important Dates</a>)</li>
+          <li><strong>Slot Booking:</strong> 10 December 2026 onwards</li>
+          <li><strong>Application Deadline:</strong> 15 January 2027</li>
+          <li><strong>Remotely Proctored Exam Window:</strong> 10 January 2027 to 5 February 2027</li>
+          <li><strong>Test Centre Exam Window:</strong> 20 January 2027 to 5 February 2027</li>
+          <li><strong>Result &amp; Round I Counselling:</strong> 8 February 2027 (Allotment: 12 Feb 2027; Round II Allotment: 22 Feb 2027)</li>
+          <li><strong>Test Kit &amp; Initial Deposit:</strong> ₹1,000 (Soft Kit) / ₹1,500 (Printed Kit); ₹10,000 initial seat allotment deposit; mandatory laptop &amp; ₹4,000 uniform kit</li>
+        </ul>
+      </div>
+
+      <div class="col-block">
+        <h3>Hostel &amp; Studio Apartment Fees (Full Academic Year)</h3>
+        <ul class="clean-list">
+          <li><strong>1-Seater (Single):</strong> ₹1,46,700 (Standard AC) · ₹1,80,000 (Studio Apartment AC) — includes 1,000 free electricity units (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Residential Charges</a>)</li>
+          <li><strong>2-Seater:</strong> ₹1,10,700 (Air Cooled, 400 units) · ₹1,28,700 (Standard AC, 750 units) · ₹1,35,000 (Studio AC, 750 units)</li>
+          <li><strong>3-Seater:</strong> ₹97,200 (Air Cooled, 350 units) · ₹1,01,700 (Standard AC, 550 units) · ₹1,17,000 (Studio AC, 550 units)</li>
+          <li><strong>4-Seater:</strong> ₹83,700 (Air Cooled, 300 units) · ₹92,700 (Standard AC, 500 units) · ₹99,000 (Studio AC, 500 units)</li>
+          <li><strong>5 / 6 / 7 / 8 / 4x2 Seater Dorms:</strong> ₹72,000 (Air Cooled, 250–300 units) · ₹81,000 (Standard AC, 350–400 units)</li>
+        </ul>
+      </div>
+
+      <div class="col-block">
+        <h3>Mess, Laundry, Gym &amp; Campus Amenities</h3>
+        <ul class="clean-list">
+          <li><strong>Vegetarian Mess (Annual):</strong> ₹37,800 (2 meals) · ₹41,400 (3 meals) · ₹45,000 (4 meals Standard) · ₹52,200 (4 meals Ala Carte) (<a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Mess Charges</a>)</li>
+          <li><strong>Non-Veg Mess (External Vendor):</strong> ₹55,000/yr (1 meal) · ₹65,000/yr (2 meals) · ₹75,000/yr (3 meals)</li>
+          <li><strong>Laundry Service:</strong> ₹4,860/academic session (up to 70 clothes/month washed &amp; steam-pressed)</li>
+          <li><strong>Gym &amp; Sports (Hostellers):</strong> ₹4,000/yr with Early Decision Benefit (₹5,000 regular); Badminton/Basketball/Squash ₹2,000/yr; Swimming Pool ₹6,000/session</li>
+          <li><strong>Rankings &amp; Accreditations:</strong> NAAC A++ Grade; NIRF 2025 Ranked 31st among Universities &amp; 48th in Engineering (<a href="https://www.lpu.in/" target="_blank" rel="noopener noreferrer">LPU Rankings</a>)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-s">
+    <h2>Sources</h2>
+    <ol class="clean-list">
+      <li><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning" target="_blank" rel="noopener noreferrer">Lovely Professional University — B.Tech. (CSE - Artificial Intelligence and Machine Learning) Official Programme, Curriculum, Fee, Scholarship &amp; Residential Portal</a></li>
+      <li><a href="https://www.lpu.in/faculty/" target="_blank" rel="noopener noreferrer">Lovely Professional University — Official Regular Faculty Directory (Deans &amp; Academic Leaders)</a></li>
+      <li><a href="https://www.lpu.in/conferences/icaese/organizing-committee.php" target="_blank" rel="noopener noreferrer">Lovely Professional University — School of Computer Science and Engineering Organizing &amp; Technical Committee Roster (ICAESE 2026)</a></li>
+      <li><a href="https://www.lpu.in/faculty/visiting-expert.php" target="_blank" rel="noopener noreferrer">Lovely Professional University — Visiting Experts Directory (IBM, Google, TransOrg Analytics, Quick Heal)</a></li>
+      <li><a href="https://www.lpu.in/faculty/professor-of-practice.php" target="_blank" rel="noopener noreferrer">Lovely Professional University — Professors of Practice Directory (Adobe, Intel, Infosys, Quantiphi, Cognizant)</a></li>
+      <li><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-genrative-artificial-intelligence" target="_blank" rel="noopener noreferrer">Lovely Professional University — B.Tech. (CSE - Generative Artificial Intelligence) in Tie-Up with Microsoft</a></li>
+      <li><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-data-engineering" target="_blank" rel="noopener noreferrer">Lovely Professional University — B.Tech. (CSE - AI and Data Engineering) in Tie-Up with Futurense</a></li>
+      <li><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-specialization-in-data-science-ml-and-ai" target="_blank" rel="noopener noreferrer">Lovely Professional University — B.Tech. (CSE - Data Science with ML) Course Portal</a></li>
+      <li><a href="https://www.lpu.in/programmes/engineering/b-tech-cse-artificial-intelligence-and-machine-learning-lateral-entry" target="_blank" rel="noopener noreferrer">Lovely Professional University — B.Tech. (CSE - AI and ML) [Lateral Entry] Course Portal</a></li>
+      <li><a href="https://www.lpu.in/blog/why-b-tech-cse-ai-and-ml-at-lpu-stands-out/" target="_blank" rel="noopener noreferrer">Lovely Professional University Blog — Why B.Tech. (CSE – AI and ML) at LPU Stands Out</a></li>
+      <li><a href="https://www.lpu.in/blog/author/mohit-arora/" target="_blank" rel="noopener noreferrer">LPU School of CSE Faculty Author Archives — Dr. Mohit Arora (Professor &amp; HOD)</a>, <a href="https://www.lpu.in/blog/author/arunmalik/" target="_blank" rel="noopener noreferrer">Dr. Arun Malik</a>, <a href="https://www.lpu.in/blog/author/aarti/" target="_blank" rel="noopener noreferrer">Dr. Aarti</a>, <a href="https://www.lpu.in/blog/author/deepali/" target="_blank" rel="noopener noreferrer">Prof. Deepali Bhagat</a>, <a href="https://www.lpu.in/blog/author/vikasverma/" target="_blank" rel="noopener noreferrer">Dr. Vikas Verma</a>, <a href="https://www.lpu.in/blog/author/samianand/" target="_blank" rel="noopener noreferrer">Prof. Sami Anand</a>, and <a href="https://www.lpu.in/blog/author/max-bhatia/" target="_blank" rel="noopener noreferrer">Dr. Max Bhatia</a></li>
+    </ol>
+  </section>
+
+</body>
+</html>
