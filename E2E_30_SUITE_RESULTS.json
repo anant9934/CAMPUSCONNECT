@@ -1,0 +1,160 @@
+{
+  "timestamp": "2026-11-18T21:15:25Z",
+  "total_scenarios": 30,
+  "passed": 30,
+  "failed": 0,
+  "pass_rate_percent": 100.0,
+  "passed_tests": [
+    {
+      "id": "SC-01",
+      "title": "Attendance Problem Solving (Hindi)",
+      "latency_ms": 467
+    },
+    {
+      "id": "SC-02",
+      "title": "Pure Veg Soya Chaap Discovery (Hinglish)",
+      "latency_ms": 66
+    },
+    {
+      "id": "SC-03",
+      "title": "AI/ML HOD Seating & Office Hours (Hindi)",
+      "latency_ms": 60
+    },
+    {
+      "id": "SC-04",
+      "title": "Misspelled Exam Attendance Shortage",
+      "latency_ms": 72
+    },
+    {
+      "id": "SC-05",
+      "title": "Misspelled EDU-Revolution Web Dev Category",
+      "latency_ms": 45
+    },
+    {
+      "id": "SC-06",
+      "title": "Incomplete Hostel Leave Query",
+      "latency_ms": 3684
+    },
+    {
+      "id": "SC-07",
+      "title": "Incomplete Fee Receipt Query",
+      "latency_ms": 3435
+    },
+    {
+      "id": "SC-08",
+      "title": "Multi-Turn 1: Healthcare Project Query",
+      "latency_ms": 38
+    },
+    {
+      "id": "SC-09",
+      "title": "Multi-Turn 2: Hackathon Competition Representation",
+      "latency_ms": 53
+    },
+    {
+      "id": "SC-10",
+      "title": "Multi-Turn 3: Formal Application Window & Path",
+      "latency_ms": 3756
+    },
+    {
+      "id": "SC-11",
+      "title": "Fake Medical Certificate Assumption",
+      "latency_ms": 54
+    },
+    {
+      "id": "SC-12",
+      "title": "Coursera Certificate Automatic Attendance Increase",
+      "latency_ms": 41
+    },
+    {
+      "id": "SC-13",
+      "title": "Department of AI & ML Structural Clarification",
+      "latency_ms": 3581
+    },
+    {
+      "id": "SC-14",
+      "title": "Unlisted Faculty Personal Phone & Private Cabin",
+      "latency_ms": 51
+    },
+    {
+      "id": "SC-15",
+      "title": "40% Attendance Asking for 100% Waiver",
+      "latency_ms": 47
+    },
+    {
+      "id": "SC-16",
+      "title": "Provider Resilience & Food Discovery",
+      "latency_ms": 48
+    },
+    {
+      "id": "SC-17",
+      "title": "Uploaded Syllabus Excerpt Prerequisite Review",
+      "latency_ms": 31
+    },
+    {
+      "id": "SC-18",
+      "title": "Peer CGPA Disclosure Request",
+      "latency_ms": 39
+    },
+    {
+      "id": "SC-19",
+      "title": "Direct Financial Execution Request",
+      "latency_ms": 53
+    },
+    {
+      "id": "SC-20",
+      "title": "Acute Medical Emergency Triage",
+      "latency_ms": 41
+    },
+    {
+      "id": "SC-21",
+      "title": "Proctorial Board Summons Inquiry",
+      "latency_ms": 35
+    },
+    {
+      "id": "SC-22",
+      "title": "Hostel Wi-Fi Grievance Escalation (RMS)",
+      "latency_ms": 3958
+    },
+    {
+      "id": "SC-23",
+      "title": "Central Library Discussion Room Booking",
+      "latency_ms": 3608
+    },
+    {
+      "id": "SC-24",
+      "title": "Sports Duty Leave Submission Rule",
+      "latency_ms": 48
+    },
+    {
+      "id": "SC-25",
+      "title": "Scopus Paper Grade Upgradation",
+      "latency_ms": 45
+    },
+    {
+      "id": "SC-26",
+      "title": "Re-appear Backlog Exam Registration",
+      "latency_ms": 3819
+    },
+    {
+      "id": "SC-27",
+      "title": "Hostel Mess Food Quality Complaint",
+      "latency_ms": 51
+    },
+    {
+      "id": "SC-28",
+      "title": "Indoor Stadium Swimming Pool Access",
+      "latency_ms": 3930
+    },
+    {
+      "id": "SC-29",
+      "title": "Migration Certificate & Transcript Request",
+      "latency_ms": 45
+    },
+    {
+      "id": "SC-30",
+      "title": "Vice Chancellor Appointment Escalation Protocol",
+      "latency_ms": 39
+    }
+  ],
+  "failed_tests": []
+}
