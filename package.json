@@ -1,0 +1,13 @@
+{
+  "name": "campusconnect-lpu",
+  "version": "2.0.0",
+  "private": true,
+  "description": "CampusConnect — Official AI Student Portal for Lovely Professional University",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "dev": "npm run dev --prefix frontend",
+    "dev:backend": "PYTHONPATH=backend uvicorn app.main:app --reload",
+    "test:backend": "PYTHONPATH=backend pytest backend/tests/ -q",
+    "test:e2e": "PYTHONPATH=backend python backend/scripts/run_e2e_30_suite.py"
+  }
+}
