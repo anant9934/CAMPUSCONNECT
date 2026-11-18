@@ -41,12 +41,16 @@ class StreamingService:
     ) -> AsyncGenerator[str, None]:
         q_clean = message.strip()
 
-        # Event 1: Thinking progression starts
-        yield f"event: thinking\ndata: {json.dumps({'step': 1, 'title': 'Understanding intent', 'status': 'in_progress'})}\n\n"
-        await asyncio.sleep(0.05)
+        # Event 1: Understanding task
+        yield f"event: thinking\ndata: {json.dumps({'step': 1, 'title': 'Understanding task', 'status': 'completed'})}\n\n"
+        await asyncio.sleep(0.02)
 
-        # Execute tools
-        yield f"event: thinking\ndata: {json.dumps({'step': 2, 'title': 'Executing campus tools & RAG', 'status': 'in_progress'})}\n\n"
+        # Event 2: Planning
+        yield f"event: thinking\ndata: {json.dumps({'step': 2, 'title': 'Planning', 'status': 'completed'})}\n\n"
+        await asyncio.sleep(0.02)
+
+        # Event 3: Retrieving knowledge
+        yield f"event: thinking\ndata: {json.dumps({'step': 3, 'title': 'Retrieving knowledge', 'status': 'in_progress'})}\n\n"
 
         tool_results = await ToolExecutor.execute_all_relevant_tools(
             query=q_clean,
@@ -73,7 +77,11 @@ class StreamingService:
             citations_data = [c.model_dump() if hasattr(c, "model_dump") else dict(c) for c in tool_results["citations"]]
             yield f"event: citations\ndata: {json.dumps(citations_data)}\n\n"
 
-        yield f"event: thinking\ndata: {json.dumps({'step': 3, 'title': 'Proactive Opportunity Evaluation & Token Streaming', 'status': 'in_progress'})}\n\n"
+        # Event 4: Selecting model & Event 5: Running tools completed
+        yield f"event: thinking\ndata: {json.dumps({'step': 4, 'title': 'Selecting model', 'status': 'completed'})}\n\n"
+        yield f"event: thinking\ndata: {json.dumps({'step': 5, 'title': 'Running tools', 'status': 'completed'})}\n\n"
+        yield f"event: thinking\ndata: {json.dumps({'step': 6, 'title': 'Verifying results', 'status': 'completed'})}\n\n"
+        yield f"event: thinking\ndata: {json.dumps({'step': 7, 'title': 'Preparing response', 'status': 'in_progress'})}\n\n"
 
         history_turns = await ContextManager.get_conversation_history(conversation_id, db)
         history_text = "\n".join([f"{h['role'].title()}: {h['content']}" for h in history_turns]) if history_turns else "None (New Thread)"

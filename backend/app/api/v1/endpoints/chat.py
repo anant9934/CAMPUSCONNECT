@@ -264,7 +264,85 @@ async def chat_endpoint(
                 agent_metadata={"cache_hit": True, "orchestrator": "aegis"},
             )
 
-    # 4. Action Classification & Workflow Resolution (SRS v3.0 & v4.0)
+    # 4. Agentic Multi-LLM Intelligence System Turn Execution
+    target_intel = (req.agent_id or "auto").lower()
+    if target_intel in ["nova", "themis", "athena", "oracle", "auto", "aegis"]:
+        from app.intelligence.intelligence_system import IntelligenceSystem
+        intel_res = await IntelligenceSystem.process_turn(
+            query=clean_message,
+            selected_intelligence=target_intel,
+            thinking_level=req.thinking_level or ("Low" if effective_thinking_level == "low" else "High" if effective_thinking_level == "high" else "Balanced"),
+            user_identifier=req.session_token,
+            conversation_history=history_turns,
+            db=db,
+            user_lat=req.user_lat,
+            user_lon=req.user_lon,
+            landmark=req.user_landmark,
+            category_slug=req.category_slug,
+            web_research=req.web_search,
+        )
+
+        assistant_msg = Message(
+            conversation_id=conversation.id,
+            role="assistant",
+            content=intel_res.content,
+            thinking_steps=[s.model_dump() for s in intel_res.thinking_steps],
+            citations=[c.model_dump() for c in intel_res.citations],
+            confidence_score=intel_res.confidence_score,
+            latency_ms=intel_res.latency_ms,
+        )
+        db.add(assistant_msg)
+
+        query_log = QueryLog(
+            session_id=session.id,
+            query_text=req.message,
+            normalized_query=req.message.lower().strip(),
+            confidence_score=intel_res.confidence_score,
+            retrieval_strategy=f"intelligence_{intel_res.intelligence_id}",
+            gemini_status=f"routed_{intel_res.routed_model}",
+            latency_ms=intel_res.latency_ms,
+        )
+        db.add(query_log)
+        await db.commit()
+        await db.refresh(assistant_msg)
+
+        cards = intel_res.cards or {}
+        return ChatResponse(
+            conversation_id=str(conversation.id),
+            message_id=str(assistant_msg.id),
+            role="assistant",
+            content=intel_res.content,
+            action_type=intel_res.action_type,
+            thinking_steps=intel_res.thinking_steps,
+            citations=intel_res.citations,
+            follow_ups=intel_res.follow_ups,
+            navigation_card=cards.get("nav_card") or cards.get("navigation_card"),
+            booking_card=cards.get("booking_card"),
+            procedure_checklist=cards.get("procedure_checklist"),
+            rms_card=cards.get("rms_card"),
+            personal_record_card=cards.get("personal_record_card"),
+            campus_place_card=cards.get("campus_place_card") or cards.get("place_card"),
+            food_outlet_card=cards.get("food_outlet_card") or cards.get("food_card"),
+            person_card=cards.get("person_card"),
+            who_to_meet_card=cards.get("who_to_meet_card"),
+            academic_benefit_card=cards.get("academic_benefit_card"),
+            evidence_card=cards.get("evidence_card"),
+            confidence_score=intel_res.confidence_score,
+            latency_ms=intel_res.latency_ms,
+            is_ai_generated=intel_res.is_ai_generated,
+            agent_id=intel_res.intelligence_id,
+            specialists_involved=intel_res.specialists_involved,
+            agent_metadata={
+                "intelligence_id": intel_res.intelligence_id,
+                "intelligence_name": intel_res.intelligence_name,
+                "routed_model": intel_res.routed_model,
+                "cost_usd": intel_res.cost_usd,
+                "thinking_level": intel_res.thinking_level,
+                "specialists_involved": intel_res.specialists_involved,
+            }
+        )
+
+    # 5. Legacy Action Classification & Workflow Resolution (Fallback)
     query_intent, intent_score, intent_meta = IntentClassifier.classify(effective_query)
     action_mode, action_score, action_rationale = ActionClassifier.classify_intent(req.message)
     matched_svc = await UMSServiceResolver.find_matching_service(effective_query, db) or await UMSServiceResolver.find_matching_service(req.message, db)
