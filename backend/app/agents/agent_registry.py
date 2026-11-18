@@ -15,15 +15,25 @@ logger = logging.getLogger(__name__)
 
 def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
     """
-    Constructs the 9 canonical agent specifications for CampusConnect Multi-Agent Intelligence Network V1.
+    Constructs the canonical specialist intelligence specifications for CampusConnect.
+    Primary public intelligences:
+    1. AEGIS — Auto
+    2. NOVA — Everyday Help
+    3. ATHENA — Advanced Reasoning
+    4. ORACLE — Deep Research
+    5. FORGE — Code and Analysis
+    6. THEMIS — University Intelligence
+    7. HERMES — Campus Navigation
+    8. VISION — Multimodal Intelligence
+    (ARGUS and MNEMOS provide underlying campus wayfinding and memory RAG)
     """
     return {
-        # 1. AEGIS — Master Orchestration & Routing
+        # 1. AEGIS — Auto (Master Orchestration & Adaptive Routing)
         "aegis": AgentDefinition(
             id="aegis",
-            name="AEGIS — Master Orchestrator",
+            name="AEGIS — Auto",
             role="Autonomous Intent Routing & Multi-Agent Synthesis",
-            description="Analyzes complex student queries, coordinates specialist agents in parallel, and synthesizes unified answers.",
+            description="Automatically chooses and coordinates the best available specialist intelligence.",
             capabilities=[
                 "intent_decomposition",
                 "parallel_agent_orchestration",
@@ -33,7 +43,7 @@ def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
             ],
             system_instructions=(
                 "You are AEGIS, the master orchestration intelligence for Lovely Professional University. "
-                "Your role is to evaluate student intent, determine required domain specialists (THEMIS, HERMES, ARGUS, ATHENA, MNEMOS, ORACLE, FORGE, VISION), "
+                "Your role is to evaluate student intent, determine required domain specialists (NOVA, ATHENA, ORACLE, FORGE, THEMIS, HERMES, VISION), "
                 "dispatch sub-tasks, validate evidence against official LPU regulations, and deliver a coherent, empathetic response."
             ),
             allowed_tools=["intent_classifier", "action_classifier", "multi_domain_orchestrator"],
@@ -56,147 +66,62 @@ def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
             retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
             permission_required="public",
             is_orchestrator=True,
+            supported_thinking_levels=["low", "medium", "high", "research"],
+            default_thinking_level="medium",
             input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
             output_schema={"type": "object", "properties": {"content": {"type": "string"}, "action_type": {"type": "string"}}, "required": ["content"]}
         ),
 
-        # 2. THEMIS — University Policy, Academic Benefits & Eligibility Assessment
-        "themis": AgentDefinition(
-            id="themis",
-            name="THEMIS — Policy & Academic Benefits",
-            role="Institutional Regulations, EDU-Revolution, Attendance & Eligibility Verification",
-            description="Evaluates academic policies, attendance condonation floors, EDU-Revolution categories (Cat 1-9), and SAC ratification.",
+        # 2. NOVA — Everyday Help
+        "nova": AgentDefinition(
+            id="nova",
+            name="NOVA — Everyday Help",
+            role="Instant Campus FAQs, Timings & Common Queries",
+            description="Fast general questions, simple explanations and common university queries.",
             capabilities=[
-                "attendance_condonation_analysis",
-                "edurev_benefit_mapping",
-                "standing_academic_committee_rules",
-                "disciplinary_and_proctorial_boundaries",
-                "evidence_checklist_verification",
+                "faq_retrieval",
+                "campus_timings_and_schedules",
+                "hostel_and_bus_queries",
+                "fee_and_registration_clarification",
+                "empathetic_student_guidance",
             ],
             system_instructions=(
-                "You are THEMIS, the university policy and academic benefit intelligence for LPU. "
-                "You rigorously evaluate eligibility against official university regulations. "
-                "CRITICAL BOUNDARIES: You cannot independently grant waivers or benefits; you only assess eligibility and specify required documents. "
-                "Distinguish revenue-generating startup projects from the separate up to 10% attendance condonation. "
-                "Emphasize the 75% end-term exam mandatory floor and warn that fraudulent documentation violates Section 12 of the Student Code of Conduct."
+                "You are NOVA, the everyday assistance specialist for LPU students. "
+                "You provide quick, clear, and highly practical guidance on campus timings, hostel rules, transit routes, "
+                "library hours, and general university procedures without academic jargon."
             ),
-            allowed_tools=["edurev_advisor", "academic_benefit_assessment", "policy_lookup"],
-            knowledge_collections=["lpu_policies", "edurev_guidelines", "attendance_regulations"],
+            allowed_tools=["faq_search", "campus_schedule_lookup", "general_guidelines"],
+            knowledge_collections=["faqs", "campus_schedules", "hostel_rules", "bus_routes"],
             primary_model=AgentModelConfig(
-                provider="gemini",
-                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
-                temperature=0.1,
-                max_output_tokens=600,
-                timeout_seconds=15.0
-            ),
-            secondary_model=AgentModelConfig(
-                provider="bazaarlink",
-                model_id=settings.BAZAARLINK_MODEL or "qwen/qwen3.7-flash:free",
-                temperature=0.1,
-                max_output_tokens=500,
-                timeout_seconds=12.0
-            ),
-            budget=AgentBudget(max_input_tokens=2000, max_output_tokens=600, max_execution_time_seconds=12.0, cost_tier="standard"),
-            retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
-            permission_required="public",
-            is_orchestrator=False,
-            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
-            output_schema={"type": "object", "properties": {"eligible_benefits": {"type": "string"}, "evidence_checklist": {"type": "array"}}, "required": ["eligible_benefits"]}
-        ),
-
-        # 3. HERMES — UMS Navigation, Services & Workflows
-        "hermes": AgentDefinition(
-            id="hermes",
-            name="HERMES — UMS Navigator & Workflows",
-            role="University Management System (UMS) Breadcrumbs & Action Execution Boundaries",
-            description="Guides students through 234 official UMS pathways, RMS grievances, appointment handoffs, and procedure checklists.",
-            capabilities=[
-                "ums_234_service_catalog_resolution",
-                "action_workflow_matching",
-                "rms_grievance_routing",
-                "procedure_checklist_generation",
-                "transaction_security_intercepts",
-            ],
-            system_instructions=(
-                "You are HERMES, the official UMS navigation and workflow specialist for Lovely Professional University. "
-                "You map student service intents directly to verified UMS breadcrumbs across 234 catalogued services. "
-                "SECURITY INTERCEPT: You never execute financial transactions, grade submissions, or direct bookings on student behalf. "
-                "Provide exact navigation paths, prerequisites, and official handoff URLs."
-            ),
-            allowed_tools=["ums_resolver", "workflow_engine", "rms_card_builder"],
-            knowledge_collections=["ums_services", "action_workflows", "procedure_guidelines"],
-            primary_model=AgentModelConfig(
-                provider="gemini",
-                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
-                temperature=0.1,
-                max_output_tokens=500,
-                timeout_seconds=10.0
-            ),
-            secondary_model=AgentModelConfig(
                 provider="groq",
                 model_id=settings.GROQ_MODEL or "llama-3.3-70b-versatile",
-                temperature=0.1,
-                max_output_tokens=500,
-                timeout_seconds=10.0
-            ),
-            budget=AgentBudget(max_input_tokens=1800, max_output_tokens=500, max_execution_time_seconds=10.0, cost_tier="free_tier"),
-            retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
-            permission_required="public",
-            is_orchestrator=False,
-            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
-            output_schema={"type": "object", "properties": {"breadcrumb": {"type": "string"}, "service_label": {"type": "string"}}, "required": ["breadcrumb"]}
-        ),
-
-        # 4. ARGUS — Faculty, Leadership, Experts & Campus Intelligence
-        "argus": AgentDefinition(
-            id="argus",
-            name="ARGUS — Faculty & Campus Intelligence",
-            role="Campus Spatial Wayfinding, Faculty Cabins, Consultation Hours & Pure-Veg Dining",
-            description="Finds verified faculty office hours (3:00 PM - 5:00 PM), leadership escalation ladders, Block 30 UniHospital, and campus amenities.",
-            capabilities=[
-                "people_directory_lookup",
-                "leadership_escalation_routing",
-                "campus_wayfinding_and_pois",
-                "pure_veg_dining_discovery",
-                "spatial_proximity_estimation",
-            ],
-            system_instructions=(
-                "You are ARGUS, the campus intelligence and faculty discovery specialist for LPU. "
-                "You know the exact physical layout of the 600-acre Phagwara campus. "
-                "TRUTH MANDATE: Never invent private faculty cabins. If an unverified room is requested, direct to Block 32 School Office during student consultation hours (3:00 PM – 5:00 PM). "
-                "Clarify Dr. Mohit Arora as Head of School (CSE) and Dr. Dalwinder Singh as Academic Coordinator. "
-                "Enforce the 100% pure vegetarian campus dining mandate."
-            ),
-            allowed_tools=["people_directory", "campus_map", "campus_food", "issue_resolver", "geo_service"],
-            knowledge_collections=["campus_places", "faculty_directory", "dining_outlets", "spatial_amenities"],
-            primary_model=AgentModelConfig(
-                provider="gemini",
-                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
-                temperature=0.1,
-                max_output_tokens=500,
-                timeout_seconds=12.0
+                temperature=0.15,
+                max_output_tokens=450,
+                timeout_seconds=8.0
             ),
             secondary_model=AgentModelConfig(
-                provider="bazaarlink",
-                model_id=settings.BAZAARLINK_MODEL or "qwen/qwen3.7-flash:free",
-                temperature=0.1,
-                max_output_tokens=500,
-                timeout_seconds=10.0
+                provider="gemini",
+                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
+                temperature=0.15,
+                max_output_tokens=450,
+                timeout_seconds=8.0
             ),
-            budget=AgentBudget(max_input_tokens=1800, max_output_tokens=500, max_execution_time_seconds=10.0, cost_tier="free_tier"),
+            budget=AgentBudget(max_input_tokens=1500, max_output_tokens=450, max_execution_time_seconds=6.0, cost_tier="free_tier"),
             retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
             permission_required="public",
             is_orchestrator=False,
+            supported_thinking_levels=["low", "medium"],
+            default_thinking_level="low",
             input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
-            output_schema={"type": "object", "properties": {"person_name": {"type": "string"}, "cabin_location": {"type": "string"}}}
+            output_schema={"type": "object", "properties": {"answer": {"type": "string"}}, "required": ["answer"]}
         ),
 
-        # 5. ATHENA — Academic Reasoning & Complex Analysis
+        # 3. ATHENA — Advanced Reasoning
         "athena": AgentDefinition(
             id="athena",
-            name="ATHENA — Academic Reasoning & Analytics",
+            name="ATHENA — Advanced Reasoning",
             role="Curriculum Evaluation, Course Equivalence & Credit Substitution",
-            description="Performs deep multi-variable reasoning on syllabus equivalence, CGPA requirements, grade upgrades, and credit transfers.",
+            description="Multi-step reasoning, academic problem-solving and complex analysis.",
             capabilities=[
                 "curriculum_and_syllabus_analysis",
                 "course_equivalence_deduction",
@@ -227,56 +152,18 @@ def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
             retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
             permission_required="public",
             is_orchestrator=False,
+            supported_thinking_levels=["medium", "high"],
+            default_thinking_level="high",
             input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
             output_schema={"type": "object", "properties": {"reasoning": {"type": "string"}, "verdict": {"type": "string"}}}
         ),
 
-        # 6. MNEMOS — Retrieval, Knowledge & Authorized Memory
-        "mnemos": AgentDefinition(
-            id="mnemos",
-            name="MNEMOS — Knowledge & Memory Retrieval",
-            role="Institutional RAG, Dense Embeddings & Contextual Document Recall",
-            description="Searches 1,035 approved university knowledge items using hybrid dense/sparse search and maintains conversation memory.",
-            capabilities=[
-                "hybrid_search_execution",
-                "dense_hf_embedding_retrieval",
-                "contextual_anaphora_resolution",
-                "knowledge_provenance_validation",
-            ],
-            system_instructions=(
-                "You are MNEMOS, the repository memory intelligence for CampusConnect. "
-                "You retrieve accurate facts from approved institutional knowledge records and syllabus documents without hallucination."
-            ),
-            allowed_tools=["hybrid_search", "hf_embeddings", "query_response_cache"],
-            knowledge_collections=["faqs", "policies", "contact_directory", "facility_services"],
-            primary_model=AgentModelConfig(
-                provider="gemini",
-                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
-                temperature=0.0,
-                max_output_tokens=400,
-                timeout_seconds=10.0
-            ),
-            secondary_model=AgentModelConfig(
-                provider="groq",
-                model_id=settings.GROQ_MODEL or "llama-3.3-70b-versatile",
-                temperature=0.0,
-                max_output_tokens=400,
-                timeout_seconds=8.0
-            ),
-            budget=AgentBudget(max_input_tokens=1500, max_output_tokens=400, max_execution_time_seconds=8.0, cost_tier="free_tier"),
-            retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
-            permission_required="public",
-            is_orchestrator=False,
-            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
-            output_schema={"type": "object", "properties": {"evidence_context": {"type": "string"}, "citations": {"type": "array"}}}
-        ),
-
-        # 7. ORACLE — Web Research, Source Verification & Evidence Synthesis
+        # 4. ORACLE — Deep Research
         "oracle": AgentDefinition(
             id="oracle",
-            name="ORACLE — Web Research & Verification",
+            name="ORACLE — Deep Research",
             role="Freshness Intelligence, Regulatory Portals (UGC, AICTE) & External Hackathons",
-            description="Performs live web research via Tavily for Smart India Hackathon (SIH), government regulations, and external announcements.",
+            description="Research, web search, source verification and evidence synthesis.",
             capabilities=[
                 "live_tavily_search",
                 "domain_reliability_scoring",
@@ -284,8 +171,8 @@ def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
                 "third_party_claim_filtering",
             ],
             system_instructions=(
-                "You are ORACLE, the controlled web research agent. You verify external freshness (SIH hackathons, UGC/AICTE notifications) "
-                "while strictly enforcing priority domains (.gov.in, .ac.in, lpu.in) and penalizing unverified blogs."
+                "You are ORACLE, the deep web research intelligence. You verify external freshness (SIH hackathons, UGC/AICTE notifications) "
+                "while strictly enforcing priority domains (.gov.in, .ac.in, lpu.in) and cross-checking facts against institutional records."
             ),
             allowed_tools=["tavily_search", "web_research_tool_cache"],
             knowledge_collections=["regulatory_notices", "sih_hackathon_guidelines"],
@@ -307,16 +194,18 @@ def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
             retry_policy=AgentRetryPolicy(max_retries=1, fallback_to_secondary=True),
             permission_required="public",
             is_orchestrator=False,
+            supported_thinking_levels=["high", "research"],
+            default_thinking_level="research",
             input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
             output_schema={"type": "object", "properties": {"findings": {"type": "string"}, "citations": {"type": "array"}}}
         ),
 
-        # 8. FORGE — Coding, Technical Projects & Architecture
+        # 5. FORGE — Code and Analysis
         "forge": AgentDefinition(
             id="forge",
-            name="FORGE — Technical Project & Code Review",
+            name="FORGE — Code and Analysis",
             role="Technical Stack Evaluation, GitHub Project Architecture & Startup Code Analysis",
-            description="Evaluates technical projects for EDU-Revolution submission: code repositories, deployment URLs, tech stacks, and internships.",
+            description="Programming, debugging, software architecture and technical projects.",
             capabilities=[
                 "tech_stack_audit",
                 "github_repository_validation",
@@ -347,16 +236,107 @@ def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
             retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
             permission_required="public",
             is_orchestrator=False,
+            supported_thinking_levels=["medium", "high"],
+            default_thinking_level="medium",
             input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
             output_schema={"type": "object", "properties": {"project_feasibility": {"type": "string"}, "tech_recommendation": {"type": "string"}}}
         ),
 
-        # 9. VISION — Document, PDF, Screenshot & Image Perception
+        # 6. THEMIS — University Intelligence
+        "themis": AgentDefinition(
+            id="themis",
+            name="THEMIS — University Intelligence",
+            role="Institutional Regulations, EDU-Revolution, Attendance & Eligibility Verification",
+            description="LPU policies, EDU-Revolution, attendance and academic benefits.",
+            capabilities=[
+                "attendance_condonation_analysis",
+                "edurev_benefit_mapping",
+                "standing_academic_committee_rules",
+                "disciplinary_and_proctorial_boundaries",
+                "evidence_checklist_verification",
+            ],
+            system_instructions=(
+                "You are THEMIS, the university policy and academic benefit intelligence for LPU. "
+                "You evaluate eligibility against official university regulations. "
+                "BOUNDARIES: You cannot independently grant waivers; you only assess eligibility and specify required documents. "
+                "Emphasize the 75% end-term exam mandatory floor and warn that fraudulent documentation violates Section 12."
+            ),
+            allowed_tools=["edurev_advisor", "academic_benefit_assessment", "policy_lookup"],
+            knowledge_collections=["lpu_policies", "edurev_guidelines", "attendance_regulations"],
+            primary_model=AgentModelConfig(
+                provider="gemini",
+                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
+                temperature=0.1,
+                max_output_tokens=600,
+                timeout_seconds=15.0
+            ),
+            secondary_model=AgentModelConfig(
+                provider="bazaarlink",
+                model_id=settings.BAZAARLINK_MODEL or "qwen/qwen3.7-flash:free",
+                temperature=0.1,
+                max_output_tokens=500,
+                timeout_seconds=12.0
+            ),
+            budget=AgentBudget(max_input_tokens=2000, max_output_tokens=600, max_execution_time_seconds=12.0, cost_tier="standard"),
+            retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
+            permission_required="public",
+            is_orchestrator=False,
+            supported_thinking_levels=["low", "medium", "high"],
+            default_thinking_level="medium",
+            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
+            output_schema={"type": "object", "properties": {"eligible_benefits": {"type": "string"}, "evidence_checklist": {"type": "array"}}, "required": ["eligible_benefits"]}
+        ),
+
+        # 7. HERMES — Campus Navigation
+        "hermes": AgentDefinition(
+            id="hermes",
+            name="HERMES — Campus Navigation",
+            role="UMS Pathways, Action Workflows, Faculty Cabins & Wayfinding",
+            description="UMS services, university workflows, appointments and campus information.",
+            capabilities=[
+                "ums_234_service_catalog_resolution",
+                "action_workflow_matching",
+                "faculty_cabin_lookup",
+                "campus_wayfinding_and_pois",
+                "pure_veg_dining_discovery",
+            ],
+            system_instructions=(
+                "You are HERMES, the official UMS navigation and campus information specialist for Lovely Professional University. "
+                "You guide students to exact UMS breadcrumbs, procedure checklists, faculty cabins (3:00 PM – 5:00 PM consultation hours), "
+                "and pure-veg dining locations across the 600-acre Phagwara campus."
+            ),
+            allowed_tools=["ums_resolver", "workflow_engine", "people_directory", "campus_map", "campus_food"],
+            knowledge_collections=["ums_services", "action_workflows", "campus_places", "faculty_directory", "dining_outlets"],
+            primary_model=AgentModelConfig(
+                provider="gemini",
+                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
+                temperature=0.1,
+                max_output_tokens=500,
+                timeout_seconds=10.0
+            ),
+            secondary_model=AgentModelConfig(
+                provider="groq",
+                model_id=settings.GROQ_MODEL or "llama-3.3-70b-versatile",
+                temperature=0.1,
+                max_output_tokens=500,
+                timeout_seconds=10.0
+            ),
+            budget=AgentBudget(max_input_tokens=1800, max_output_tokens=500, max_execution_time_seconds=10.0, cost_tier="free_tier"),
+            retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
+            permission_required="public",
+            is_orchestrator=False,
+            supported_thinking_levels=["low", "medium"],
+            default_thinking_level="medium",
+            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
+            output_schema={"type": "object", "properties": {"breadcrumb": {"type": "string"}, "service_label": {"type": "string"}}, "required": ["breadcrumb"]}
+        ),
+
+        # 8. VISION — Multimodal Intelligence
         "vision": AgentDefinition(
             id="vision",
-            name="VISION — Document & Image Perception",
+            name="VISION — Multimodal Intelligence",
             role="Multimodal Ingestion: UMS Screenshots, Gradecards, Timetables & PDF Syllabi",
-            description="Parses student-uploaded files, error screenshots, fee receipts, and marks sheets for downstream specialist processing.",
+            description="Image, PDF, screenshot and visual document understanding.",
             capabilities=[
                 "document_text_extraction",
                 "screenshot_error_parsing",
@@ -380,15 +360,101 @@ def _create_default_agent_definitions() -> Dict[str, AgentDefinition]:
                 provider="groq",
                 model_id=settings.GROQ_MODEL or "llama-3.3-70b-versatile",
                 temperature=0.1,
-                max_output_tokens=500,
+                max_output_tokens=600,
                 timeout_seconds=15.0
             ),
-            budget=AgentBudget(max_input_tokens=3000, max_output_tokens=600, max_execution_time_seconds=20.0, cost_tier="standard"),
+            budget=AgentBudget(max_input_tokens=2500, max_output_tokens=600, max_execution_time_seconds=20.0, cost_tier="standard"),
+            retry_policy=AgentRetryPolicy(max_retries=1, fallback_to_secondary=True),
+            permission_required="public",
+            is_orchestrator=False,
+            supported_thinking_levels=["medium", "high"],
+            default_thinking_level="medium",
+            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
+            output_schema={"type": "object", "properties": {"extracted_data": {"type": "string"}}}
+        ),
+
+        # 9. MNEMOS — Underlying RAG & Institutional Memory
+        "mnemos": AgentDefinition(
+            id="mnemos",
+            name="MNEMOS — Knowledge & Memory Retrieval",
+            role="Institutional RAG, Dense Embeddings & Contextual Document Recall",
+            description="Searches 1,035 approved university knowledge items using hybrid dense/sparse search.",
+            capabilities=[
+                "hybrid_search_execution",
+                "dense_hf_embedding_retrieval",
+                "contextual_anaphora_resolution",
+                "knowledge_provenance_validation",
+            ],
+            system_instructions=(
+                "You are MNEMOS, the repository memory intelligence for CampusConnect. "
+                "You retrieve accurate facts from approved institutional knowledge records and syllabus documents."
+            ),
+            allowed_tools=["hybrid_search", "hf_embeddings", "query_response_cache"],
+            knowledge_collections=["faqs", "policies", "contact_directory", "facility_services"],
+            primary_model=AgentModelConfig(
+                provider="gemini",
+                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
+                temperature=0.0,
+                max_output_tokens=400,
+                timeout_seconds=10.0
+            ),
+            secondary_model=AgentModelConfig(
+                provider="groq",
+                model_id=settings.GROQ_MODEL or "llama-3.3-70b-versatile",
+                temperature=0.0,
+                max_output_tokens=400,
+                timeout_seconds=8.0
+            ),
+            budget=AgentBudget(max_input_tokens=1500, max_output_tokens=400, max_execution_time_seconds=8.0, cost_tier="free_tier"),
             retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
             permission_required="public",
             is_orchestrator=False,
-            input_schema={"type": "object", "properties": {"document_name": {"type": "string"}}, "required": ["document_name"]},
-            output_schema={"type": "object", "properties": {"extracted_text": {"type": "string"}, "summary": {"type": "string"}}}
+            supported_thinking_levels=["low", "medium"],
+            default_thinking_level="low",
+            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
+            output_schema={"type": "object", "properties": {"evidence_context": {"type": "string"}, "citations": {"type": "array"}}}
+        ),
+
+        # 10. ARGUS — Spatial Proximity & Faculty Cabin Mapping
+        "argus": AgentDefinition(
+            id="argus",
+            name="ARGUS — Faculty & Spatial Wayfinding",
+            role="Campus Spatial Wayfinding, Faculty Cabins, Consultation Hours & Pure-Veg Dining",
+            description="Locates verified faculty office hours (3:00 PM - 5:00 PM), cabins, and campus amenities.",
+            capabilities=[
+                "people_directory_lookup",
+                "leadership_escalation_routing",
+                "campus_wayfinding_and_pois",
+                "pure_veg_dining_discovery",
+            ],
+            system_instructions=(
+                "You are ARGUS, the campus intelligence and faculty discovery specialist for LPU. "
+                "You know the exact physical layout of the 600-acre Phagwara campus."
+            ),
+            allowed_tools=["people_directory", "campus_map", "campus_food", "issue_resolver", "geo_service"],
+            knowledge_collections=["campus_places", "faculty_directory", "dining_outlets", "spatial_amenities"],
+            primary_model=AgentModelConfig(
+                provider="gemini",
+                model_id=settings.GEMINI_MODEL or "gemini-3.5-flash-lite",
+                temperature=0.1,
+                max_output_tokens=500,
+                timeout_seconds=12.0
+            ),
+            secondary_model=AgentModelConfig(
+                provider="bazaarlink",
+                model_id=settings.BAZAARLINK_MODEL or "qwen/qwen3.7-flash:free",
+                temperature=0.1,
+                max_output_tokens=500,
+                timeout_seconds=10.0
+            ),
+            budget=AgentBudget(max_input_tokens=1800, max_output_tokens=500, max_execution_time_seconds=10.0, cost_tier="free_tier"),
+            retry_policy=AgentRetryPolicy(max_retries=2, fallback_to_secondary=True),
+            permission_required="public",
+            is_orchestrator=False,
+            supported_thinking_levels=["low", "medium"],
+            default_thinking_level="medium",
+            input_schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
+            output_schema={"type": "object", "properties": {"person_name": {"type": "string"}, "cabin_location": {"type": "string"}}}
         ),
     }
 
@@ -419,19 +485,51 @@ class AgentRegistry:
 
     @classmethod
     def list_public_agents(cls) -> List[AgentPublicInfo]:
+        """
+        Returns the 8 primary named specialist intelligences in canonical order:
+        1. AEGIS — Auto
+        2. NOVA — Everyday Help
+        3. ATHENA — Advanced Reasoning
+        4. ORACLE — Deep Research
+        5. FORGE — Code and Analysis
+        6. THEMIS — University Intelligence
+        7. HERMES — Campus Navigation
+        8. VISION — Multimodal Intelligence
+        """
         cls.initialize()
-        return [
-            AgentPublicInfo(
-                id=a.id,
-                name=a.name,
-                role=a.role,
-                description=a.description,
-                capabilities=a.capabilities,
-                is_orchestrator=a.is_orchestrator,
-                permission_required=a.permission_required,
-            )
-            for a in cls._agents.values()
-        ]
+        canonical_order = ["aegis", "nova", "athena", "oracle", "forge", "themis", "hermes", "vision"]
+        badges = {
+            "aegis": "Auto",
+            "nova": "Everyday",
+            "athena": "Reasoning",
+            "oracle": "Research",
+            "forge": "Code",
+            "themis": "Policy",
+            "hermes": "Navigation",
+            "vision": "Vision",
+            "mnemos": "Memory",
+            "argus": "Spatial",
+        }
+        
+        result: List[AgentPublicInfo] = []
+        for aid in canonical_order:
+            a = cls._agents.get(aid)
+            if a:
+                result.append(
+                    AgentPublicInfo(
+                        id=a.id,
+                        name=a.name,
+                        role=a.role,
+                        description=a.description,
+                        capabilities=a.capabilities,
+                        is_orchestrator=a.is_orchestrator,
+                        permission_required=a.permission_required,
+                        supported_thinking_levels=a.supported_thinking_levels,
+                        default_thinking_level=a.default_thinking_level,
+                        badge=badges.get(a.id, "Specialist")
+                    )
+                )
+        return result
 
     @classmethod
     def get_engine_diagnostics(cls) -> List[AgentEngineInfo]:

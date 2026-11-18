@@ -9,6 +9,7 @@ from app.agents.specialists.mnemos_agent import MnemosAgent
 from app.agents.specialists.oracle_agent import OracleAgent
 from app.agents.specialists.forge_agent import ForgeAgent
 from app.agents.specialists.vision_agent import VisionAgent
+from app.agents.specialists.nova_agent import NovaAgent
 
 __all__ = [
     "AgentRegistry",
@@ -22,5 +23,6 @@ __all__ = [
     "OracleAgent",
     "ForgeAgent",
     "VisionAgent",
+    "NovaAgent",
 ]
 

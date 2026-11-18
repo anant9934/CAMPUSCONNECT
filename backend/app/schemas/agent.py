@@ -38,6 +38,11 @@ class AgentDefinition(BaseModel):
     retry_policy: AgentRetryPolicy = Field(default_factory=AgentRetryPolicy)
     permission_required: str = Field("public", description="public, authenticated_student, administrative")
     is_orchestrator: bool = Field(False)
+    supported_thinking_levels: List[str] = Field(
+        default_factory=lambda: ["low", "medium", "high", "research"],
+        description="Supported thinking levels: low, medium, high, research"
+    )
+    default_thinking_level: str = Field("medium", description="Default thinking level")
     input_schema: Dict[str, Any] = Field(default_factory=dict)
     output_schema: Dict[str, Any] = Field(default_factory=dict)
 
@@ -50,6 +55,9 @@ class AgentPublicInfo(BaseModel):
     capabilities: List[str]
     is_orchestrator: bool
     permission_required: str
+    supported_thinking_levels: List[str] = Field(default_factory=lambda: ["low", "medium", "high", "research"])
+    default_thinking_level: str = Field("medium")
+    badge: Optional[str] = None
 
 
 class AgentEngineInfo(BaseModel):

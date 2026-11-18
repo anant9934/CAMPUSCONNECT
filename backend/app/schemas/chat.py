@@ -26,8 +26,9 @@ class ChatRequest(BaseModel):
     provider: Optional[str] = Field(None, description="Target LLM provider (gemini, bazaarlink, groq, pekpik, cohere, openrouter)")
     model: Optional[str] = Field(None, description="Specific model identifier")
     reasoning_mode: Optional[str] = Field("balanced", description="Reasoning mode: quick, balanced, deepthink, research")
+    thinking_level: Optional[str] = Field("medium", description="Thinking level: low, medium, high, research")
     web_research: Optional[bool] = Field(False, description="Enable live web research")
-    agent_id: Optional[str] = Field("aegis", description="Target agent: aegis, themis, hermes, argus, athena, mnemos, oracle, forge, vision")
+    agent_id: Optional[str] = Field("aegis", description="Target agent: aegis, nova, athena, oracle, forge, themis, hermes, vision")
 
 
 class ThinkingStep(BaseModel):
