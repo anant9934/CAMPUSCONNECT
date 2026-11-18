@@ -209,7 +209,16 @@ class TestIntelligenceSystemEndToEnd:
             thinking_level="Balanced"
         )
         assert res.intelligence_id == "athena"
-        assert len(res.thinking_steps) == 7
+        assert len(res.thinking_steps) >= 2
+
+        # University-specific policy routes to THEMIS with full 7-step RAG pipeline
+        res_univ = await IntelligenceSystem.process_turn(
+            query="What is the LPU attendance condonation policy?",
+            selected_intelligence="auto",
+            thinking_level="Balanced"
+        )
+        assert res_univ.intelligence_id == "themis"
+        assert len(res_univ.thinking_steps) == 7
 
 
 @pytest.mark.asyncio
