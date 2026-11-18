@@ -4,6 +4,8 @@ export { ProcedureChecklistView } from './ProcedureChecklistView';
 export { RMSCardView } from './RMSCardView';
 export { PersonalRecordCardView } from './PersonalRecordCardView';
 export { CampusPlaceCardView } from './CampusPlaceCardView';
+export { CampusRouteCardView } from './CampusRouteCardView';
+export { CampusBlockDirectoryCardView } from './CampusBlockDirectoryCardView';
 export { FoodOutletCardView } from './FoodOutletCardView';
 export { PersonCardView } from './PersonCardView';
 export { WhoToMeetCardView } from './WhoToMeetCardView';

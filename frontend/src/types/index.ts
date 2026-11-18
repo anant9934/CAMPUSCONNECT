@@ -29,6 +29,8 @@ export interface ChatMessage {
   rms_card?: RMSCard;
   personal_record_card?: PersonalRecordCard;
   campus_place_card?: CampusPlaceCard;
+  campus_route_card?: CampusRouteCard;
+  campus_block_directory_card?: CampusBlockDirectoryCard;
   food_outlet_card?: FoodOutletCard;
   person_card?: PersonCard;
   who_to_meet_card?: WhoToMeetCard;
@@ -99,6 +101,23 @@ export interface CampusPlaceCard {
   place_id: string;
   name: string;
   building: string;
+  block_number?: string;
+  category?: string;
+  building_description?: string;
+  campus_zone?: string;
+  latitude?: number;
+  longitude?: number;
+  coordinate_source?: string;
+  verification_status?: string;
+  badge?: string;
+  accessibility_information?: string;
+  verified_facilities?: string[];
+  nearby_landmarks?: string[];
+  navigation_actions?: string[];
+  source_attribution?: string;
+  discrepancy_note?: string;
+  floors?: string[];
+  rooms?: any[];
   floor_room?: string;
   opening_hours?: string;
   accessibility?: string;
@@ -108,8 +127,54 @@ export interface CampusPlaceCard {
   building_purpose?: string;
   actual_office_service?: string;
   room_verification_status?: 'VERIFIED_ROOM' | 'UNVERIFIED_ROOM_HISTORICAL' | 'NOT_APPLICABLE_WHOLE_BLOCK';
-  coordinates_verification_status?: 'VERIFIED_MAP_PIN' | 'CAMPUS_CENTROID_ESTIMATE';
+  coordinates_verification_status?: 'VERIFIED_MAP_PIN' | 'CAMPUS_CENTROID_ESTIMATE' | 'APPROXIMATE_DIAGRAM_PIN';
   evidence_status?: EvidenceClassification;
+}
+
+export interface NavigationStep {
+  step: number;
+  instruction: string;
+  distance_meters: number;
+  landmark?: string;
+  surface?: string;
+  wheelchair_accessible?: boolean;
+}
+
+export interface CampusRouteCard {
+  origin_name: string;
+  origin_block?: string;
+  destination_name: string;
+  destination_block?: string;
+  walking_distance_meters?: number;
+  straight_line_distance_meters?: number;
+  is_pedestrian_path_verified: boolean;
+  turn_by_turn_available: boolean;
+  estimated_duration_minutes?: number;
+  turn_by_turn_steps: NavigationStep[];
+  route_coordinates: number[][];
+  accessibility_notes: string;
+  route_confidence: string;
+  data_limitations?: string;
+  walkway_surface?: string;
+  speed_basis?: string;
+}
+
+export interface CampusDirectoryItem {
+  place_id: string;
+  block_number?: string;
+  name: string;
+  category: string;
+  campus_zone: string;
+  verification_status: string;
+  accessibility?: string;
+}
+
+export interface CampusBlockDirectoryCard {
+  category: string;
+  total_places: number;
+  filter_applied: string;
+  places: CampusDirectoryItem[];
+  provenance_note: string;
 }
 
 export interface FoodOutletAlternative {

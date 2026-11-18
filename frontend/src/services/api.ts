@@ -14,6 +14,8 @@ import {
   RMSCard,
   PersonalRecordCard,
   CampusPlaceCard,
+  CampusRouteCard,
+  CampusBlockDirectoryCard,
   FoodOutletCard,
   PersonCard,
   WhoToMeetCard,
@@ -86,6 +88,8 @@ export const api = {
     rms_card?: RMSCard;
     personal_record_card?: PersonalRecordCard;
     campus_place_card?: CampusPlaceCard;
+    campus_route_card?: CampusRouteCard;
+    campus_block_directory_card?: CampusBlockDirectoryCard;
     food_outlet_card?: FoodOutletCard;
     person_card?: PersonCard;
     who_to_meet_card?: WhoToMeetCard;
@@ -691,6 +695,45 @@ export const api = {
       body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error('Failed to configure model settings');
+    return res.json();
+  },
+
+  // Campus Navigation & Wayfinding
+  async getCampusNavigationPlaces(params?: { q?: string; category?: string }): Promise<any[]> {
+    const query = new URLSearchParams();
+    if (params?.q) query.append('q', params.q);
+    if (params?.category) query.append('category', params.category);
+    const res = await fetch(`${API_BASE}/campus/navigation/places?${query.toString()}`);
+    if (!res.ok) throw new Error('Failed to load campus places');
+    return res.json();
+  },
+
+  async getCampusPedestrianRoute(origin: string, destination: string, wheelchairOnly = false): Promise<CampusRouteCard> {
+    const query = new URLSearchParams({
+      origin,
+      destination,
+      wheelchair_only: wheelchairOnly ? 'true' : 'false',
+    });
+    const res = await fetch(`${API_BASE}/campus/navigation/route?${query.toString()}`);
+    if (!res.ok) throw new Error('Failed to calculate pedestrian route');
+    return res.json();
+  },
+
+  async getCampusBlockDirectory(category = 'all'): Promise<any> {
+    const res = await fetch(`${API_BASE}/campus/navigation/directory?category=${encodeURIComponent(category)}`);
+    if (!res.ok) throw new Error('Failed to load campus directory');
+    return res.json();
+  },
+
+  async getCampusDiscrepancies(): Promise<any> {
+    const res = await fetch(`${API_BASE}/campus/navigation/discrepancies`);
+    if (!res.ok) throw new Error('Failed to load campus discrepancies');
+    return res.json();
+  },
+
+  async getScholixConfig(): Promise<any> {
+    const res = await fetch(`${API_BASE}/campus/navigation/scholix`);
+    if (!res.ok) throw new Error('Failed to load Scholix configuration');
     return res.json();
   },
 };

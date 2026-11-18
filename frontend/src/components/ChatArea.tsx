@@ -27,6 +27,8 @@ import {
   RMSCardView,
   PersonalRecordCardView,
   CampusPlaceCardView,
+  CampusRouteCardView,
+  CampusBlockDirectoryCardView,
   FoodOutletCardView,
   PersonCardView,
   WhoToMeetCardView,
@@ -41,6 +43,8 @@ interface ChatAreaProps {
   onFeedback: (messageId: string, rating: 'helpful' | 'unhelpful') => void;
   onSelectPrompt: (prompt: string) => void;
   onEditAndResend?: (messageId: string, newText: string) => void;
+  onOpenMapWithPlace?: (placeId?: string) => void;
+  onOpenMapWithRoute?: (route?: any) => void;
 }
 
 export const ChatArea: React.FC<ChatAreaProps> = ({
@@ -50,6 +54,8 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   onFeedback,
   onSelectPrompt,
   onEditAndResend,
+  onOpenMapWithPlace,
+  onOpenMapWithRoute,
 }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [feedbackGiven, setFeedbackGiven] = useState<Record<string, 'helpful' | 'unhelpful'>>({});
@@ -513,7 +519,23 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                   <PersonalRecordCardView card={msg.personal_record_card} />
                 )}
                 {msg.campus_place_card && (
-                  <CampusPlaceCardView card={msg.campus_place_card} />
+                  <CampusPlaceCardView
+                    card={msg.campus_place_card}
+                    onOpenMap={(placeId) => onOpenMapWithPlace?.(placeId)}
+                    onNavigate={(dest) => onSelectPrompt(`Take me to ${dest}`)}
+                  />
+                )}
+                {msg.campus_route_card && (
+                  <CampusRouteCardView
+                    card={msg.campus_route_card}
+                    onOpenMap={() => onOpenMapWithRoute?.(msg.campus_route_card)}
+                  />
+                )}
+                {msg.campus_block_directory_card && (
+                  <CampusBlockDirectoryCardView
+                    card={msg.campus_block_directory_card}
+                    onSelectPlace={(placeId) => onOpenMapWithPlace?.(placeId)}
+                  />
                 )}
                 {msg.food_outlet_card && <FoodOutletCardView card={msg.food_outlet_card} />}
                 {msg.person_card && <PersonCardView card={msg.person_card} />}

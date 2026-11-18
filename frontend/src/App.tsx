@@ -5,6 +5,7 @@ import {
   ChatMessage,
   ConversationSummary,
   AdminUser,
+  CampusRouteCard,
 } from './types';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
@@ -19,6 +20,7 @@ import { PrivacyModal } from './components/PrivacyModal';
 import { SearchModal } from './components/SearchModal';
 import { AdminLoginModal } from './components/admin/AdminLoginModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { CampusMapPanel } from './components/CampusMapPanel';
 
 export const App: React.FC = () => {
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
@@ -51,6 +53,17 @@ export const App: React.FC = () => {
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
   const [isAdminDashboardOpen, setIsAdminDashboardOpen] = useState(false);
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
+
+  // Campus Navigation & Map Panel State
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [mapPlaceId, setMapPlaceId] = useState<string | undefined>(undefined);
+  const [mapRoute, setMapRoute] = useState<CampusRouteCard | null>(null);
+
+  const handleOpenMap = (placeId?: string, route?: CampusRouteCard | null) => {
+    setMapPlaceId(placeId);
+    setMapRoute(route || null);
+    setIsMapOpen(true);
+  };
 
   useEffect(() => {
     initApp();
@@ -308,6 +321,7 @@ export const App: React.FC = () => {
           onOpenLibrary={() => setIsLibraryOpen(true)}
           onOpenWorkspaces={() => setIsWorkspacesOpen(true)}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenCampusMap={() => handleOpenMap()}
           onOpenAdmin={() => {
             if (adminUser) setIsAdminDashboardOpen(true);
             else setIsAdminLoginOpen(true);
@@ -332,6 +346,8 @@ export const App: React.FC = () => {
               onFeedback={handleFeedback}
               onSelectPrompt={handleSendMessage}
               onEditAndResend={handleEditAndResend}
+              onOpenMapWithPlace={(placeId) => handleOpenMap(placeId)}
+              onOpenMapWithRoute={(route) => handleOpenMap(undefined, route)}
             />
           )}
         </main>
@@ -403,6 +419,14 @@ export const App: React.FC = () => {
           setAdminUser(user);
           setIsAdminDashboardOpen(true);
         }}
+      />
+
+      <CampusMapPanel
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        initialPlaceId={mapPlaceId}
+        initialRoute={mapRoute}
+        onSelectPlaceForChat={(name) => handleSendMessage(`Tell me more about ${name}`)}
       />
 
       {isAdminDashboardOpen && adminUser && (

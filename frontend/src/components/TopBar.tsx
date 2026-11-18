@@ -34,6 +34,7 @@ interface TopBarProps {
   onOpenWorkspaces: () => void;
   onOpenSettings: () => void;
   onOpenAdmin: () => void;
+  onOpenCampusMap?: () => void;
   isAdminLoggedIn: boolean;
 }
 
@@ -92,6 +93,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenWorkspaces,
   onOpenSettings,
   onOpenAdmin,
+  onOpenCampusMap,
   isAdminLoggedIn,
 }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -222,6 +224,18 @@ export const TopBar: React.FC<TopBarProps> = ({
             </div>
           )}
         </div>
+
+        {/* Campus Map Button */}
+        {onOpenCampusMap && (
+          <button
+            onClick={onOpenCampusMap}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-sky-300 bg-sky-50/70 hover:bg-sky-100/70 text-[11px] font-semibold text-sky-800 transition-colors shadow-2xs"
+            title="Open Interactive Campus Map (Blocks 01-55 & 3D Walkthrough)"
+          >
+            <Compass className="w-3.5 h-3.5 text-sky-600" />
+            <span className="hidden sm:inline">Campus Map</span>
+          </button>
+        )}
 
         {/* Library Button */}
         <button
