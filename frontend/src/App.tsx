@@ -31,7 +31,8 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Model & Reasoning mode states
-  const [selectedModel, setSelectedModel] = useState<string>('gemini');
+  const [selectedModel, setSelectedModel] = useState<string>('aegis');
+  const [thinkingLevel, setThinkingLevel] = useState<string>('Medium');
   const [reasoningMode, setReasoningMode] = useState<string>('DeepThink');
   const [webResearchEnabled, setWebResearchEnabled] = useState<boolean>(false);
   const [studentProfile, setStudentProfile] = useState<any>(null);
@@ -161,6 +162,7 @@ export const App: React.FC = () => {
         user_landmark: selectedLandmark,
         provider: selectedModel,
         agent_id: selectedModel,
+        thinking_level: thinkingLevel.toLowerCase(),
         reasoning_mode: reasoningMode.toLowerCase(),
         web_research: webResearchEnabled,
       });
@@ -299,6 +301,8 @@ export const App: React.FC = () => {
           onRenameTitle={handleRenameCurrentTitle}
           selectedModel={selectedModel}
           onSelectModel={setSelectedModel}
+          thinkingLevel={thinkingLevel}
+          onSelectThinkingLevel={setThinkingLevel}
           reasoningMode={reasoningMode}
           onSelectReasoningMode={setReasoningMode}
           onOpenLibrary={() => setIsLibraryOpen(true)}
@@ -344,8 +348,12 @@ export const App: React.FC = () => {
             onSelectLandmark={setSelectedLandmark}
             selectedModel={selectedModel}
             onSelectModel={setSelectedModel}
+            thinkingLevel={thinkingLevel}
+            onSelectThinkingLevel={setThinkingLevel}
             reasoningMode={reasoningMode}
             onSelectReasoningMode={setReasoningMode}
+            webResearchEnabled={webResearchEnabled}
+            onToggleWebResearch={setWebResearchEnabled}
           />
         </footer>
       </div>
