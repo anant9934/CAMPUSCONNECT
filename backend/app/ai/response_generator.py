@@ -67,14 +67,35 @@ class ResponseGenerator:
         conversation_history: List[Dict[str, str]],
         proactive_context: Optional[str] = None,
         preferred_provider: Optional[str] = None,
+        thinking_level: Optional[str] = "medium",
     ) -> Dict[str, Any]:
         """
         Executes prompt through the router cascade. If preferred provider fails or lacks quota,
         seamlessly falls back to the next configured real LLM provider.
+        Modulates tokens, temperature, and depth based on thinking_level.
         """
         # Determine turn count and prune context to preserve free-tier tokens
         turn_count = len(conversation_history) // 2
         pruned_history = conversation_history[-4:] if len(conversation_history) > 4 else conversation_history
+
+        # Modulate depth and budget based on selected thinking level
+        level = (thinking_level or "medium").lower()
+        if level == "low":
+            max_tokens = 350
+            temp = 0.1
+            depth_instruction = "Deliver a fast, concise, direct response focusing on the essential facts."
+        elif level == "high":
+            max_tokens = 900
+            temp = 0.25
+            depth_instruction = "Provide a thorough, multi-step reasoned response with analytical breakdown."
+        elif level == "research":
+            max_tokens = 1200
+            temp = 0.2
+            depth_instruction = "Conduct an evidence-intensive investigation with granular institutional references, official citations, and structural cross-checks."
+        else:  # medium
+            max_tokens = 600
+            temp = 0.2
+            depth_instruction = "Deliver a balanced, clear, and well-structured response grounded strictly in institutional records."
 
         # Build token-efficient prompt payload
         history_text = "\n".join([f"{h['role'].title()}: {h['content']}" for h in pruned_history]) if pruned_history else "None (New Thread)"
@@ -100,6 +121,9 @@ CONVERSATION CONTEXT:
 STUDENT QUERY:
 {user_message}
 
+EXECUTION DEPTH & THINKING LEVEL: {level.upper()}
+{depth_instruction}
+
 TASK:
 Respond as CampusConnect conversational AI. Ground all factual statements in the evidence above. Apply proactive opportunity intelligence, attendance problem-solving, and authority routing where relevant. Structure your response naturally with clear markdown formatting."""
 
@@ -113,13 +137,13 @@ Respond as CampusConnect conversational AI. Ground all factual statements in the
         last_error = None
         for prov_name, provider in cascade:
             try:
-                logger.info(f"Invoking LLM provider '{prov_name}' ({provider.model_name}) for user query.")
+                logger.info(f"Invoking LLM provider '{prov_name}' ({provider.model_name}) at {level} depth.")
                 res = await provider.generate(
                     prompt=full_prompt,
                     system_instruction=CAMPUSCONNECT_V8_SYSTEM_PROMPT,
                     conversation_history=pruned_history,
-                    temperature=0.2,
-                    max_output_tokens=600
+                    temperature=temp,
+                    max_output_tokens=max_tokens
                 )
                 res["provider"] = prov_name
                 FreeTierBudgetManager.record_call(prov_name)

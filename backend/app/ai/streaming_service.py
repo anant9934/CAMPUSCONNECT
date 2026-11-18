@@ -37,6 +37,7 @@ class StreamingService:
         category_slug: Optional[str] = None,
         provider: Optional[str] = None,
         reasoning_mode: Optional[str] = "balanced",
+        thinking_level: Optional[str] = "medium",
     ) -> AsyncGenerator[str, None]:
         q_clean = message.strip()
 

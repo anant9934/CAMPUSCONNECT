@@ -19,6 +19,7 @@ from app.agents.specialists.mnemos_agent import MnemosAgent
 from app.agents.specialists.oracle_agent import OracleAgent
 from app.agents.specialists.forge_agent import ForgeAgent
 from app.agents.specialists.vision_agent import VisionAgent
+from app.agents.specialists.nova_agent import NovaAgent
 from app.ai.response_generator import ResponseGenerator
 from app.services.grounding_service import validate_grounded_response, generate_follow_up_suggestions
 
@@ -39,6 +40,7 @@ class AEGISOrchestrator:
     def _get_specialist_instances(cls) -> Dict[str, Any]:
         if cls._specialists_map is None:
             cls._specialists_map = {
+                "nova": NovaAgent(),
                 "themis": ThemisAgent(),
                 "hermes": HermesAgent(),
                 "argus": ArgusAgent(),
@@ -58,28 +60,35 @@ class AEGISOrchestrator:
         context: Optional[Dict[str, Any]] = None
     ) -> AgentExecutionPlan:
         """
-        Evaluates query complexity, risk, and intent to select the optimal specialist team.
+        Evaluates query complexity, risk, thinking level, and intent to select the optimal specialist team.
         """
         q_lower = query.lower()
         context = context or {}
+        thinking_level = context.get("thinking_level", "medium").lower()
 
         # 1. Explicit specialist override
         if explicit_agent_id and explicit_agent_id.lower() != "aegis":
             target = explicit_agent_id.lower().strip()
             specialists = [target]
-            # Include mnemos for context retrieval if not vision
-            if target != "vision" and "mnemos" not in specialists:
+            if target != "vision" and "mnemos" not in specialists and target != "nova":
                 specialists.append("mnemos")
+            elif target == "nova":
+                specialists = ["nova"]
+            
+            # If research level requested, also include oracle
+            if thinking_level == "research" and "oracle" not in specialists:
+                specialists.append("oracle")
+
             return AgentExecutionPlan(
                 query=query,
                 intent=f"Explicit Request for {target.upper()}",
-                complexity="moderate",
+                complexity="simple" if thinking_level == "low" else "moderate",
                 risk="low",
                 primary_agent=target,
                 specialist_agents=specialists,
                 parallel_group=specialists,
                 sequential_group=[],
-                rationale=f"User explicitly requested specialist {target.upper()}."
+                rationale=f"User explicitly requested specialist {target.upper()} with thinking level '{thinking_level}'."
             )
 
         # 2. Multimodal document upload
@@ -146,28 +155,28 @@ class AEGISOrchestrator:
                 complexity="simple",
                 risk="low",
                 primary_agent="aegis",
-                specialist_agents=["argus"],
-                parallel_group=["argus"],
+                specialist_agents=["hermes", "argus"],
+                parallel_group=["hermes", "argus"],
                 sequential_group=[],
-                rationale="Physical spatial intelligence and leadership directory match; routing to ARGUS."
+                rationale="Physical spatial intelligence and leadership directory match; routing to HERMES + ARGUS."
             )
 
-        # 7. Live web research & external hackathons (SIH)
-        if any(k in q_lower for k in ["sih", "hackathon", "ugc", "aicte", "news", "announcement", "external"]) or context.get("web_research"):
+        # 7. Live web research & external hackathons (SIH) or Research level
+        if thinking_level == "research" or any(k in q_lower for k in ["sih", "hackathon", "ugc", "aicte", "news", "announcement", "external"]) or context.get("web_research"):
             return AgentExecutionPlan(
                 query=query,
                 intent="External Web Research & Regulatory Verification",
-                complexity="moderate",
+                complexity="complex" if thinking_level == "research" else "moderate",
                 risk="low",
                 primary_agent="aegis",
                 specialist_agents=["oracle", "athena"],
                 parallel_group=["oracle", "athena"],
                 sequential_group=[],
-                rationale="External freshness and hackathon queries routed to ORACLE + ATHENA."
+                rationale="External freshness and research-level queries routed to ORACLE + ATHENA."
             )
 
         # 8. Technical projects, code review, tech internships
-        if any(k in q_lower for k in ["coding", "github", "react", "fastapi", "docker", "full-stack", "internship", "stipend"]):
+        if any(k in q_lower for k in ["coding", "code", "python", "bug", "github", "react", "fastapi", "docker", "full-stack", "internship", "stipend"]):
             return AgentExecutionPlan(
                 query=query,
                 intent="Technical Project & Internship Alignment",
@@ -180,18 +189,47 @@ class AEGISOrchestrator:
                 rationale="Software engineering and technical portfolio review routed to FORGE + THEMIS."
             )
 
-        # Default fallback: MNEMOS retrieval
+        # 9. Fast everyday questions & campus FAQs (Low thinking level or common facts)
+        if thinking_level == "low" or any(k in q_lower for k in ["timing", "when", "time", "fee", "bus", "hostel", "curfew", "gym", "library", "what is"]):
+            return AgentExecutionPlan(
+                query=query,
+                intent="Everyday Campus Guidance",
+                complexity="simple",
+                risk="low",
+                primary_agent="aegis",
+                specialist_agents=["nova", "mnemos"],
+                parallel_group=["nova", "mnemos"],
+                sequential_group=[],
+                rationale="Common university query or low thinking level; routing to NOVA for fast everyday answers."
+            )
+
+        # Default fallback: NOVA + MNEMOS retrieval
         return AgentExecutionPlan(
             query=query,
             intent="General Institutional Inquiry",
             complexity="simple",
             risk="low",
             primary_agent="aegis",
-            specialist_agents=["mnemos"],
-            parallel_group=["mnemos"],
+            specialist_agents=["nova", "mnemos"],
+            parallel_group=["nova", "mnemos"],
             sequential_group=[],
-            rationale="Standard factual inquiry routed to MNEMOS institutional retrieval."
+            rationale="Standard factual inquiry routed to NOVA everyday help + MNEMOS retrieval."
         )
+
+    @classmethod
+    def _get_specialist_status_label(cls, s_id: str) -> str:
+        labels = {
+            "themis": "Policy analysis",
+            "athena": "Reasoning & equivalence",
+            "argus": "Faculty discovery & wayfinding",
+            "oracle": "Source verification",
+            "nova": "Everyday retrieval",
+            "hermes": "UMS navigation",
+            "forge": "Code review",
+            "vision": "Document perception",
+            "mnemos": "Knowledge memory",
+        }
+        return labels.get(s_id.lower(), "Specialist processing")
 
     @classmethod
     async def orchestrate_turn(
@@ -207,6 +245,7 @@ class AEGISOrchestrator:
         explicit_agent_id: Optional[str] = "aegis",
         preferred_provider: Optional[str] = None,
         web_research: bool = False,
+        thinking_level: str = "medium",
     ) -> Dict[str, Any]:
         """
         Executes the full multi-agent orchestration lifecycle:
@@ -224,6 +263,7 @@ class AEGISOrchestrator:
             "history_turns": conversation_history,
             "web_research": web_research,
             "is_uploaded_document": "[uploaded " in query.lower(),
+            "thinking_level": thinking_level,
         }
 
         plan = cls.plan_routing(
@@ -232,11 +272,22 @@ class AEGISOrchestrator:
             context=context_data
         )
 
+        specialist_statuses = [
+            f"{s.upper()}: {cls._get_specialist_status_label(s)}"
+            for s in plan.specialist_agents
+        ]
+
         thinking_steps: List[ThinkingStep] = [
             ThinkingStep(
                 step=1,
-                title="AEGIS: Multi-Agent Team Formation",
-                description=f"Formed team: [{', '.join([s.upper() for s in plan.specialist_agents])}] (Complexity: {plan.complexity.title()}, Risk: {plan.risk.title()}). {plan.rationale}",
+                title="Understanding request & selecting intelligence",
+                description=f"Formed team: [{', '.join(specialist_statuses)}] (Complexity: {plan.complexity.title()}, Thinking: {thinking_level.title()}). {plan.rationale}",
+                status="completed"
+            ),
+            ThinkingStep(
+                step=2,
+                title="Searching university knowledge",
+                description="Querying approved institutional regulations, UMS catalog, and campus guidelines.",
                 status="completed"
             )
         ]
@@ -264,9 +315,9 @@ class AEGISOrchestrator:
 
         thinking_steps.append(
             ThinkingStep(
-                step=2,
-                title="Executing specialist intelligences",
-                description=f"Coordinated {len(all_agent_outputs)} specialist agents in parallel ({', '.join([o.agent_id.upper() for o in all_agent_outputs])}).",
+                step=3,
+                title="Consulting specialist agents",
+                description=f"Completed specialist consultations: {', '.join([f'{o.agent_id.upper()} ({cls._get_specialist_status_label(o.agent_id)})' for o in all_agent_outputs])}.",
                 status="completed"
             )
         )
@@ -288,9 +339,9 @@ class AEGISOrchestrator:
 
         thinking_steps.append(
             ThinkingStep(
-                step=3,
-                title="Verifying evidence & institutional safety",
-                description=f"Synthesized evidence from {len(all_agent_outputs)} specialists with {len(merged_cards)} action cards.",
+                step=4,
+                title="Validating sources & institutional grounding",
+                description=f"Synthesized evidence from {len(all_agent_outputs)} specialists with {len(merged_cards)} actionable cards and {len(merged_citations)} citations.",
                 status="completed"
             )
         )
@@ -298,15 +349,13 @@ class AEGISOrchestrator:
         # Step 5: Synthesize Final Coherent Response
         aggregated_evidence = "\n\n".join(findings_sections) if findings_sections else "Approved institutional guidance."
         
-        # Check if direct card response satisfies query completely (e.g. ARGUS direct person or HERMES direct nav)
-        has_direct_card = any(k in merged_cards for k in ["person_card", "food_outlet_card", "campus_place_card", "academic_benefit_card"])
-        
         try:
             llm_res = await ResponseGenerator.generate_response(
                 user_message=query,
                 evidence_context=aggregated_evidence,
                 conversation_history=conversation_history,
                 preferred_provider=preferred_provider,
+                thinking_level=thinking_level,
             )
             final_content = llm_res["content"]
             is_ai_gen = True
@@ -319,9 +368,9 @@ class AEGISOrchestrator:
 
         thinking_steps.append(
             ThinkingStep(
-                step=4,
-                title="Synthesizing unified response",
-                description="Synthesized multi-specialist response adhering strictly to university safety policies.",
+                step=5,
+                title="Preparing response",
+                description=f"Generated unified response via {explicit_agent_id.upper()} at {thinking_level.title()} thinking depth with verified citations.",
                 status="completed"
             )
         )

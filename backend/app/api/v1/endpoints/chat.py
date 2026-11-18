@@ -98,6 +98,14 @@ async def chat_endpoint(
     start_time = time.time()
     now_utc = datetime.now(timezone.utc)
 
+    # Determine normalized thinking depth
+    effective_thinking_level = req.thinking_level or (
+        "low" if req.reasoning_mode == "quick"
+        else "high" if req.reasoning_mode == "deepthink"
+        else "research" if req.reasoning_mode == "research"
+        else "medium"
+    )
+
     # 1. Validate session
     check_session_rate_limit(req.session_token)
 
@@ -606,6 +614,7 @@ async def chat_endpoint(
                 evidence_context=evidence_context + action_context,
                 conversation_history=history_turns,
                 preferred_provider=req.provider,
+                thinking_level=effective_thinking_level,
             )
             content_draft = llm_res["content"]
             is_ai_generated = True
@@ -892,6 +901,7 @@ async def chat_stream_endpoint(
             category_slug=req.category_slug,
             provider=req.provider,
             reasoning_mode=req.reasoning_mode,
+            thinking_level=req.thinking_level or "medium",
         ),
         media_type="text/event-stream",
         headers={
