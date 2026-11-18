@@ -23,13 +23,13 @@ interface ThinkingIndicatorProps {
 }
 
 const DEFAULT_REAL_STEPS: ThinkingStep[] = [
-  { step: 1, title: 'Understanding request', description: 'Classified student intent, academic complexity, and risk boundaries.', status: 'completed' },
-  { step: 2, title: 'Selecting intelligence', description: 'Coordinated specialist team dispatch (AEGIS orchestrator).', status: 'completed' },
-  { step: 3, title: 'Searching university knowledge', description: 'Querying 384-d BGE-small hybrid embeddings & official UMS pathways.', status: 'completed' },
-  { step: 4, title: 'Reviewing official documents', description: 'Verified institutional regulations, attendance limits, and fee schedules.', status: 'completed' },
-  { step: 5, title: 'Consulting specialist agents', description: 'Dispatched parallel specialist domain evaluations.', status: 'completed' },
-  { step: 6, title: 'Validating sources', description: 'Strict factual grounding verification against approved policy records.', status: 'completed' },
-  { step: 7, title: 'Preparing response', description: 'Assembled verified guidance, action cards, and citation trails.', status: 'completed' },
+  { step: 1, title: 'Understanding task', description: 'Classified student intent, academic complexity, language, and risk boundaries.', status: 'completed' },
+  { step: 2, title: 'Planning', description: 'Selected active intelligence identity, execution steps, tool permissions, and token budget.', status: 'completed' },
+  { step: 3, title: 'Retrieving knowledge', description: 'Queried institutional pgvector embeddings, hybrid BM25 index & university service catalog.', status: 'completed' },
+  { step: 4, title: 'Selecting model', description: 'Evaluated candidate providers and models across capabilities, context window & latency tier.', status: 'completed' },
+  { step: 5, title: 'Running tools', description: 'Executed direct institutional hybrid search and active specialist subagents.', status: 'completed' },
+  { step: 6, title: 'Verifying results', description: 'Enforced statutory 65% attendance floor, non-unilateral execution, and citation grounding.', status: 'completed' },
+  { step: 7, title: 'Preparing response', description: 'Synthesized verified guidance, action cards, and citation trails in persona voice.', status: 'completed' },
 ];
 
 const SPECIALIST_LABELS: Record<string, { label: string; color: string }> = {
@@ -69,19 +69,19 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
         <div className="space-y-1.5 pl-6">
           <div className="flex items-center gap-2 text-[11px] text-slate-700">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>1. Understanding request & selecting intelligence</span>
+            <span>1. Understanding task & Planning execution</span>
           </div>
           <div className="flex items-center gap-2 text-[11px] text-orange-900 font-semibold">
             <Loader2 className="w-3.5 h-3.5 text-orange-600 animate-spin shrink-0" />
-            <span>2. Searching university knowledge & reviewing official documents</span>
+            <span>2. Retrieving knowledge & Selecting model</span>
           </div>
           <div className="flex items-center gap-2 text-[11px] text-slate-400">
             <span className="w-3.5 h-3.5 rounded-full border border-slate-300 inline-block text-[9px] text-center leading-3">3</span>
-            <span>3. Consulting specialist agents & validating sources</span>
+            <span>3. Running tools & Verifying results</span>
           </div>
           <div className="flex items-center gap-2 text-[11px] text-slate-400">
             <span className="w-3.5 h-3.5 rounded-full border border-slate-300 inline-block text-[9px] text-center leading-3">4</span>
-            <span>4. Preparing verified response</span>
+            <span>4. Preparing response & action cards</span>
           </div>
         </div>
 

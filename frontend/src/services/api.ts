@@ -641,5 +641,57 @@ export const api = {
     if (!res.ok) throw new Error('Failed to load agent engine diagnostics');
     return res.json();
   },
+
+  // --- Admin Multi-LLM Agentic Intelligence Endpoints ---
+  async getAdminIntelligenceProviders(): Promise<any[]> {
+    const token = getAdminToken();
+    const res = await fetch(`${API_BASE}/admin/intelligence/providers`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error('Failed to load providers');
+    return res.json();
+  },
+
+  async getAdminIntelligenceCosts(): Promise<any> {
+    const token = getAdminToken();
+    const res = await fetch(`${API_BASE}/admin/intelligence/costs`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error('Failed to load costs and budgets');
+    return res.json();
+  },
+
+  async getAdminIntelligenceIdentities(): Promise<any[]> {
+    const token = getAdminToken();
+    const res = await fetch(`${API_BASE}/admin/intelligence/identities`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error('Failed to load intelligence identities');
+    return res.json();
+  },
+
+  async runAdminDomainEvaluation(intelligenceId: string): Promise<any> {
+    const token = getAdminToken();
+    const res = await fetch(`${API_BASE}/admin/intelligence/evaluations/run/${intelligenceId}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`Evaluation failed for ${intelligenceId}`);
+    return res.json();
+  },
+
+  async configureAdminModelSettings(payload: any): Promise<any> {
+    const token = getAdminToken();
+    const res = await fetch(`${API_BASE}/admin/intelligence/providers/configure`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Failed to configure model settings');
+    return res.json();
+  },
 };
 

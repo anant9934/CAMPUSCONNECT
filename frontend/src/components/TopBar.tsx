@@ -41,35 +41,17 @@ const SPECIALIST_META: Record<
   string,
   { name: string; subtitle: string; icon: React.ReactNode; color: string }
 > = {
-  aegis: {
-    name: 'AEGIS',
-    subtitle: 'Auto Intelligence',
+  auto: {
+    name: 'Auto',
+    subtitle: 'Dynamic Intelligence',
     icon: <Sparkles className="w-3.5 h-3.5 text-orange-600" />,
     color: 'text-orange-600',
   },
   nova: {
     name: 'NOVA',
-    subtitle: 'Everyday Help',
+    subtitle: 'Everyday Intelligence',
     icon: <Zap className="w-3.5 h-3.5 text-amber-500" />,
     color: 'text-amber-600',
-  },
-  athena: {
-    name: 'ATHENA',
-    subtitle: 'Advanced Reasoning',
-    icon: <Brain className="w-3.5 h-3.5 text-indigo-600" />,
-    color: 'text-indigo-600',
-  },
-  oracle: {
-    name: 'ORACLE',
-    subtitle: 'Deep Research',
-    icon: <Search className="w-3.5 h-3.5 text-emerald-600" />,
-    color: 'text-emerald-600',
-  },
-  forge: {
-    name: 'FORGE',
-    subtitle: 'Code and Analysis',
-    icon: <Code2 className="w-3.5 h-3.5 text-blue-600" />,
-    color: 'text-blue-600',
   },
   themis: {
     name: 'THEMIS',
@@ -77,19 +59,27 @@ const SPECIALIST_META: Record<
     icon: <Shield className="w-3.5 h-3.5 text-orange-600" />,
     color: 'text-orange-600',
   },
-  hermes: {
-    name: 'HERMES',
-    subtitle: 'Campus Navigation',
-    icon: <Compass className="w-3.5 h-3.5 text-teal-600" />,
-    color: 'text-teal-600',
+  athena: {
+    name: 'ATHENA',
+    subtitle: 'Advanced Intelligence',
+    icon: <Brain className="w-3.5 h-3.5 text-indigo-600" />,
+    color: 'text-indigo-600',
   },
-  vision: {
-    name: 'VISION',
-    subtitle: 'Multimodal Intelligence',
-    icon: <Eye className="w-3.5 h-3.5 text-violet-600" />,
-    color: 'text-violet-600',
+  oracle: {
+    name: 'ORACLE',
+    subtitle: 'Research Intelligence',
+    icon: <Search className="w-3.5 h-3.5 text-emerald-600" />,
+    color: 'text-emerald-600',
+  },
+  aegis: {
+    name: 'Auto',
+    subtitle: 'Dynamic Intelligence',
+    icon: <Sparkles className="w-3.5 h-3.5 text-orange-600" />,
+    color: 'text-orange-600',
   },
 };
+
+const SELECTOR_OPTIONS = ['auto', 'nova', 'themis', 'athena', 'oracle'];
 
 export const TopBar: React.FC<TopBarProps> = ({
   sidebarCollapsed,
@@ -200,10 +190,11 @@ export const TopBar: React.FC<TopBarProps> = ({
             <div className="absolute right-0 mt-1.5 w-72 rounded-2xl border border-warm-border bg-white shadow-xl py-1.5 z-50 text-xs space-y-0.5 animate-fadeIn">
               <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 flex items-center justify-between">
                 <span>Select Intelligence</span>
-                <span className="text-[9px] text-orange-600 font-mono">8 Available</span>
+                <span className="text-[9px] text-orange-600 font-mono">5 Identities</span>
               </div>
-              {Object.entries(SPECIALIST_META).map(([id, meta]) => {
-                const isSelected = selectedModel === id;
+              {SELECTOR_OPTIONS.map((id) => {
+                const meta = SPECIALIST_META[id];
+                const isSelected = selectedModel === id || (id === 'auto' && selectedModel === 'aegis');
                 return (
                   <button
                     key={id}

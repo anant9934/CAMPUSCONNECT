@@ -35,95 +35,65 @@ interface SpecialistOption {
   subtitle: string;
   description: string;
   icon: React.ReactNode;
-  supportedThinking: ('Low' | 'Medium' | 'High' | 'Research')[];
-  defaultThinking: 'Low' | 'Medium' | 'High' | 'Research';
+  supportedThinking: ('Low' | 'Balanced' | 'High')[];
+  defaultThinking: 'Low' | 'Balanced' | 'High';
 }
 
 const SPECIALIST_INTELLIGENCES: SpecialistOption[] = [
   {
-    id: 'aegis',
-    name: 'AEGIS',
-    badge: 'Auto',
-    subtitle: 'Auto Intelligence',
-    description: 'Automatically chooses and coordinates the best available specialist.',
+    id: 'auto',
+    name: 'Auto',
+    badge: 'Router',
+    subtitle: 'Dynamic Intelligence',
+    description: 'Autonomous orchestration; automatically selects and routes to the best intelligence.',
     icon: <Sparkles className="w-4 h-4 text-orange-600" />,
-    supportedThinking: ['Low', 'Medium', 'High', 'Research'],
-    defaultThinking: 'Medium',
+    supportedThinking: ['Low', 'Balanced', 'High'],
+    defaultThinking: 'Balanced',
   },
   {
     id: 'nova',
     name: 'NOVA',
     badge: 'Everyday',
-    subtitle: 'Everyday Help',
-    description: 'Fast general questions, simple explanations and common university queries.',
+    subtitle: 'Everyday Intelligence',
+    description: 'General student conversation, Hindi/Hinglish, FAQs, campus living, transit & hospital emergency.',
     icon: <Zap className="w-4 h-4 text-amber-500" />,
-    supportedThinking: ['Low', 'Medium'],
+    supportedThinking: ['Low', 'Balanced'],
     defaultThinking: 'Low',
+  },
+  {
+    id: 'themis',
+    name: 'THEMIS',
+    badge: 'University',
+    subtitle: 'University Intelligence',
+    description: 'LPU academic policies, attendance condonation (65% floor / 75% rule), EDU-Revolution & UMS pathways.',
+    icon: <Shield className="w-4 h-4 text-orange-600" />,
+    supportedThinking: ['Low', 'Balanced', 'High'],
+    defaultThinking: 'Balanced',
   },
   {
     id: 'athena',
     name: 'ATHENA',
-    badge: 'Reasoning',
-    subtitle: 'Advanced Reasoning',
-    description: 'Multi-step reasoning, academic problem-solving and complex analysis.',
+    badge: 'Advanced',
+    subtitle: 'Advanced Intelligence',
+    description: 'Complex technical reasoning, computer science, mathematics, programming, debugging & architecture.',
     icon: <Brain className="w-4 h-4 text-indigo-600" />,
-    supportedThinking: ['Medium', 'High'],
+    supportedThinking: ['Balanced', 'High'],
     defaultThinking: 'High',
   },
   {
     id: 'oracle',
     name: 'ORACLE',
     badge: 'Research',
-    subtitle: 'Deep Research',
-    description: 'Research, web search, source verification and evidence synthesis.',
+    subtitle: 'Research Intelligence',
+    description: 'Primary source discovery, web research, research papers, SIH hackathons & citation verification.',
     icon: <Search className="w-4 h-4 text-emerald-600" />,
-    supportedThinking: ['High', 'Research'],
-    defaultThinking: 'Research',
-  },
-  {
-    id: 'forge',
-    name: 'FORGE',
-    badge: 'Code',
-    subtitle: 'Code and Analysis',
-    description: 'Programming, debugging, software architecture and technical projects.',
-    icon: <Code2 className="w-4 h-4 text-blue-600" />,
-    supportedThinking: ['Medium', 'High'],
-    defaultThinking: 'Medium',
-  },
-  {
-    id: 'themis',
-    name: 'THEMIS',
-    badge: 'Policy',
-    subtitle: 'University Intelligence',
-    description: 'LPU policies, EDU-Revolution, attendance and academic benefits.',
-    icon: <Shield className="w-4 h-4 text-orange-600" />,
-    supportedThinking: ['Low', 'Medium', 'High'],
-    defaultThinking: 'Medium',
-  },
-  {
-    id: 'hermes',
-    name: 'HERMES',
-    badge: 'Navigation',
-    subtitle: 'Campus Navigation',
-    description: 'UMS services, university workflows, appointments and campus information.',
-    icon: <Compass className="w-4 h-4 text-teal-600" />,
-    supportedThinking: ['Low', 'Medium', 'High'],
-    defaultThinking: 'Medium',
-  },
-  {
-    id: 'vision',
-    name: 'VISION',
-    badge: 'Multimodal',
-    subtitle: 'Multimodal Intelligence',
-    description: 'Image, PDF, screenshot and visual document understanding.',
-    icon: <Eye className="w-4 h-4 text-violet-600" />,
-    supportedThinking: ['Medium', 'High'],
-    defaultThinking: 'Medium',
+    supportedThinking: ['Balanced', 'High'],
+    defaultThinking: 'High',
   },
 ];
 
 interface ThinkingOption {
-  id: 'Low' | 'Medium' | 'High' | 'Research';
+  id: 'Low' | 'Balanced' | 'High';
   label: string;
   badge: string;
   description: string;
@@ -135,29 +105,22 @@ const ALL_THINKING_LEVELS: ThinkingOption[] = [
     id: 'Low',
     label: 'Low',
     badge: 'Fast',
-    description: 'Fast and efficient concise response.',
+    description: 'Lower reasoning budget, minimal model calls, fast execution.',
     icon: <Zap className="w-3.5 h-3.5 text-amber-500" />,
   },
   {
-    id: 'Medium',
-    label: 'Medium',
-    badge: 'Balanced',
-    description: 'Balanced depth with grounded institutional facts.',
+    id: 'Balanced',
+    label: 'Balanced',
+    badge: 'Standard',
+    description: 'Moderate reasoning, relevant retrieval, selective delegation.',
     icon: <Scale className="w-3.5 h-3.5 text-blue-500" />,
   },
   {
     id: 'High',
     label: 'High',
     badge: 'Thorough',
-    description: 'Thorough multi-step reasoning & logical breakdown.',
+    description: 'Increased reasoning effort, extensive retrieval, multi-agent verification.',
     icon: <Brain className="w-3.5 h-3.5 text-purple-500" />,
-  },
-  {
-    id: 'Research',
-    label: 'Research',
-    badge: 'Deep',
-    description: 'Evidence-intensive investigation with granular cross-checks.',
-    icon: <Search className="w-3.5 h-3.5 text-emerald-500" />,
   },
 ];
 

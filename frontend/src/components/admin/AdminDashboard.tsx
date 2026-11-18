@@ -57,6 +57,7 @@ interface AdminDashboardProps {
 
 type TabType =
   | 'overview'
+  | 'ai_intelligence'
   | 'unified_repository'
   | 'ums_catalog'
   | 'action_workflows'
@@ -82,6 +83,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
   const [filterSensitiveOnly, setFilterSensitiveOnly] = useState<boolean>(false);
   const [searchRecordQuery, setSearchRecordQuery] = useState<string>('');
   const [analyticsData, setAnalyticsData] = useState<any>(null);
+
+  // Multi-LLM Intelligence Architecture State
+  const [intelProviders, setIntelProviders] = useState<any[]>([]);
+  const [intelCosts, setIntelCosts] = useState<any>(null);
+  const [intelIdentities, setIntelIdentities] = useState<any[]>([]);
+  const [evalLoading, setEvalLoading] = useState<boolean>(false);
+  const [evalResult, setEvalResult] = useState<any>(null);
+  const [evalTarget, setEvalTarget] = useState<string>('themis');
 
   // UMS Catalog & Action Workflows & Places state
   const [umsCatalog, setUmsCatalog] = useState<UMSServiceItem[]>([]);
@@ -150,6 +159,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
         umsRes,
         wfRes,
         placesRes,
+        providersRes,
+        costsRes,
+        identitiesRes,
       ] = await Promise.all([
         api.getAdminDashboard(),
         api.getAdminFaqs(),
@@ -160,6 +172,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
         api.getAdminUMSCatalog(),
         api.getAdminActionWorkflows(),
         api.getAdminCampusPlaces(),
+        api.getAdminIntelligenceProviders().catch(() => []),
+        api.getAdminIntelligenceCosts().catch(() => null),
+        api.getAdminIntelligenceIdentities().catch(() => []),
       ]);
       setMetrics(metricsRes);
       setFaqs(faqsRes);
@@ -170,6 +185,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
       setUmsCatalog(umsRes);
       setActionWorkflows(wfRes);
       setCampusPlaces(placesRes);
+      setIntelProviders(providersRes);
+      setIntelCosts(costsRes);
+      setIntelIdentities(identitiesRes);
       if (catsRes.length > 0 && !faqFormData.category_id) {
         setFaqFormData((prev) => ({ ...prev, category_id: catsRes[0].id }));
       }
@@ -190,6 +208,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
       showNotification(err.message || 'Reindex failed', 'error');
     } finally {
       setReindexing(false);
+    }
+  };
+
+  // AI Intelligence operations
+  const handleRunEvaluation = async () => {
+    setEvalLoading(true);
+    setEvalResult(null);
+    try {
+      const res = await api.runAdminDomainEvaluation(evalTarget);
+      setEvalResult(res);
+      showNotification(`Benchmark evaluation completed for ${evalTarget.toUpperCase()}!`);
+    } catch (err: any) {
+      showNotification(err.message || 'Evaluation run failed', 'error');
+    } finally {
+      setEvalLoading(false);
+    }
+  };
+
+  const handleToggleModel = async (provider: string, modelId: string, currentAvailable: boolean) => {
+    try {
+      await api.configureAdminModelSettings({
+        provider_name: provider,
+        model_id: modelId,
+        is_available: !currentAvailable,
+      });
+      showNotification(`Model ${modelId} ${!currentAvailable ? 'enabled' : 'disabled'}.`);
+      const updated = await api.getAdminIntelligenceProviders();
+      setIntelProviders(updated);
+    } catch (err: any) {
+      showNotification(err.message || 'Failed to update model', 'error');
     }
   };
 
@@ -425,6 +473,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {[
             { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
+            { id: 'ai_intelligence', label: 'AI Intelligence & Providers', icon: <Sparkles className="w-4 h-4 text-orange-400" /> },
             { id: 'unified_repository', label: 'Unified Repository (12 Types)', icon: <Database className="w-4 h-4" /> },
             { id: 'ums_catalog', label: `UMS Services (${umsCatalog.length || 234})`, icon: <Compass className="w-4 h-4" /> },
             { id: 'action_workflows', label: `Action Workflows (${actionWorkflows.length || 24})`, icon: <ListChecks className="w-4 h-4" /> },
@@ -496,6 +545,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
             <h1 className="font-bold text-slate-900 text-base capitalize">
               {activeTab === 'overview'
                 ? 'Institutional Overview'
+                : activeTab === 'ai_intelligence'
+                ? 'Multi-LLM Intelligence & Provider Management'
                 : activeTab === 'unified_repository'
                 ? 'Unified Knowledge Repository (12 Data Types)'
                 : activeTab === 'ums_catalog'
@@ -1675,6 +1726,338 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, 
                   <RefreshCw className={`w-4 h-4 ${reindexing ? 'animate-spin' : ''}`} />
                   <span>Re-index Knowledge Base Now</span>
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: AI INTELLIGENCE & MULTI-LLM PROVIDER ARCHITECTURE */}
+          {activeTab === 'ai_intelligence' && (
+            <div className="space-y-6 animate-fadeIn">
+              {/* Top Overview Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-warm-border shadow-soft-sm">
+                  <div className="text-xs font-medium text-slate-500">Configured Providers</div>
+                  <div className="text-2xl font-bold text-slate-900 mt-1">7 Providers</div>
+                  <div className="text-[11px] text-emerald-600 mt-1 flex items-center gap-1 font-mono">
+                    Gemini, Groq, OpenRouter, Mistral, Cohere, BazaarLink, PEKPIK
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-warm-border shadow-soft-sm">
+                  <div className="text-xs font-medium text-slate-500">Registered Models</div>
+                  <div className="text-2xl font-bold text-slate-900 mt-1">{intelProviders.length || 10} Models</div>
+                  <div className="text-[11px] text-slate-400 mt-1">Free-tier & Paid Cascade</div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-warm-border shadow-soft-sm">
+                  <div className="text-xs font-medium text-slate-500">Proprietary Identities</div>
+                  <div className="text-2xl font-bold text-orange-600 mt-1">4 Identities + Auto</div>
+                  <div className="text-[11px] text-slate-400 mt-1">NOVA, THEMIS, ATHENA, ORACLE</div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-warm-border shadow-soft-sm">
+                  <div className="text-xs font-medium text-slate-500">Total AI Cost (Session)</div>
+                  <div className="text-2xl font-bold text-emerald-600 mt-1">
+                    ${(intelCosts?.attribution_by_intelligence?.reduce((acc: number, c: any) => acc + (c.total_cost_usd || 0), 0) || 0).toFixed(4)}
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-1">Controlled by CostController</div>
+                </div>
+              </div>
+
+              {/* SECTION 1: Registered Models & Capabilities Table */}
+              <div className="bg-white rounded-2xl border border-warm-border overflow-hidden shadow-soft-sm">
+                <div className="p-4 border-b border-warm-border flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm">Shared Model Provider Registry</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Centrally managed pool of LLM APIs with real-time capability matching and circuit breakers.
+                    </p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      const res = await api.getAdminIntelligenceProviders();
+                      setIntelProviders(res);
+                      showNotification('Refreshed provider registry.');
+                    }}
+                    className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                    title="Refresh Provider Registry"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-warm-50 border-b border-warm-border text-slate-500 uppercase tracking-wider font-semibold">
+                      <tr>
+                        <th className="py-3 px-4">Provider</th>
+                        <th className="py-3 px-4">Model ID</th>
+                        <th className="py-3 px-4">Latency Tier</th>
+                        <th className="py-3 px-4">Capabilities</th>
+                        <th className="py-3 px-4">Pricing (1M tokens)</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-warm-border">
+                      {intelProviders.map((m: any) => (
+                        <tr key={`${m.provider_name}-${m.model_id}`} className="hover:bg-warm-50/50 transition-colors">
+                          <td className="py-3 px-4 font-semibold text-slate-800 capitalize">
+                            {m.provider_name}
+                          </td>
+                          <td className="py-3 px-4 font-mono font-medium text-slate-900">
+                            {m.model_id}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                              m.latency_tier === 'fast'
+                                ? 'bg-emerald-50 text-emerald-700'
+                                : m.latency_tier === 'deep_reasoning'
+                                ? 'bg-indigo-50 text-indigo-700'
+                                : 'bg-amber-50 text-amber-700'
+                            }`}>
+                              {m.latency_tier}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="flex flex-wrap gap-1">
+                              {m.capabilities?.streaming && <span className="px-1.5 py-0.2 bg-slate-100 rounded text-[9px] text-slate-600">stream</span>}
+                              {m.capabilities?.structured_output && <span className="px-1.5 py-0.2 bg-slate-100 rounded text-[9px] text-slate-600">json</span>}
+                              {m.capabilities?.tools && <span className="px-1.5 py-0.2 bg-blue-50 text-blue-700 rounded text-[9px]">tools</span>}
+                              {m.capabilities?.reasoning && <span className="px-1.5 py-0.2 bg-indigo-50 text-indigo-700 rounded text-[9px]">reasoning</span>}
+                              {m.capabilities?.vision && <span className="px-1.5 py-0.2 bg-violet-50 text-violet-700 rounded text-[9px]">vision</span>}
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 font-mono text-[11px] text-slate-600">
+                            ${m.pricing?.input_usd_per_1m || 0} in / ${m.pricing?.output_usd_per_1m || 0} out
+                          </td>
+                          <td className="py-3 px-4">
+                            {m.is_available ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-semibold border border-emerald-200">
+                                Active
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[10px] font-semibold border border-rose-200">
+                                Disabled / Trip
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <button
+                              onClick={() => handleToggleModel(m.provider_name, m.model_id, m.is_available)}
+                              className={`px-2.5 py-1 rounded-md text-[11px] font-medium border transition-colors ${
+                                m.is_available
+                                  ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
+                                  : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                              }`}
+                            >
+                              {m.is_available ? 'Disable' : 'Enable'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* SECTION 2: 4 Proprietary Intelligence Systems */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm">Four Proprietary Intelligence Systems</h3>
+                    <p className="text-xs text-slate-500">
+                      Independent agentic identities dynamically routed across the shared model provider pool.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {(intelIdentities.length > 0 ? intelIdentities : [
+                    { id: 'nova', name: 'NOVA', subtitle: 'Everyday Intelligence', role: 'General conversation, Hinglish & daily student living', default_thinking_level: 'Low', allowed_subagents: ['hermes', 'argus'], prompt_length_chars: 1420 },
+                    { id: 'themis', name: 'THEMIS', subtitle: 'University Intelligence', role: 'LPU academic policies, attendance 65% floor & benefits', default_thinking_level: 'Balanced', allowed_subagents: ['hermes', 'mnemos'], prompt_length_chars: 2150 },
+                    { id: 'athena', name: 'ATHENA', subtitle: 'Advanced Intelligence', role: 'Multi-step reasoning, algorithms, coding & system design', default_thinking_level: 'High', allowed_subagents: ['forge', 'mnemos'], prompt_length_chars: 2680 },
+                    { id: 'oracle', name: 'ORACLE', subtitle: 'Research Intelligence', role: 'Primary sources, research papers, SIH & evidence synthesis', default_thinking_level: 'High', allowed_subagents: ['vision', 'argus'], prompt_length_chars: 2340 },
+                  ]).map((ident: any) => (
+                    <div key={ident.id} className="p-4 rounded-2xl bg-white border border-warm-border shadow-soft-sm space-y-3 flex flex-col justify-between">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-900 text-sm">{ident.name}</span>
+                          <span className="px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 text-[10px] font-semibold border border-orange-200">
+                            {ident.default_thinking_level}
+                          </span>
+                        </div>
+                        <div className="text-xs font-semibold text-orange-800">{ident.subtitle}</div>
+                        <p className="text-xs text-slate-600 leading-relaxed">{ident.role}</p>
+                      </div>
+
+                      <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
+                        <div className="flex justify-between">
+                          <span>Allowed Subagents:</span>
+                          <span className="font-mono text-slate-800">{ident.allowed_subagents?.join(', ') || 'Direct'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Master Prompt Size:</span>
+                          <span className="font-mono text-slate-800">{ident.prompt_length_chars} chars</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* SECTION 3: Token Accounting & Cost Attribution */}
+              <div className="bg-white rounded-2xl border border-warm-border overflow-hidden shadow-soft-sm">
+                <div className="p-4 border-b border-warm-border">
+                  <h3 className="font-bold text-slate-900 text-sm">Real-Time Cost Controller & Token Attribution</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Continuous token and dollar accounting across intelligence identities.
+                  </p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-warm-50 border-b border-warm-border text-slate-500 uppercase tracking-wider font-semibold">
+                      <tr>
+                        <th className="py-3 px-4">Intelligence Identity</th>
+                        <th className="py-3 px-4">Total Calls</th>
+                        <th className="py-3 px-4">Tokens Consumed</th>
+                        <th className="py-3 px-4">Total Cost (USD)</th>
+                        <th className="py-3 px-4">Max Input Budget</th>
+                        <th className="py-3 px-4">Max Output Budget</th>
+                        <th className="py-3 px-4">Per-Turn Cost Limit</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-warm-border">
+                      {['nova', 'themis', 'athena', 'oracle', 'aegis'].map((intelKey) => {
+                        const attr = intelCosts?.attribution_by_intelligence?.find((a: any) => a.intelligence_id === intelKey) || {
+                          calls: 0,
+                          total_tokens: 0,
+                          total_cost_usd: 0,
+                        };
+                        const cfg = intelCosts?.configured_budgets?.[intelKey] || {};
+                        return (
+                          <tr key={intelKey} className="hover:bg-warm-50/50 transition-colors">
+                            <td className="py-3 px-4 font-bold text-slate-900 uppercase">
+                              {intelKey}
+                            </td>
+                            <td className="py-3 px-4 font-mono">{attr.calls || 0}</td>
+                            <td className="py-3 px-4 font-mono">{attr.total_tokens || 0}</td>
+                            <td className="py-3 px-4 font-mono font-semibold text-emerald-700">
+                              ${(attr.total_cost_usd || 0).toFixed(5)}
+                            </td>
+                            <td className="py-3 px-4 font-mono text-slate-500">{cfg.max_input_tokens || 4000} toks</td>
+                            <td className="py-3 px-4 font-mono text-slate-500">{cfg.max_output_tokens || 1000} toks</td>
+                            <td className="py-3 px-4 font-mono text-slate-500">${cfg.max_request_cost_usd || 0.02}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* SECTION 4: Benchmark Evaluation Suite Runner */}
+              <div className="bg-white rounded-2xl border border-warm-border p-5 shadow-soft-sm space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-warm-border pb-3">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm">Automated Benchmark Evaluation Suite</h3>
+                    <p className="text-xs text-slate-500">
+                      Run automated domain regression benchmarks measuring correctness, statutory compliance (65% floor), latency, and cost.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={evalTarget}
+                      onChange={(e) => setEvalTarget(e.target.value)}
+                      className="px-3 py-1.5 rounded-xl border border-warm-border text-xs font-semibold text-slate-800 bg-white focus:outline-none"
+                    >
+                      <option value="themis">THEMIS (Policy & Attendance Suite)</option>
+                      <option value="athena">ATHENA (Reasoning & Code Suite)</option>
+                      <option value="nova">NOVA (Everyday Living Suite)</option>
+                      <option value="oracle">ORACLE (Research & Citation Suite)</option>
+                    </select>
+                    <button
+                      onClick={handleRunEvaluation}
+                      disabled={evalLoading}
+                      className="px-4 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                    >
+                      {evalLoading ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>Running Benchmark...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Run Benchmark</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Evaluation Results Display */}
+                {evalResult && (
+                  <div className="space-y-4 animate-fadeIn">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Passed / Total</div>
+                        <div className="text-lg font-bold text-slate-900">
+                          {evalResult.passed_cases} / {evalResult.total_cases} ({evalResult.pass_rate_percent}%)
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Avg Latency</div>
+                        <div className="text-lg font-bold text-slate-900">{evalResult.average_latency_ms} ms</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Avg Grounding Score</div>
+                        <div className="text-lg font-bold text-emerald-600">
+                          {(evalResult.average_grounding_score * 100).toFixed(0)}%
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Total Eval Cost</div>
+                        <div className="text-lg font-bold text-slate-900 font-mono">
+                          ${(evalResult.total_cost_usd || 0).toFixed(5)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="text-xs font-semibold text-slate-800">Test Case Breakdown:</div>
+                      <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                        {evalResult.results?.map((tc: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className={`p-2.5 rounded-xl border text-xs flex items-center justify-between gap-3 ${
+                              tc.passed
+                                ? 'bg-emerald-50/60 border-emerald-200 text-emerald-950'
+                                : 'bg-rose-50/60 border-rose-200 text-rose-950'
+                            }`}
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="font-semibold truncate">{tc.name || `Test Case #${idx + 1}`}</div>
+                              <div className="text-[11px] text-slate-500 truncate mt-0.5 font-mono">"{tc.query}"</div>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-[10px] font-mono text-slate-500">{tc.latency_ms}ms</span>
+                              <span
+                                className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                  tc.passed
+                                    ? 'bg-emerald-600 text-white'
+                                    : 'bg-rose-600 text-white'
+                                }`}
+                              >
+                                {tc.passed ? 'PASSED' : 'FAILED'}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
