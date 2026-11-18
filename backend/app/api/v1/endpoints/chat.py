@@ -322,6 +322,8 @@ async def chat_endpoint(
             rms_card=cards.get("rms_card"),
             personal_record_card=cards.get("personal_record_card"),
             campus_place_card=cards.get("campus_place_card") or cards.get("place_card"),
+            campus_route_card=cards.get("campus_route_card") or cards.get("route_card"),
+            campus_block_directory_card=cards.get("campus_block_directory_card") or cards.get("directory_card"),
             food_outlet_card=cards.get("food_outlet_card") or cards.get("food_card"),
             person_card=cards.get("person_card"),
             who_to_meet_card=cards.get("who_to_meet_card"),
@@ -374,6 +376,8 @@ async def chat_endpoint(
     person_card = multi_domain_res["person_card"]
     who_to_meet_card = multi_domain_res["who_to_meet_card"]
     academic_benefit_card = multi_domain_res["academic_benefit_card"]
+    route_card = multi_domain_res.get("route_card")
+    directory_card = multi_domain_res.get("directory_card")
     if multi_domain_res["place_card"]:
         place_card = multi_domain_res["place_card"]
     if multi_domain_res["nav_card"]:
@@ -885,6 +889,8 @@ async def chat_endpoint(
         rms_card=rms_card,
         personal_record_card=personal_card,
         campus_place_card=place_card,
+        campus_route_card=route_card,
+        campus_block_directory_card=directory_card,
         food_outlet_card=food_card,
         person_card=person_card,
         who_to_meet_card=who_to_meet_card,

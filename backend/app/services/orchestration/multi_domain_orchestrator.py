@@ -64,6 +64,8 @@ class MultiDomainOrchestrator:
 
         place_card = CampusMapService.build_place_card(matched_place) if matched_place else None
         nav_card = UMSServiceResolver.build_navigation_card(matched_svc) if matched_svc else None
+        route_card = CampusMapService.resolve_campus_navigation(query=query, user_lat=user_lat, user_lon=user_lon, landmark=landmark)
+        directory_card = CampusMapService.resolve_category_directory(query=query)
 
         # Count active domain hits
         active_domains: List[str] = []
@@ -77,6 +79,10 @@ class MultiDomainOrchestrator:
             active_domains.append("edurev")
         if place_card:
             active_domains.append("place")
+        if route_card:
+            active_domains.append("route")
+        if directory_card:
+            active_domains.append("directory")
         if nav_card or matched_wf:
             active_domains.append("ums_service")
 
@@ -268,6 +274,8 @@ class MultiDomainOrchestrator:
             "who_to_meet_card": who_to_meet_card,
             "academic_benefit_card": academic_benefit_card,
             "place_card": place_card,
+            "route_card": route_card,
+            "directory_card": directory_card,
             "nav_card": nav_card,
             "matched_wf": matched_wf,
             "content": multi_domain_content

@@ -142,17 +142,38 @@ class CampusPlaceCard(BaseModel):
     place_id: str
     name: str
     building: str
+    block_number: Optional[str] = None
+    category: str = "Academic"
+    building_description: Optional[str] = None
+    campus_zone: str = "Central Academic Zone"
     floor_room: Optional[str] = None
     opening_hours: Optional[str] = None
     accessibility: Optional[str] = None
-    description: str
+    accessibility_information: Optional[str] = None
+    description: str = ""
     services: List[str] = Field(default_factory=list)
+    verified_facilities: List[str] = Field(default_factory=list)
+    nearby_landmarks: List[str] = Field(default_factory=list)
+    navigation_actions: List[str] = Field(default_factory=lambda: [
+        "Navigate Here",
+        "View on Campus Map",
+        "3D Walkthrough"
+    ])
     map_url: str = "https://www.lpu.in/about_lpu/campus-tour.php"
     building_purpose: Optional[str] = None
     actual_office_service: Optional[str] = None
-    room_verification_status: str = "VERIFIED_ROOM"  # VERIFIED_ROOM, UNVERIFIED_ROOM_HISTORICAL, NOT_APPLICABLE_WHOLE_BLOCK
-    coordinates_verification_status: str = "VERIFIED_MAP_PIN"  # VERIFIED_MAP_PIN, CAMPUS_CENTROID_ESTIMATE
+    room_verification_status: str = "VERIFIED_ROOM"
+    coordinates_verification_status: str = "VERIFIED_MAP_PIN"
+    coordinate_source: str = "CAMPUS_CENTROID_ESTIMATE"
     evidence_status: str = "OFFICIAL_CURRENT_VERIFIED"
+    verification_status: str = "RECONCILED_UNIVERSITY_RECORD"
+    badge: str = "RECONCILED_UNIVERSITY_RECORD"
+    source_attribution: str = "Official LPU Campus Directory & 01-55 Site Plan"
+    discrepancy_note: Optional[str] = None
+    floors: List[str] = Field(default_factory=list)
+    rooms: List[Dict[str, Any]] = Field(default_factory=list)
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class FoodOutletAlternative(BaseModel):

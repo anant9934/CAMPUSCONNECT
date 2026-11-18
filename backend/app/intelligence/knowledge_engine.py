@@ -107,8 +107,42 @@ class KnowledgeEngine:
             "who_to_meet_card": multi_domain_res.get("who_to_meet_card"),
             "academic_benefit_card": multi_domain_res.get("academic_benefit_card"),
             "place_card": multi_domain_res.get("place_card"),
+            "route_card": multi_domain_res.get("route_card"),
+            "directory_card": multi_domain_res.get("directory_card"),
             "nav_card": multi_domain_res.get("nav_card"),
         }
+
+        # If campus navigation route resolved, append verified pedestrian path details
+        rc = cards.get("route_card")
+        if rc:
+            step_lines = "\n".join([f"  {s.step}. {s.instruction} ({s.distance_meters}m)" for s in rc.turn_by_turn_steps])
+            evidence_text += (
+                f"\n\n[CAMPUS PEDESTRIAN ROUTE]:\n"
+                f"- Origin: {rc.origin_name}\n"
+                f"- Destination: {rc.destination_name}\n"
+                f"- Walking Distance: {rc.walking_distance_meters} meters (Walking duration: ~{rc.estimated_duration_minutes} min at 1.2 m/s)\n"
+                f"- Straight-Line Distance: {rc.straight_line_distance_meters} meters\n"
+                f"- Verified Pedestrian Walkway: {rc.is_pedestrian_path_verified}\n"
+                f"- Turn-by-Turn Navigation Available: {rc.turn_by_turn_available}\n"
+                f"- Accessibility: {rc.accessibility_notes}\n"
+                f"- Steps:\n{step_lines}"
+            )
+
+        # If campus place card resolved, append verified block info
+        pc = cards.get("place_card")
+        if pc:
+            evidence_text += (
+                f"\n\n[CAMPUS PLACE VERIFIED INFO]:\n"
+                f"- Name: {pc.name}\n"
+                f"- Block: {pc.block_number or pc.building}\n"
+                f"- Category: {pc.category}\n"
+                f"- Zone: {pc.campus_zone}\n"
+                f"- Verification Status: {pc.verification_status}\n"
+                f"- Accessibility: {pc.accessibility_information}\n"
+                f"- Facilities: {', '.join(pc.verified_facilities)}\n"
+                f"- Description: {pc.building_description or pc.description}\n"
+                f"- Discrepancy Note: {pc.discrepancy_note or 'None'}"
+            )
 
         # If weather query, include live weather info
         if any(w in query.lower() for w in ["weather", "temperature", "rain", "forecast"]):

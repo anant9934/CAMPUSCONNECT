@@ -13,6 +13,10 @@ from app.schemas.ums import (
     AcademicBenefitAssessmentCard,
     EvidenceCard,
 )
+from app.schemas.campus_navigation import (
+    CampusRouteCard,
+    CampusBlockDirectoryCard,
+)
 
 
 class ChatRequest(BaseModel):
@@ -62,6 +66,8 @@ class ChatResponse(BaseModel):
     rms_card: Optional[RMSCard] = None
     personal_record_card: Optional[PersonalRecordCard] = None
     campus_place_card: Optional[CampusPlaceCard] = None
+    campus_route_card: Optional[CampusRouteCard] = None
+    campus_block_directory_card: Optional[CampusBlockDirectoryCard] = None
     food_outlet_card: Optional[FoodOutletCard] = None
     person_card: Optional[PersonCard] = None
     who_to_meet_card: Optional[WhoToMeetCard] = None
