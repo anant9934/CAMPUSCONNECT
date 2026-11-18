@@ -3,7 +3,7 @@ JobNormalizer: Normalizes salaries, locations, skill aliases, and education titl
 """
 
 import re
-from typing import Dict, Any, Tuple, Optional
+from typing import Dict, Any, Tuple, Optional, List
 
 class JobNormalizer:
     def __init__(self):

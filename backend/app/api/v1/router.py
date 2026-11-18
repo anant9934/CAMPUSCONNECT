@@ -17,6 +17,7 @@ from app.api.v1.endpoints import (
     campus_features,
     agents,
     admin_intelligence,
+    opportunities,
 )
 
 api_router = APIRouter()
@@ -26,6 +27,7 @@ api_router.include_router(chat.router, tags=["chat"])
 api_router.include_router(agents.router, prefix="/agents", tags=["multi-agent"])
 api_router.include_router(portal.router, tags=["student-portal"])
 api_router.include_router(campus_features.router, prefix="/campus", tags=["campus-features"])
+api_router.include_router(opportunities.router, tags=["opportunities"])
 api_router.include_router(categories.router, tags=["categories"])
 api_router.include_router(sessions.router, tags=["sessions"])
 api_router.include_router(conversations.router, tags=["conversations"])
