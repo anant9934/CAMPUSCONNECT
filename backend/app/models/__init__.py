@@ -17,6 +17,23 @@ from app.models.portal import (
     SavedLocation,
     LLMUsageLog,
 )
+from app.models.multi_llm import (
+    Provider,
+    ProviderModel,
+    ModelCapability,
+    IntelligenceProfile,
+    IntelligencePromptVersion,
+    IntelligenceRoutingPolicy,
+    RoutingDecision,
+    AgentExecution,
+    ToolExecution,
+    ModelUsage,
+    ModelCost,
+    UserAIQuota,
+    ProviderHealth,
+    EvaluationRun,
+    EvaluationResult,
+)
 
 __all__ = [
     "Base",
@@ -41,5 +58,20 @@ __all__ = [
     "CampusEvent",
     "SavedLocation",
     "LLMUsageLog",
+    "Provider",
+    "ProviderModel",
+    "ModelCapability",
+    "IntelligenceProfile",
+    "IntelligencePromptVersion",
+    "IntelligenceRoutingPolicy",
+    "RoutingDecision",
+    "AgentExecution",
+    "ToolExecution",
+    "ModelUsage",
+    "ModelCost",
+    "UserAIQuota",
+    "ProviderHealth",
+    "EvaluationRun",
+    "EvaluationResult",
 ]
 
