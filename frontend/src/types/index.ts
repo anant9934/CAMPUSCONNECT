@@ -286,17 +286,26 @@ export interface AgentPublicInfo {
   capabilities: string[];
   is_orchestrator: boolean;
   permission_required: string;
+  supported_thinking_levels?: string[];
+  default_thinking_level?: string;
+  badge?: string;
 }
 
 export interface AgentEngineInfo {
-  agent_id: string;
-  agent_name: string;
+  id?: string;
+  name?: string;
+  agent_id?: string;
+  agent_name?: string;
   actual_provider: string;
   actual_model_id: string;
-  availability: boolean;
+  availability?: boolean;
   last_health_check: string;
   execution_mode: string;
   cost_tier: string;
+  secondary_provider?: string;
+  secondary_model_id?: string;
+  supported_thinking_levels?: string[];
+  default_thinking_level?: string;
 }
 
 export interface ConversationSummary {

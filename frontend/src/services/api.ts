@@ -68,6 +68,7 @@ export const api = {
     provider?: string;
     model?: string;
     reasoning_mode?: string;
+    thinking_level?: string;
     web_research?: boolean;
     agent_id?: string;
   }): Promise<{
