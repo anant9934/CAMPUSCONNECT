@@ -1,0 +1,57 @@
+source_a_id,source_a_file,source_a_question,source_b_id,source_b_file,source_b_question,similarity,merge_strategy,admin_review_required
+NONE,NONE,NONE,FEE-001,faqs.csv,How can I pay my semester fee?,0.507,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,FEE-002,faqs.csv,Where can I download my fee receipt?,0.494,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,FEE-003,faqs.csv,Whom should I contact about a fee issue?,0.5,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,FEE-004,faqs.csv,What is the semester fee for B.Tech. CSE (AI and ML)?,0.496,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,FEE-005,faqs.csv,What are the scholarship slabs for B.Tech. CSE (AI and ML)?,0.5,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,FEE-006,faqs.csv,When is the deadline to pay the next semester fee?,0.476,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,FEE-007,faqs.csv,What is the fee refund policy if I withdraw my admission?,0.506,INGEST_AS_NEW_RECORD,NO
+LPU-017,80_faqs.csv,How do students book LPU hostel accommodation?,HOS-001,faqs.csv,How can I apply for hostel accommodation?,0.682,COEXIST_WITH_SCOPING,NO
+NONE,NONE,NONE,HOS-002,faqs.csv,What is the room-allocation process?,0.565,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,HOS-003,faqs.csv,Where can I report maintenance?,0.532,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,HOS-004,faqs.csv,What are the hostel room charges and categories at LPU?,0.511,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,HOS-005,faqs.csv,What are the mess and laundry charges for hostel students?,0.523,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,HOS-006,faqs.csv,What electrical appliances are allowed in hostel rooms and when must rooms be vacated?,0.507,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,TRN-001,faqs.csv,Where can I find bus routes?,0.585,INGEST_AS_NEW_RECORD,NO
+LPU-054,80_faqs.csv,How do I apply for a fee refund at LPU?,TRN-002,faqs.csv,How do I apply for a transport pass?,0.712,COEXIST_WITH_SCOPING,NO
+NONE,NONE,NONE,TRN-003,faqs.csv,Whom should I contact about timings?,0.536,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,TRN-004,faqs.csv,What are the campus vehicle parking charges and rules for students?,0.448,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,TRN-005,faqs.csv,Is there an airport cab service to LPU for freshmen reporting?,0.455,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,EXM-001,faqs.csv,Where can I check the date sheet?,0.522,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,EXM-002,faqs.csv,How do I download my admit card?,0.464,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,EXM-003,faqs.csv,Where are examination rules published?,0.545,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,EXM-004,faqs.csv,What are the important dates for LPUNEST 2027 entrance examination?,0.483,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,EXM-005,faqs.csv,What are the tentative LPUNEST scholarship cut-off marks?,0.442,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,REG-001,faqs.csv,How do I register for courses?,0.549,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,REG-002,faqs.csv,What is the add/drop process?,0.512,INGEST_AS_NEW_RECORD,NO
+LPU-009,80_faqs.csv,Where can I find the LPU academic calendar?,REG-003,faqs.csv,Where is the academic calendar?,0.806,COEXIST_WITH_SCOPING,NO
+NONE,NONE,NONE,REG-004,faqs.csv,What are the eligibility criteria for admission to B.Tech. CSE (AI and ML)?,0.487,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,REG-005,faqs.csv,What documents are required during admission and campus reporting?,0.5,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,LIB-001,faqs.csv,What are the library timings?,0.548,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,LIB-002,faqs.csv,How can I renew a book?,0.558,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,LIB-003,faqs.csv,How do I access digital resources?,0.449,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,LIB-004,faqs.csv,What additional academic services does the LPU Library System offer?,0.612,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,ITS-001,faqs.csv,How do I reset my portal password?,0.479,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,ITS-002,faqs.csv,How can I report Wi-Fi issues?,0.56,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,ITS-003,faqs.csv,Where can I request ID-card help?,0.6,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,ITS-004,faqs.csv,How do I report faulty laboratory computers or equipment?,0.441,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,ITS-005,faqs.csv,What modules are available in LPU's University Management System (UMS) and LMS?,0.562,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,CSE-001,faqs.csv,Who are the Deans and Heads of Department (HOD) of the School of Computer Science and Engineering at LPU?,0.398,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,CSE-002,faqs.csv,Who are the senior Professors and AI/ML faculty in LPU's School of Computer Science and Engineering?,0.425,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,CSE-003,faqs.csv,"Which industry Visiting Experts and Professors of Practice teach AI, ML, and Computing at LPU?",0.446,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,CSE-004,faqs.csv,What AI and Machine Learning B.Tech. programmes and industry tie-ups are offered in CSE at LPU?,0.463,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,CSE-005,faqs.csv,What subjects are taught in the B.Tech. CSE (AI and ML) and Generative AI curriculum?,0.394,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,CSE-006,faqs.csv,What are the placement packages and top recruiters for B.Tech. CSE (AI and ML) at LPU?,0.426,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,CSE-007,faqs.csv,What are the research metrics and rankings of LPU's School of Computer Science and Engineering?,0.443,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-001,faqs.csv,Where is the School of Computer Science and Engineering (CSE) located on campus?,0.452,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-002,faqs.csv,Where is the Division of Admissions and fee payment counter on campus?,0.455,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-003,faqs.csv,"Where is the Division of Student Relationship (DSR), Placement Cell, and Alumni office?",0.438,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-004,faqs.csv,Where are Shanti Devi Mittal Auditorium and Baldev Raj Mittal Unipolis located?,0.4,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-005,faqs.csv,Where is the Central Library located on the LPU campus?,0.535,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-006,faqs.csv,Where is the Ph.D. Research Cell and Central Instrumentation Facility located?,0.525,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-007,faqs.csv,Where is the Uni Health Centre (Campus Hospital) and what are the emergency numbers?,0.39,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-008,faqs.csv,"Which campus gate should I use for pedestrian entry, 4-wheelers, or university buses?",0.369,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-009,faqs.csv,"Where are Uni Mall, Mittal School of Business, and the Division of Student Welfare (DSW) located?",0.405,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-010,faqs.csv,"Where are the Indoor Sports Stadium, swimming pool, and outdoor playgrounds located?",0.449,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-011,faqs.csv,How are the Boys' Hostels (BH) and Girls' Hostels (GH) arranged on campus and what are the entry timings?,0.361,INGEST_AS_NEW_RECORD,NO
+NONE,NONE,NONE,NAV-012,faqs.csv,"Where can I find banks, ATMs, postal/courier services, and campus cycles at LPU?",0.479,INGEST_AS_NEW_RECORD,NO

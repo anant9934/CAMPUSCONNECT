@@ -1,0 +1,8 @@
+source_id,source_title,source_type,source_url,verification_date,verification_method,status,records_count,notes
+SRC-80-FAQS,CampusConnect LPU Knowledge Base (80 FAQs),csv,https://www.lpu.in,2026-11-18,Official web page scraping & institutional review,verified,80,Primary institutional FAQ baseline
+SRC-FAQS-DETAIL,"LPU Program-Specific Fees, Transport & Hostel Schedules",csv,https://www.lpu.in/academics/calendar-regular.php,2026-11-18,Fee schedule & prospectus audit,verified,56,"B.Tech CSE AI/ML fees, hostel slabs, bus routes"
+DOC-EDREV-2026,EDU Revolution Guide — Division of Academic Affairs,pdf,https://www.lpu.in/academics/edu-revolution.php,2026-11-18,Official 45-page academic policy document,verified,12,"Revenue generation, DRDO/ISRO projects, 10% attendance benefit"
+DOSSIER-CSE-2026,LPU CSE AI & ML Faculty Programme Dossier & Directory,html_csv,https://www.lpu.in/faculty,2026-11-18,Faculty directory & degree curriculum cross-verification,verified,101,"77+ catalogued faculty with emp_codes, curriculum progressions"
+SRC-UMS-CATALOG,Authenticated UMS Student Portal Menu Catalog,screenshot_csv,https://ums.lpu.in/lpuums/,2026-11-18,Authenticated screenshot menu inspection,verified,234,Complete 234 menu items mapped to navigation paths
+SRC-UMS-WORKFLOWS,UMS Navigation & Booking Action Workflows,csv,https://ums.lpu.in/lpuums/,2026-11-18,Operational procedure verification,verified,24,"Actionable doctor, hostel leave, reappears, fee workflows"
+SRC-DOMAIN-EXPANSION,Operational Guidelines across Categories A-H,official_notice,https://www.lpu.in,2026-11-18,University handbook and portal rules,verified,10,"Uni-Hospital, RMS, Wi-Fi, Dream company policy"
