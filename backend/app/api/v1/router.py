@@ -16,6 +16,7 @@ from app.api.v1.endpoints import (
     portal,
     campus_features,
     agents,
+    admin_intelligence,
 )
 
 api_router = APIRouter()
@@ -33,6 +34,7 @@ api_router.include_router(ums_routes.router, tags=["ums-actions-campus"])
 
 # Admin Endpoints
 api_router.include_router(admin_auth.router, tags=["admin-auth"])
+api_router.include_router(admin_intelligence.router, prefix="/admin/intelligence", tags=["admin-intelligence"])
 api_router.include_router(admin_dashboard.router, tags=["admin-dashboard"])
 api_router.include_router(admin_faqs.router, tags=["admin-faqs"])
 api_router.include_router(admin_documents.router, tags=["admin-documents"])
