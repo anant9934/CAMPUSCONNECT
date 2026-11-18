@@ -14,16 +14,152 @@ import {
   ChevronUp,
   Zap,
   Scale,
-  Lightbulb,
+  Brain,
   Search,
   Globe,
   MapPin,
   Check,
   AudioWaveform,
-  Leaf,
-  Layers,
+  Shield,
+  Compass,
+  Code2,
+  Eye,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { api } from '../services/api';
+
+interface SpecialistOption {
+  id: string;
+  name: string;
+  badge: string;
+  subtitle: string;
+  description: string;
+  icon: React.ReactNode;
+  supportedThinking: ('Low' | 'Medium' | 'High' | 'Research')[];
+  defaultThinking: 'Low' | 'Medium' | 'High' | 'Research';
+}
+
+const SPECIALIST_INTELLIGENCES: SpecialistOption[] = [
+  {
+    id: 'aegis',
+    name: 'AEGIS',
+    badge: 'Auto',
+    subtitle: 'Auto Intelligence',
+    description: 'Automatically chooses and coordinates the best available specialist.',
+    icon: <Sparkles className="w-4 h-4 text-orange-600" />,
+    supportedThinking: ['Low', 'Medium', 'High', 'Research'],
+    defaultThinking: 'Medium',
+  },
+  {
+    id: 'nova',
+    name: 'NOVA',
+    badge: 'Everyday',
+    subtitle: 'Everyday Help',
+    description: 'Fast general questions, simple explanations and common university queries.',
+    icon: <Zap className="w-4 h-4 text-amber-500" />,
+    supportedThinking: ['Low', 'Medium'],
+    defaultThinking: 'Low',
+  },
+  {
+    id: 'athena',
+    name: 'ATHENA',
+    badge: 'Reasoning',
+    subtitle: 'Advanced Reasoning',
+    description: 'Multi-step reasoning, academic problem-solving and complex analysis.',
+    icon: <Brain className="w-4 h-4 text-indigo-600" />,
+    supportedThinking: ['Medium', 'High'],
+    defaultThinking: 'High',
+  },
+  {
+    id: 'oracle',
+    name: 'ORACLE',
+    badge: 'Research',
+    subtitle: 'Deep Research',
+    description: 'Research, web search, source verification and evidence synthesis.',
+    icon: <Search className="w-4 h-4 text-emerald-600" />,
+    supportedThinking: ['High', 'Research'],
+    defaultThinking: 'Research',
+  },
+  {
+    id: 'forge',
+    name: 'FORGE',
+    badge: 'Code',
+    subtitle: 'Code and Analysis',
+    description: 'Programming, debugging, software architecture and technical projects.',
+    icon: <Code2 className="w-4 h-4 text-blue-600" />,
+    supportedThinking: ['Medium', 'High'],
+    defaultThinking: 'Medium',
+  },
+  {
+    id: 'themis',
+    name: 'THEMIS',
+    badge: 'Policy',
+    subtitle: 'University Intelligence',
+    description: 'LPU policies, EDU-Revolution, attendance and academic benefits.',
+    icon: <Shield className="w-4 h-4 text-orange-600" />,
+    supportedThinking: ['Low', 'Medium', 'High'],
+    defaultThinking: 'Medium',
+  },
+  {
+    id: 'hermes',
+    name: 'HERMES',
+    badge: 'Navigation',
+    subtitle: 'Campus Navigation',
+    description: 'UMS services, university workflows, appointments and campus information.',
+    icon: <Compass className="w-4 h-4 text-teal-600" />,
+    supportedThinking: ['Low', 'Medium', 'High'],
+    defaultThinking: 'Medium',
+  },
+  {
+    id: 'vision',
+    name: 'VISION',
+    badge: 'Multimodal',
+    subtitle: 'Multimodal Intelligence',
+    description: 'Image, PDF, screenshot and visual document understanding.',
+    icon: <Eye className="w-4 h-4 text-violet-600" />,
+    supportedThinking: ['Medium', 'High'],
+    defaultThinking: 'Medium',
+  },
+];
+
+interface ThinkingOption {
+  id: 'Low' | 'Medium' | 'High' | 'Research';
+  label: string;
+  badge: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
+const ALL_THINKING_LEVELS: ThinkingOption[] = [
+  {
+    id: 'Low',
+    label: 'Low',
+    badge: 'Fast',
+    description: 'Fast and efficient concise response.',
+    icon: <Zap className="w-3.5 h-3.5 text-amber-500" />,
+  },
+  {
+    id: 'Medium',
+    label: 'Medium',
+    badge: 'Balanced',
+    description: 'Balanced depth with grounded institutional facts.',
+    icon: <Scale className="w-3.5 h-3.5 text-blue-500" />,
+  },
+  {
+    id: 'High',
+    label: 'High',
+    badge: 'Thorough',
+    description: 'Thorough multi-step reasoning & logical breakdown.',
+    icon: <Brain className="w-3.5 h-3.5 text-purple-500" />,
+  },
+  {
+    id: 'Research',
+    label: 'Research',
+    badge: 'Deep',
+    description: 'Evidence-intensive investigation with granular cross-checks.',
+    icon: <Search className="w-3.5 h-3.5 text-emerald-500" />,
+  },
+];
 
 interface MessageComposerProps {
   onSendMessage: (message: string) => void;
@@ -35,8 +171,12 @@ interface MessageComposerProps {
   onSelectLandmark?: (landmark: string) => void;
   selectedModel?: string;
   onSelectModel?: (model: string) => void;
+  thinkingLevel?: string;
+  onSelectThinkingLevel?: (level: string) => void;
   reasoningMode?: string;
   onSelectReasoningMode?: (mode: string) => void;
+  webResearchEnabled?: boolean;
+  onToggleWebResearch?: (enabled: boolean) => void;
 }
 
 export const MessageComposer: React.FC<MessageComposerProps> = ({
@@ -49,24 +189,52 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
   onSelectLandmark,
   selectedModel = 'aegis',
   onSelectModel,
+  thinkingLevel = 'Medium',
+  onSelectThinkingLevel,
   reasoningMode = 'DeepThink',
   onSelectReasoningMode,
+  webResearchEnabled = false,
+  onToggleWebResearch,
 }) => {
   const [input, setInput] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedDocName, setUploadedDocName] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
+
+  // Dropdown states
+  const [isAgentDropdownOpen, setIsAgentDropdownOpen] = useState(false);
+  const [isThinkingDropdownOpen, setIsThinkingDropdownOpen] = useState(false);
   const [isPlusMenuOpen, setIsPlusMenuOpen] = useState(false);
-  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
-  const [isNormalDropdownOpen, setIsNormalDropdownOpen] = useState(false);
+
+  // Tool states
   const [deepSearchEnabled, setDeepSearchEnabled] = useState(true);
-  const [webResearchEnabled, setWebResearchEnabled] = useState(false);
-  const [activeTone, setActiveTone] = useState<'Normal' | 'Concise' | 'Academic' | 'Detailed'>('Normal');
+  const [localWebResearch, setLocalWebResearch] = useState(webResearchEnabled);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const composerContainerRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  // Current active specialist
+  const activeSpecialist =
+    SPECIALIST_INTELLIGENCES.find((s) => s.id === selectedModel) || SPECIALIST_INTELLIGENCES[0];
+
+  // Filter supported thinking levels for the active specialist
+  const availableThinkingOptions = ALL_THINKING_LEVELS.filter((lvl) =>
+    activeSpecialist.supportedThinking.includes(lvl.id)
+  );
+
+  // Current active thinking option (auto-normalize if unsupported)
+  const normalizedThinkingLevel = (
+    availableThinkingOptions.some((lvl) => lvl.id.toLowerCase() === thinkingLevel.toLowerCase())
+      ? thinkingLevel.charAt(0).toUpperCase() + thinkingLevel.slice(1).toLowerCase()
+      : activeSpecialist.defaultThinking
+  ) as 'Low' | 'Medium' | 'High' | 'Research';
+
+  const activeThinkingOption =
+    availableThinkingOptions.find((lvl) => lvl.id === normalizedThinkingLevel) ||
+    availableThinkingOptions[0];
 
   // Auto-grow textarea
   useEffect(() => {
@@ -75,6 +243,40 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 180)}px`;
     }
   }, [input]);
+
+  // Sync external web research prop
+  useEffect(() => {
+    setLocalWebResearch(webResearchEnabled);
+  }, [webResearchEnabled]);
+
+  // Close menus on outside click or Escape
+  useEffect(() => {
+    const handleKeyDownGlobal = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsAgentDropdownOpen(false);
+        setIsThinkingDropdownOpen(false);
+        setIsPlusMenuOpen(false);
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        composerContainerRef.current &&
+        !composerContainerRef.current.contains(e.target as Node)
+      ) {
+        setIsAgentDropdownOpen(false);
+        setIsThinkingDropdownOpen(false);
+        setIsPlusMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDownGlobal);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDownGlobal);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Web Speech API initialization
   useEffect(() => {
@@ -94,8 +296,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
         setIsListening(false);
       };
 
-      recognition.onerror = (e: any) => {
-        console.error('Speech recognition error:', e);
+      recognition.onerror = () => {
         setIsListening(false);
       };
 
@@ -109,7 +310,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
 
   const toggleSpeechRecognition = () => {
     if (!recognitionRef.current) {
-      alert('Speech recognition is not supported in your browser.');
+      alert('Speech recognition is not supported in this browser.');
       return;
     }
     if (isListening) {
@@ -150,10 +351,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
     if (!input.trim() || isLoading) return;
 
     let finalPrompt = input.trim();
-    if (activeTone !== 'Normal') {
-      finalPrompt = `[Tone: ${activeTone}] ${finalPrompt}`;
-    }
-    if (webResearchEnabled) {
+    if (localWebResearch) {
       finalPrompt = `[Live Web Research Requested] ${finalPrompt}`;
     }
 
@@ -161,8 +359,8 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
     setInput('');
     setUploadedDocName(null);
     setIsPlusMenuOpen(false);
-    setIsModeDropdownOpen(false);
-    setIsNormalDropdownOpen(false);
+    setIsAgentDropdownOpen(false);
+    setIsThinkingDropdownOpen(false);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -175,61 +373,42 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
     }
   };
 
-  // Exact 4 reasoning modes from reference UI
-  const reasoningModes = [
-    {
-      id: 'Quick answer',
-      label: 'Quick answer',
-      icon: <Zap className="w-3.5 h-3.5 text-amber-400" />,
-      desc: 'Instant concise factual retrieval',
-    },
-    {
-      id: 'Balanced',
-      label: 'Balanced',
-      icon: <Scale className="w-3.5 h-3.5 text-blue-400" />,
-      desc: 'Standard grounded response',
-    },
-    {
-      id: 'DeepThink',
-      label: 'DeepThink',
-      icon: <Lightbulb className="w-3.5 h-3.5 text-purple-400" />,
-      desc: 'Multi-step policy analysis & deduction',
-    },
-    {
-      id: 'Research',
-      label: 'Research',
-      icon: <Search className="w-3.5 h-3.5 text-emerald-400" />,
-      desc: 'Comprehensive evidence verification',
-    },
-  ];
+  const handleSelectSpecialist = (specialist: SpecialistOption) => {
+    if (onSelectModel) {
+      onSelectModel(specialist.id);
+    }
+    // Auto-adjust thinking level if current is unsupported
+    if (!specialist.supportedThinking.includes(normalizedThinkingLevel)) {
+      if (onSelectThinkingLevel) {
+        onSelectThinkingLevel(specialist.defaultThinking);
+      }
+    }
+    setIsAgentDropdownOpen(false);
+  };
 
-  const agentOptions = [
-    { id: 'aegis', label: 'AEGIS — Auto Intelligence', badge: 'Orchestrator', desc: 'Master orchestrator, dynamically coordinates specialists' },
-    { id: 'themis', label: 'THEMIS — Policy & Benefits', badge: 'Policy', desc: 'Attendance condonation, EDU-Rev & eligibility' },
-    { id: 'hermes', label: 'HERMES — UMS Navigator', badge: 'UMS', desc: '234 UMS pathways, RMS & procedures' },
-    { id: 'argus', label: 'ARGUS — Campus & Faculty', badge: 'Campus', desc: 'Faculty cabins, hours & pure-veg dining' },
-    { id: 'athena', label: 'ATHENA — Academic Reasoning', badge: 'Academic', desc: 'Course equivalence & credit substitution' },
-    { id: 'mnemos', label: 'MNEMOS — Knowledge RAG', badge: 'Memory', desc: '1,035 institutional facts & memory' },
-    { id: 'oracle', label: 'ORACLE — Web Research', badge: 'Research', desc: 'Tavily live search & SIH hackathons' },
-    { id: 'forge', label: 'FORGE — Tech Projects', badge: 'Code', desc: 'Technical projects & startup internships' },
-    { id: 'vision', label: 'VISION — Multimodal', badge: 'Vision', desc: 'Document, screenshot & syllabus perception' },
-  ];
-
-  const activeModeObj = reasoningModes.find((m) => m.id.toLowerCase() === reasoningMode.toLowerCase()) || reasoningModes[2];
-  const activeAgentObj = agentOptions.find((a) => a.id === selectedModel) || agentOptions[0];
+  const handleSelectThinking = (lvl: 'Low' | 'Medium' | 'High' | 'Research') => {
+    if (onSelectThinkingLevel) {
+      onSelectThinkingLevel(lvl);
+    }
+    if (onSelectReasoningMode) {
+      onSelectReasoningMode(lvl === 'Low' ? 'Quick answer' : lvl === 'Research' ? 'Research' : lvl === 'High' ? 'DeepThink' : 'Balanced');
+    }
+    setIsThinkingDropdownOpen(false);
+  };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 pb-4 relative z-20">
+    <div ref={composerContainerRef} className="w-full max-w-3xl mx-auto px-4 pb-4 relative z-20">
       {/* Uploaded File Chip */}
       {uploadedDocName && (
-        <div className="mb-2 flex items-center justify-between px-3 py-1.5 bg-blue-950/80 border border-blue-500/30 rounded-xl text-xs text-blue-200 shadow-lg animate-fadeIn">
+        <div className="mb-2 flex items-center justify-between px-3 py-1.5 bg-orange-50 border border-orange-200/80 rounded-xl text-xs text-orange-900 shadow-xs animate-fadeIn">
           <div className="flex items-center gap-2 truncate">
-            <FileText className="w-4 h-4 text-blue-400 shrink-0" />
+            <FileText className="w-4 h-4 text-orange-600 shrink-0" />
             <span className="font-semibold truncate">Attached: {uploadedDocName}</span>
           </div>
           <button
             onClick={() => setUploadedDocName(null)}
-            className="text-blue-400 hover:text-blue-200 p-0.5 rounded"
+            className="text-orange-500 hover:text-orange-800 p-0.5 rounded transition-colors"
+            title="Remove attachment"
           >
             <X className="w-4 h-4" />
           </button>
@@ -238,17 +417,17 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
 
       {/* Active Category Filter Tag if selected */}
       {selectedCategorySlug && (
-        <div className="mb-2 flex items-center justify-between px-3 py-1.5 bg-orange-950/80 border border-orange-500/30 rounded-xl text-xs text-orange-200 shadow-lg">
+        <div className="mb-2 flex items-center justify-between px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 shadow-xs">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-orange-300">Domain Filter:</span>
-            <span className="uppercase text-[11px] font-mono tracking-wider bg-orange-900/60 text-orange-200 px-2 py-0.5 rounded border border-orange-500/30">
+            <span className="font-semibold text-slate-500">Domain:</span>
+            <span className="uppercase text-[11px] font-mono tracking-wider bg-white text-orange-700 px-2 py-0.5 rounded border border-orange-200 font-semibold">
               {selectedCategorySlug}
             </span>
           </div>
           {onClearCategory && (
             <button
               onClick={onClearCategory}
-              className="text-orange-300 hover:text-orange-100 font-medium text-xs underline"
+              className="text-slate-500 hover:text-slate-800 font-medium text-xs underline transition-colors"
             >
               Clear filter
             </button>
@@ -256,364 +435,368 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
         </div>
       )}
 
-      {/* Glowing Neon Capsule Container (Exact match with reference UI) */}
-      <div className="relative group">
-        {/* Ambient Two-Tone Neon Glow Halo */}
-        <div
-          className="absolute -inset-1 rounded-[2rem] opacity-75 blur-xl transition-opacity duration-500 pointer-events-none group-hover:opacity-100"
-          style={{
-            background:
-              'radial-gradient(ellipse at 15% 30%, rgba(255, 107, 74, 0.35) 0%, transparent 60%), radial-gradient(ellipse at 85% 70%, rgba(59, 130, 246, 0.35) 0%, transparent 60%)',
-          }}
+      {/* Clean Light-Theme Composer Capsule */}
+      <div className="relative rounded-2xl bg-white border border-slate-200/90 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-200 focus-within:border-orange-500/50 focus-within:ring-2 focus-within:ring-orange-500/10">
+        {/* Top Textarea: "Ask anything..." */}
+        <textarea
+          ref={textareaRef}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={`Ask ${activeSpecialist.name} anything about LPU academics, policies, or campus...`}
+          rows={1}
+          disabled={isLoading}
+          className="w-full resize-none bg-transparent px-4 pt-3.5 pb-2 text-[15px] sm:text-base text-slate-800 placeholder-slate-400 focus:outline-none max-h-48 leading-relaxed font-sans"
         />
 
-        {/* Inner Capsule Body */}
-        <div className="relative rounded-[1.75rem] border border-white/10 bg-[#0f1117]/95 backdrop-blur-2xl text-slate-100 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.6),0_0_24px_-4px_rgba(255,107,74,0.12),0_0_24px_-4px_rgba(59,130,246,0.12)] p-2.5 sm:p-3 transition-all focus-within:border-white/20">
-          {/* Top Textarea: "Ask anything..." */}
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask anything..."
-            rows={1}
-            disabled={isLoading}
-            className="w-full resize-none bg-transparent px-3 py-2 text-[15px] sm:text-base text-slate-100 placeholder-slate-400/80 focus:outline-none max-h-48 leading-relaxed font-sans"
-          />
-
-          {/* Bottom Toolbar Row */}
-          <div className="flex items-center justify-between pt-1.5 px-1 mt-0.5 gap-2 flex-wrap sm:flex-nowrap">
-            {/* Left Controls: [+] [Normal ⌄] [DeepThink ^] */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-              {/* Plus (+) Button & Popover */}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsPlusMenuOpen((prev) => !prev);
-                    setIsModeDropdownOpen(false);
-                    setIsNormalDropdownOpen(false);
-                  }}
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all border border-white/10 ${
-                    isPlusMenuOpen
-                      ? 'bg-white/15 text-white rotate-45'
-                      : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white'
-                  }`}
-                  title="Attach files or toggles"
-                >
-                  <Plus className="w-4 h-4 transition-transform duration-200" />
-                </button>
-
-                {/* Plus Menu Popover */}
-                {isPlusMenuOpen && (
-                  <div className="absolute left-0 bottom-11 w-64 rounded-2xl bg-[#14151e]/98 backdrop-blur-2xl border border-white/10 shadow-2xl p-2 z-50 text-xs space-y-1 animate-fadeIn">
-                    <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Context & Tools
-                    </div>
-
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isUploading}
-                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-slate-200 hover:bg-white/10 transition-colors text-left"
-                    >
-                      <Paperclip className="w-4 h-4 text-orange-400" />
-                      <div>
-                        <div className="font-semibold text-xs">Attach Document</div>
-                        <div className="text-[10px] text-slate-400">PDF, TXT, Syllabus, Report</div>
-                      </div>
-                    </button>
-
-                    <button
-                      onClick={() => imageInputRef.current?.click()}
-                      disabled={isUploading}
-                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-slate-200 hover:bg-white/10 transition-colors text-left"
-                    >
-                      <ImageIcon className="w-4 h-4 text-purple-400" />
-                      <div>
-                        <div className="font-semibold text-xs">Attach Image / Screenshot</div>
-                        <div className="text-[10px] text-slate-400">UMS error, timetable, gradecard</div>
-                      </div>
-                    </button>
-
-                    <div className="h-px bg-white/10 my-1" />
-
-                    {/* University KB Deep Search Toggle */}
-                    <button
-                      onClick={() => setDeepSearchEnabled((prev) => !prev)}
-                      className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-slate-200 hover:bg-white/10 transition-colors text-left"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Search className="w-3.5 h-3.5 text-blue-400" />
-                        <div>
-                          <div className="font-semibold text-xs">LPU Deep KB Search</div>
-                          <div className="text-[10px] text-slate-400">384-d BGE-small embeddings</div>
-                        </div>
-                      </div>
-                      <div
-                        className={`w-8 h-4 rounded-full transition-colors p-0.5 ${
-                          deepSearchEnabled ? 'bg-orange-600' : 'bg-white/10'
-                        }`}
-                      >
-                        <div
-                          className={`w-3 h-3 rounded-full bg-white transition-transform ${
-                            deepSearchEnabled ? 'translate-x-4' : 'translate-x-0'
-                          }`}
-                        />
-                      </div>
-                    </button>
-
-                    {/* Web Research Toggle */}
-                    <button
-                      onClick={() => setWebResearchEnabled((prev) => !prev)}
-                      className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-slate-200 hover:bg-white/10 transition-colors text-left"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Globe className="w-3.5 h-3.5 text-emerald-400" />
-                        <div>
-                          <div className="font-semibold text-xs">Live Web Research</div>
-                          <div className="text-[10px] text-slate-400">Tavily web discovery</div>
-                        </div>
-                      </div>
-                      <div
-                        className={`w-8 h-4 rounded-full transition-colors p-0.5 ${
-                          webResearchEnabled ? 'bg-emerald-600' : 'bg-white/10'
-                        }`}
-                      >
-                        <div
-                          className={`w-3 h-3 rounded-full bg-white transition-transform ${
-                            webResearchEnabled ? 'translate-x-4' : 'translate-x-0'
-                          }`}
-                        />
-                      </div>
-                    </button>
-
-                    {/* Landmark selector option */}
-                    {onSelectLandmark && (
-                      <div className="pt-1 border-t border-white/10 px-2.5 py-1">
-                        <div className="text-[10px] text-slate-400 mb-1 flex items-center gap-1 font-semibold">
-                          <MapPin className="w-3 h-3 text-orange-400" />
-                          <span>Current Landmark:</span>
-                        </div>
-                        <select
-                          value={selectedLandmark}
-                          onChange={(e) => onSelectLandmark(e.target.value)}
-                          className="w-full bg-[#1e2029] text-slate-200 text-xs rounded-lg px-2 py-1 border border-white/10 focus:outline-none cursor-pointer"
-                        >
-                          <option value="Block 32">Block 32 (CSE Hub)</option>
-                          <option value="Uni-Centre">Uni-Centre Food Court</option>
-                          <option value="Block 34">Block 34 (Exam Cell)</option>
-                          <option value="Block 27">Block 27 (EDU-Rev)</option>
-                          <option value="Block 13">Block 13 (DSA)</option>
-                          <option value="Block 30">Block 30 (UniHospital)</option>
-                          <option value="Uni-Mall">Uni-Mall</option>
-                          <option value="BH-4">BH-4 Hostels</option>
-                        </select>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Hidden file inputs */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={(e) => handleFileUpload(e, false)}
-                accept=".pdf,.txt,.md,.csv,.doc,.docx"
-                className="hidden"
-              />
-              <input
-                type="file"
-                ref={imageInputRef}
-                onChange={(e) => handleFileUpload(e, true)}
-                accept=".png,.jpg,.jpeg,.webp"
-                className="hidden"
-              />
-
-              {/* [Normal ⌄] Pill (Persona & Specialist Selector) */}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsNormalDropdownOpen((prev) => !prev);
-                    setIsModeDropdownOpen(false);
-                    setIsPlusMenuOpen(false);
-                  }}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs font-medium transition-all border border-white/10"
-                  title="Configure response style & agent intelligence"
-                >
-                  <Leaf className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>{selectedModel !== 'aegis' ? activeAgentObj.label.split('—')[0].trim() : activeTone}</span>
-                  <ChevronDown className="w-3 h-3 text-slate-400" />
-                </button>
-
-                {isNormalDropdownOpen && (
-                  <div className="absolute left-0 bottom-11 w-64 max-h-80 overflow-y-auto rounded-2xl bg-[#14151e]/98 backdrop-blur-2xl border border-white/10 shadow-2xl p-1.5 z-50 text-xs">
-                    <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-white/10 flex items-center justify-between">
-                      <span>Tone & Depth</span>
-                    </div>
-                    {(['Normal', 'Concise', 'Academic', 'Detailed'] as const).map((tone) => (
-                      <button
-                        key={tone}
-                        onClick={() => {
-                          setActiveTone(tone);
-                          setIsNormalDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-2.5 py-1.5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors ${
-                          activeTone === tone ? 'text-emerald-400 font-semibold bg-white/5' : 'text-slate-300'
-                        }`}
-                      >
-                        <span>{tone}</span>
-                        {activeTone === tone && <Check className="w-3.5 h-3.5 text-emerald-400" />}
-                      </button>
-                    ))}
-
-                    <div className="px-2.5 py-1.5 mt-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-t border-b border-white/10 flex items-center justify-between">
-                      <span>Specialist Intelligence</span>
-                      <span className="text-[9px] text-orange-400 font-mono">9 Available</span>
-                    </div>
-                    {agentOptions.map((opt) => {
-                      const isSel = opt.id === selectedModel;
-                      return (
-                        <button
-                          key={opt.id}
-                          onClick={() => {
-                            if (onSelectModel) onSelectModel(opt.id);
-                            setIsNormalDropdownOpen(false);
-                          }}
-                          className={`w-full text-left px-2.5 py-1.5 rounded-lg flex flex-col hover:bg-white/10 transition-colors ${
-                            isSel ? 'text-orange-400 font-semibold bg-white/5' : 'text-slate-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between w-full">
-                            <span className="font-medium text-xs">{opt.label}</span>
-                            <span className="text-[9px] text-slate-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/10">
-                              {opt.badge}
-                            </span>
-                          </div>
-                          <div className="text-[10px] text-slate-400 mt-0.5">{opt.desc}</div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* [DeepThink ^] Pill (Reasoning Mode: Quick answer, Balanced, DeepThink, Research) */}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsModeDropdownOpen((prev) => !prev);
-                    setIsNormalDropdownOpen(false);
-                    setIsPlusMenuOpen(false);
-                  }}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white text-xs font-medium transition-all border border-white/10"
-                >
-                  <Lightbulb className="w-3.5 h-3.5 text-purple-400" />
-                  <span>{activeModeObj.label}</span>
-                  {isModeDropdownOpen ? (
-                    <ChevronDown className="w-3 h-3 text-slate-400" />
-                  ) : (
-                    <ChevronUp className="w-3 h-3 text-slate-400" />
-                  )}
-                </button>
-
-                {/* Dropdown Menu (Exact match with reference image) */}
-                {isModeDropdownOpen && (
-                  <div className="absolute left-0 bottom-11 w-48 rounded-2xl bg-[#14151e]/98 backdrop-blur-2xl border border-white/10 shadow-2xl p-1.5 z-50 text-xs space-y-0.5 animate-fadeIn">
-                    {reasoningModes.map((mode) => {
-                      const isSelected = mode.id.toLowerCase() === reasoningMode.toLowerCase();
-                      return (
-                        <button
-                          key={mode.id}
-                          onClick={() => {
-                            if (onSelectReasoningMode) onSelectReasoningMode(mode.id);
-                            setIsModeDropdownOpen(false);
-                          }}
-                          className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between transition-colors ${
-                            isSelected
-                              ? 'bg-white/10 text-white font-medium shadow-2xs'
-                              : 'text-slate-300 hover:bg-white/5 hover:text-white'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            {mode.icon}
-                            <span className="text-xs">{mode.label}</span>
-                          </div>
-                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Right Controls: [Voice] and Send Button */}
-            <div className="flex items-center gap-2 ml-auto">
-              {/* Voice Pill Button */}
+        {/* Bottom Toolbar Row */}
+        <div className="flex items-center justify-between pt-1 pb-2.5 px-3 gap-2 flex-wrap sm:flex-nowrap border-t border-slate-100/80">
+          {/* Left Controls: [+] [Intelligence Selector] [Thinking Level] */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            {/* Plus (+) Button & Popover */}
+            <div className="relative">
               <button
                 type="button"
-                onClick={toggleSpeechRecognition}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all border border-white/10 ${
-                  isListening
-                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse'
-                    : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white'
+                onClick={() => {
+                  setIsPlusMenuOpen((prev) => !prev);
+                  setIsAgentDropdownOpen(false);
+                  setIsThinkingDropdownOpen(false);
+                }}
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all border ${
+                  isPlusMenuOpen
+                    ? 'bg-orange-50 border-orange-300 text-orange-600 rotate-45'
+                    : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900'
                 }`}
-                title={isListening ? 'Stop dictation' : 'Voice input'}
+                title="Attach files or context tools"
               >
-                {isListening ? (
-                  <>
-                    <MicOff className="w-3.5 h-3.5 text-rose-400" />
-                    <span>Listening...</span>
-                  </>
+                <Plus className="w-4 h-4 transition-transform duration-200" />
+              </button>
+
+              {/* Plus Menu Popover */}
+              {isPlusMenuOpen && (
+                <div className="absolute left-0 bottom-11 w-72 rounded-2xl bg-white border border-slate-200 shadow-xl p-2 z-50 text-xs space-y-1 animate-fadeIn">
+                  <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    Context & Attachments
+                  </div>
+
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-slate-700 hover:bg-orange-50/60 hover:text-orange-900 transition-colors text-left"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                      <Paperclip className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-xs text-slate-800">Attach Document</div>
+                      <div className="text-[10px] text-slate-500">PDF, TXT, Syllabus, Report</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => imageInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-slate-700 hover:bg-violet-50/60 hover:text-violet-900 transition-colors text-left"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center shrink-0">
+                      <ImageIcon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-xs text-slate-800">Attach Image / Screenshot</div>
+                      <div className="text-[10px] text-slate-500">UMS error, timetable, gradecard</div>
+                    </div>
+                  </button>
+
+                  <div className="h-px bg-slate-100 my-1" />
+
+                  {/* University KB Deep Search Toggle */}
+                  <button
+                    onClick={() => setDeepSearchEnabled((prev) => !prev)}
+                    className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-slate-700 hover:bg-slate-50 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <Search className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-xs text-slate-800">LPU Knowledge Search</div>
+                        <div className="text-[10px] text-slate-500">384-d BGE hybrid retrieval</div>
+                      </div>
+                    </div>
+                    <div
+                      className={`w-8 h-4 rounded-full transition-colors p-0.5 ${
+                        deepSearchEnabled ? 'bg-orange-600' : 'bg-slate-200'
+                      }`}
+                    >
+                      <div
+                        className={`w-3 h-3 rounded-full bg-white transition-transform ${
+                          deepSearchEnabled ? 'translate-x-4' : 'translate-x-0'
+                        }`}
+                      />
+                    </div>
+                  </button>
+
+                  {/* Live Web Research Toggle */}
+                  <button
+                    onClick={() => {
+                      const next = !localWebResearch;
+                      setLocalWebResearch(next);
+                      if (onToggleWebResearch) onToggleWebResearch(next);
+                    }}
+                    className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-slate-700 hover:bg-slate-50 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Globe className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-xs text-slate-800">Live Web Research</div>
+                        <div className="text-[10px] text-slate-500">Tavily web discovery & external news</div>
+                      </div>
+                    </div>
+                    <div
+                      className={`w-8 h-4 rounded-full transition-colors p-0.5 ${
+                        localWebResearch ? 'bg-emerald-600' : 'bg-slate-200'
+                      }`}
+                    >
+                      <div
+                        className={`w-3 h-3 rounded-full bg-white transition-transform ${
+                          localWebResearch ? 'translate-x-4' : 'translate-x-0'
+                        }`}
+                      />
+                    </div>
+                  </button>
+
+                  {/* Landmark selector option */}
+                  {onSelectLandmark && (
+                    <div className="pt-1 border-t border-slate-100 px-2.5 py-1.5">
+                      <div className="text-[10px] text-slate-500 mb-1 flex items-center gap-1 font-semibold">
+                        <MapPin className="w-3 h-3 text-orange-600" />
+                        <span>Current Campus Landmark:</span>
+                      </div>
+                      <select
+                        value={selectedLandmark}
+                        onChange={(e) => onSelectLandmark(e.target.value)}
+                        className="w-full bg-slate-50 text-slate-700 text-xs rounded-lg px-2 py-1.5 border border-slate-200 focus:outline-none cursor-pointer"
+                      >
+                        <option value="Block 32">Block 32 (CSE / Tech Hub)</option>
+                        <option value="Uni-Centre">Uni-Centre Food Court</option>
+                        <option value="Block 34">Block 34 (Exam Cell & Admin)</option>
+                        <option value="Block 27">Block 27 (EDU-Rev & Dean Office)</option>
+                        <option value="Block 13">Block 13 (DSA / Student Welfare)</option>
+                        <option value="Block 30">Block 30 (UniHospital & Medical)</option>
+                        <option value="Uni-Mall">Uni-Mall (Student Services)</option>
+                        <option value="BH-4">BH-4 Hostels</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Hidden file inputs */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => handleFileUpload(e, false)}
+              accept=".pdf,.txt,.md,.csv,.doc,.docx"
+              className="hidden"
+            />
+            <input
+              type="file"
+              ref={imageInputRef}
+              onChange={(e) => handleFileUpload(e, true)}
+              accept=".png,.jpg,.jpeg,.webp"
+              className="hidden"
+            />
+
+            {/* Intelligence Selector (8 Named Specialists) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAgentDropdownOpen((prev) => !prev);
+                  setIsThinkingDropdownOpen(false);
+                  setIsPlusMenuOpen(false);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 hover:bg-slate-100/90 text-slate-700 hover:text-slate-900 text-xs font-semibold transition-all border border-slate-200 shadow-2xs"
+                title="Select Specialist Intelligence"
+              >
+                {activeSpecialist.icon}
+                <span>{activeSpecialist.name}</span>
+                <span className="text-[10px] font-normal text-slate-400">· {activeSpecialist.badge}</span>
+                <ChevronDown className="w-3 h-3 text-slate-400" />
+              </button>
+
+              {/* Intelligence Dropdown Menu */}
+              {isAgentDropdownOpen && (
+                <div className="absolute left-0 bottom-11 w-80 max-h-96 overflow-y-auto rounded-2xl bg-white border border-slate-200 shadow-2xl p-1.5 z-50 text-xs space-y-0.5 animate-fadeIn">
+                  <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 flex items-center justify-between">
+                    <span>Specialist Intelligence</span>
+                    <span className="text-[9px] text-orange-600 font-mono">8 Specialists</span>
+                  </div>
+
+                  {SPECIALIST_INTELLIGENCES.map((specialist) => {
+                    const isSelected = specialist.id === selectedModel;
+                    return (
+                      <button
+                        key={specialist.id}
+                        onClick={() => handleSelectSpecialist(specialist)}
+                        className={`w-full text-left px-3 py-2 rounded-xl flex items-start gap-2.5 transition-colors ${
+                          isSelected
+                            ? 'bg-orange-50/70 text-orange-950 font-medium'
+                            : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="mt-0.5 shrink-0">{specialist.icon}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-xs text-slate-900">
+                              {specialist.name} — {specialist.subtitle}
+                            </span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                            )}
+                          </div>
+                          <div className="text-[11px] text-slate-500 leading-snug mt-0.5 line-clamp-2">
+                            {specialist.description}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Thinking Level Selector (Dynamically Filtered per Model) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsThinkingDropdownOpen((prev) => !prev);
+                  setIsAgentDropdownOpen(false);
+                  setIsPlusMenuOpen(false);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 hover:bg-slate-100/90 text-slate-700 hover:text-slate-900 text-xs font-medium transition-all border border-slate-200 shadow-2xs"
+                title="Adjust reasoning & thinking depth"
+              >
+                {activeThinkingOption.icon}
+                <span>Thinking: {activeThinkingOption.label}</span>
+                {isThinkingDropdownOpen ? (
+                  <ChevronDown className="w-3 h-3 text-slate-400" />
                 ) : (
-                  <>
-                    <AudioWaveform className="w-3.5 h-3.5 text-slate-300" />
-                    <span>Voice</span>
-                  </>
+                  <ChevronUp className="w-3 h-3 text-slate-400" />
                 )}
               </button>
 
-              {/* Send / Stop Circular Gradient Button (Exact match with reference image) */}
-              {isLoading ? (
-                <button
-                  type="button"
-                  onClick={onStopStreaming}
-                  className="w-9 h-9 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition-all shadow-md shadow-rose-600/30 active:scale-95"
-                  title="Stop response"
-                >
-                  <Square className="w-3.5 h-3.5 fill-current" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={!input.trim()}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                    input.trim()
-                      ? 'bg-gradient-to-tr from-[#6366f1] via-[#8b5cf6] to-[#ec4899] text-white shadow-lg shadow-purple-500/25 hover:opacity-95 active:scale-95'
-                      : 'bg-white/5 text-slate-500 border border-white/10 cursor-not-allowed'
-                  }`}
-                  title="Send query (Enter)"
-                >
-                  <Send className="w-4 h-4 text-white -translate-x-[0.5px] translate-y-[0.5px]" />
-                </button>
+              {/* Thinking Level Dropdown */}
+              {isThinkingDropdownOpen && (
+                <div className="absolute left-0 bottom-11 w-64 rounded-2xl bg-white border border-slate-200 shadow-2xl p-1.5 z-50 text-xs space-y-0.5 animate-fadeIn">
+                  <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 flex items-center justify-between">
+                    <span>Thinking Depth ({activeSpecialist.name})</span>
+                    <span className="text-[9px] text-slate-400 font-mono">
+                      {availableThinkingOptions.length} levels
+                    </span>
+                  </div>
+
+                  {availableThinkingOptions.map((opt) => {
+                    const isSelected = opt.id === activeThinkingOption.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => handleSelectThinking(opt.id)}
+                        className={`w-full text-left px-3 py-2 rounded-xl flex items-start gap-2.5 transition-colors ${
+                          isSelected
+                            ? 'bg-orange-50/70 text-orange-950 font-medium'
+                            : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="mt-0.5 shrink-0">{opt.icon}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-xs text-slate-900">
+                              {opt.label} ({opt.badge})
+                            </span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                            )}
+                          </div>
+                          <div className="text-[10px] text-slate-500 leading-snug mt-0.5">
+                            {opt.description}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               )}
             </div>
+          </div>
+
+          {/* Right Controls: [Voice] and Send/Stop Button */}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Voice Pill Button */}
+            <button
+              type="button"
+              onClick={toggleSpeechRecognition}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
+                isListening
+                  ? 'bg-rose-50 text-rose-700 border-rose-300 animate-pulse'
+                  : 'bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 border-slate-200'
+              }`}
+              title={isListening ? 'Stop dictation' : 'Voice input'}
+            >
+              {isListening ? (
+                <>
+                  <MicOff className="w-3.5 h-3.5 text-rose-600" />
+                  <span className="font-semibold">Listening...</span>
+                </>
+              ) : (
+                <>
+                  <AudioWaveform className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Voice</span>
+                </>
+              )}
+            </button>
+
+            {/* Send / Stop Circular Button */}
+            {isLoading ? (
+              <button
+                type="button"
+                onClick={onStopStreaming}
+                className="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center transition-all shadow-md shadow-rose-600/20 active:scale-95"
+                title="Stop generation"
+              >
+                <Square className="w-3.5 h-3.5 fill-current" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!input.trim()}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                  input.trim()
+                    ? 'bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white shadow-md shadow-orange-600/20 active:scale-95'
+                    : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+                }`}
+                title="Send query (Enter)"
+              >
+                <Send className="w-4 h-4 text-current -translate-x-[0.5px] translate-y-[0.5px]" />
+              </button>
+            )}
           </div>
         </div>
       </div>
 
       {/* Subtle Footer Disclaimer */}
       <p className="mt-2 text-center text-[10px] text-slate-400">
-        CampusConnect AI can make mistakes. Verify critical academic deadlines and grades with official{' '}
+        CampusConnect AI grounds responses in verified institutional regulations. Confirm academic deadlines and marks in official{' '}
         <a
           href="https://ums.lpu.in"
           target="_blank"
           rel="noreferrer"
-          className="text-orange-500 hover:text-orange-400 underline"
+          className="text-orange-600 hover:text-orange-700 underline font-medium"
         >
           LPU UMS
         </a>.
