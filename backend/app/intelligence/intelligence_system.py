@@ -1,3 +1,9 @@
+"""
+CAMPUSCONNECT AGENTIC INTELLIGENCE SYSTEM
+Coordinates the 4 proprietary intelligence identities (NOVA, THEMIS, ATHENA, ORACLE)
+and AEGIS orchestrator across general conversation and specialized university intelligence.
+"""
+
 import time
 import uuid
 import logging
@@ -12,6 +18,7 @@ from app.intelligence.routing_engine import RoutingEngine
 from app.intelligence.execution_engine import ExecutionEngine
 from app.intelligence.verification_engine import VerificationEngine, VerificationResult
 from app.intelligence.synthesis_engine import SynthesisEngine
+from app.intelligence.conversation_engine import ConversationEngine, ConversationContext
 from app.ai.cost_controller import CostController
 from app.schemas.chat import ThinkingStep, Citation
 
@@ -56,9 +63,10 @@ class IntelligenceExecutionResult:
 
 class IntelligenceSystem:
     """
-    CAMPUSCONNECT NINE-LAYER AGENTIC INTELLIGENCE SYSTEM
-    Coordinates the 4 proprietary intelligence identities (NOVA, THEMIS, ATHENA, ORACLE)
-    and AEGIS auto-orchestrator across the 9 layers.
+    CAMPUSCONNECT AGENTIC INTELLIGENCE SYSTEM
+    Distinguishes general AI conversation from university specialized tasks.
+    Enforces that general conversation is the default, and university specialization
+    activates strictly when relevant to the student's intent.
     """
 
     @classmethod
@@ -81,10 +89,15 @@ class IntelligenceSystem:
         history = conversation_history or []
 
         # =========================================================================
-        # LAYER 2 — INTENT ENGINE
+        # 1. CONVERSATION INTELLIGENCE CORE: Context & Coreference Resolution
+        # =========================================================================
+        conv_context = ConversationEngine.resolve_context(query, history)
+
+        # =========================================================================
+        # 2. INTENT ENGINE: Intent & Boundary Detection
         # =========================================================================
         intent = IntentEngine.analyze_intent(
-            query=query,
+            query=conv_context.effective_query,
             context={"web_research": web_research, "category_slug": category_slug}
         )
 
@@ -94,12 +107,12 @@ class IntelligenceSystem:
             resolved_intel = intent.recommended_intelligence
 
         # =========================================================================
-        # LAYER 1 — IDENTITY ENGINE
+        # 3. IDENTITY ENGINE: Master Prompt & Directives
         # =========================================================================
         identity = IdentityEngine.get_identity(resolved_intel)
 
         # =========================================================================
-        # LAYER 3 — PLANNING ENGINE
+        # 4. PLANNING & BUDGET: Modulate based on Thinking Level
         # =========================================================================
         plan = PlanningEngine.create_plan(
             intent=intent,
@@ -108,8 +121,7 @@ class IntelligenceSystem:
             context={"web_research": web_research}
         )
 
-        # Budget Check
-        estimated_input_toks = (len(query.split()) + 500) * 2
+        estimated_input_toks = (len(query.split()) + 300) * 2
         is_allowed, budget_err = CostController.check_and_enforce_budget(
             user_identifier=user_identifier,
             intelligence_id=resolved_intel,
@@ -119,7 +131,117 @@ class IntelligenceSystem:
         if not is_allowed:
             return cls._build_budget_exceeded_result(budget_err, identity, thinking_level, start_time)
 
-        # Transparent 7 Real Execution Steps
+        # =========================================================================
+        # 5. DIVERGENT FLOW: General Conversation vs. University Specialized
+        # =========================================================================
+        is_general_conversation = conv_context.is_general_conversation and not intent.needs_rag_knowledge
+
+        if is_general_conversation:
+            # -----------------------------------------------------------------
+            # FAST GENERAL CONVERSATION PATH (0 University Noise, 0 Fake Citations)
+            # -----------------------------------------------------------------
+            thinking_steps: List[ThinkingStep] = [
+                ThinkingStep(
+                    step=1,
+                    title="Understanding conversation",
+                    description=f"Identified topic: {conv_context.active_topic.replace('_', ' ').title()} ({intent.detected_language.upper()}).",
+                    status="completed"
+                ),
+                ThinkingStep(
+                    step=2,
+                    title=f"Reasoning via {identity.name}",
+                    description=f"Active identity: {identity.name} ({identity.subtitle}). Depth: {thinking_level.title()}.",
+                    status="completed"
+                )
+            ]
+
+            # Route to model
+            routing_decision = await RoutingEngine.route_subtask(
+                task_name=f"{resolved_intel}_general",
+                intelligence_id=resolved_intel,
+                thinking_level=thinking_level,
+                required_capabilities=["streaming"],
+                request_id=request_id,
+                db=db
+            )
+
+            # Synthesize pure conversational response
+            synthesis_result = await SynthesisEngine.synthesize_response(
+                query=query,
+                identity=identity,
+                evidence_context="",
+                subagent_outputs=[],
+                conversation_history=history,
+                routed_provider=routing_decision.provider_name,
+                routed_model=routing_decision.model_id,
+                fallback_chain=routing_decision.fallback_chain,
+                user_identifier=user_identifier,
+                thinking_level=thinking_level,
+                is_university_specific=False
+            )
+
+            # Validate response relevance (Section 12)
+            final_content = ConversationEngine.validate_response_relevance(
+                user_query=query,
+                generated_content=synthesis_result["content"],
+                context=conv_context
+            )
+
+            # Contextual conversational follow-ups
+            if conv_context.active_topic == "greeting_chitchat":
+                follow_ups = [
+                    "What can you do?",
+                    "Explain machine learning",
+                    "I need help with my career"
+                ]
+            elif conv_context.active_topic == "career_coaching":
+                follow_ups = [
+                    "What tech skills should I learn first?",
+                    "How do I prepare for campus placement drives?",
+                    "Suggest full stack projects for my resume"
+                ]
+            elif "recursion" in query.lower():
+                follow_ups = [
+                    "Show an example of recursion in Python",
+                    "What is the difference between recursion and iteration?",
+                    "What is stack overflow in recursion?"
+                ]
+            elif "machine learning" in query.lower():
+                follow_ups = [
+                    "What is the difference between supervised and unsupervised learning?",
+                    "How does gradient descent work?",
+                    "Can you suggest a beginner ML project?"
+                ]
+            else:
+                follow_ups = [
+                    "Can you explain further?",
+                    "Give me a practical code example",
+                    "What are the best practices for this?"
+                ]
+
+            total_latency_ms = int((time.time() - start_time) * 1000)
+
+            return IntelligenceExecutionResult(
+                content=final_content,
+                intelligence_id=resolved_intel,
+                intelligence_name=identity.name,
+                thinking_level=thinking_level,
+                action_type="ANSWER",
+                thinking_steps=thinking_steps,
+                citations=[],
+                cards={},
+                follow_ups=follow_ups,
+                confidence_score=0.98,
+                latency_ms=total_latency_ms,
+                is_ai_generated=synthesis_result["is_ai_generated"],
+                cost_usd=routing_decision.estimated_cost_usd,
+                routed_model=routing_decision.key,
+                specialists_involved=[resolved_intel]
+            )
+
+        # ---------------------------------------------------------------------
+        # UNIVERSITY SPECIALIZED GROUNDED PATH (Institutional Evidence & Cards)
+        # ---------------------------------------------------------------------
         thinking_steps: List[ThinkingStep] = [
             ThinkingStep(
                 step=1,
@@ -132,23 +254,18 @@ class IntelligenceSystem:
                 title="Planning",
                 description=f"Active identity: {identity.name} ({identity.subtitle}). Depth: {thinking_level.title()}. Budget: max {plan.max_model_calls} model call(s).",
                 status="completed"
-            )
-        ]
-
-        # =========================================================================
-        # LAYER 4 — KNOWLEDGE ENGINE
-        # =========================================================================
-        thinking_steps.append(
+            ),
             ThinkingStep(
                 step=3,
                 title="Retrieving knowledge",
-                description="Querying institutional pgvector embeddings, hybrid BM25 index & university service catalog.",
+                description="Querying institutional records, hybrid BM25 index & university service catalog.",
                 status="completed"
             )
-        )
+        ]
 
+        # Targeted institutional knowledge retrieval
         knowledge = await KnowledgeEngine.retrieve(
-            query=query,
+            query=conv_context.effective_query,
             db=db,
             user_lat=user_lat,
             user_lon=user_lon,
@@ -157,14 +274,11 @@ class IntelligenceSystem:
             thinking_level=thinking_level
         )
 
-        # =========================================================================
-        # LAYER 5 — MODEL ROUTING ENGINE
-        # =========================================================================
         thinking_steps.append(
             ThinkingStep(
                 step=4,
                 title="Selecting model",
-                description="Evaluating candidate models across capability requirements, context window, latency tier & token budget.",
+                description="Evaluating candidate models across capability requirements, latency tier & token budget.",
                 status="completed"
             )
         )
@@ -184,9 +298,7 @@ class IntelligenceSystem:
             db=db
         )
 
-        # =========================================================================
-        # LAYER 6 — EXECUTION ENGINE (Subagent delegation if planned)
-        # =========================================================================
+        # Execution of specialist subagents if planned
         subagent_outputs: List[Dict[str, Any]] = []
         specialists_involved: List[str] = [resolved_intel]
 
@@ -208,7 +320,7 @@ class IntelligenceSystem:
             }
             subagent_outputs = await ExecutionEngine.execute_subagents(
                 subagent_names=plan.required_subagents,
-                query=query,
+                query=conv_context.effective_query,
                 context=sub_context,
                 db=db,
                 request_id=request_id,
@@ -216,10 +328,8 @@ class IntelligenceSystem:
             )
             for out in subagent_outputs:
                 specialists_involved.append(out["agent_name"])
-                # Merge cards
                 if out.get("cards"):
                     knowledge.action_cards.update(out["cards"])
-                # Merge citations
                 if out.get("citations"):
                     knowledge.citations.extend(out["citations"])
         else:
@@ -227,16 +337,14 @@ class IntelligenceSystem:
                 ThinkingStep(
                     step=5,
                     title="Running tools",
-                    description=f"Executing direct institutional hybrid search and action resolvers.",
+                    description="Executing direct institutional hybrid search and action resolvers.",
                     status="completed"
                 )
             )
 
-        # =========================================================================
-        # LAYER 8 — RESPONSE SYNTHESIS ENGINE
-        # =========================================================================
+        # Synthesize grounded response
         synthesis_result = await SynthesisEngine.synthesize_response(
-            query=query,
+            query=conv_context.effective_query,
             identity=identity,
             evidence_context=knowledge.evidence_context,
             subagent_outputs=subagent_outputs,
@@ -245,12 +353,11 @@ class IntelligenceSystem:
             routed_model=routing_decision.model_id,
             fallback_chain=routing_decision.fallback_chain,
             user_identifier=user_identifier,
-            thinking_level=thinking_level
+            thinking_level=thinking_level,
+            is_university_specific=True
         )
 
-        # =========================================================================
-        # LAYER 7 — VERIFICATION ENGINE
-        # =========================================================================
+        # Verify regulatory claims if attendance or benefits involved
         thinking_steps.append(
             ThinkingStep(
                 step=6,
@@ -283,7 +390,6 @@ class IntelligenceSystem:
             for c in knowledge.citations[:4]
         ]
 
-        # Follow-up prompts
         follow_ups = [
             f"Ask {identity.name} about related campus procedures",
             "How do I submit this in UMS?",
@@ -309,31 +415,21 @@ class IntelligenceSystem:
         )
 
     @classmethod
-    def _build_budget_exceeded_result(
-        cls,
-        err_msg: str,
-        identity: IdentitySpecification,
-        thinking_level: str,
-        start_time: float
-    ) -> IntelligenceExecutionResult:
-        latency = int((time.time() - start_time) * 1000)
+    def _build_budget_exceeded_result(cls, err_msg: str, identity: IdentitySpecification, thinking_level: str, start_time: float) -> IntelligenceExecutionResult:
         return IntelligenceExecutionResult(
-            content=f"⚠️ **Budget Limit Encountered ({identity.name}):**\n\n{err_msg}\n\nPlease check official UMS at https://ums.lpu.in for direct information.",
+            content=f"⚠️ **Execution Budget Reached**: {err_msg}\n\nPlease try again shortly or switch to Low thinking depth to conserve your request budget.",
             intelligence_id=identity.id,
             intelligence_name=identity.name,
             thinking_level=thinking_level,
-            action_type="POLICY_INTERCEPT",
-            thinking_steps=[
-                ThinkingStep(step=1, title="Understanding task", description="Budget boundary evaluation", status="completed"),
-                ThinkingStep(step=2, title="Budget Intercept", description=err_msg, status="completed"),
-            ],
+            action_type="BUDGET_EXCEEDED",
+            thinking_steps=[],
             citations=[],
             cards={},
-            follow_ups=["Try a simpler query", "Switch thinking depth to Low"],
+            follow_ups=["Try a simpler query", "Switch to Low thinking depth"],
             confidence_score=1.0,
-            latency_ms=latency,
+            latency_ms=int((time.time() - start_time) * 1000),
             is_ai_generated=False,
             cost_usd=0.0,
-            routed_model="policy_budget_controller",
+            routed_model="system_budget_guard",
             specialists_involved=[identity.id]
         )

@@ -181,17 +181,15 @@ async def chat_endpoint(
     clean_message = re.sub(r"^\[Uploaded Document:[^\]]+\]\s*", "", req.message).strip() or req.message
 
     # Contextual query resolution for multi-turn anaphora
-    effective_query = clean_message
-    if history_turns:
-        prior_user_msgs = [h["content"] for h in history_turns if h.get("role") == "user"]
-        if prior_user_msgs and any(p in req.message.lower() for p in [" this", " that", " it", " above", " same", " there", " for this"]):
-            effective_query = f"{' '.join(prior_user_msgs[-2:])} {clean_message}"
+    from app.intelligence.conversation_engine import ConversationEngine
+    conv_ctx = ConversationEngine.resolve_context(clean_message, history_turns)
+    effective_query = conv_ctx.effective_query
 
-    # Check Semantic & Query Response Cache (0 LLM cost, preserves free-tier quotas)
+    # Check Semantic & Query Response Cache strictly for university-specific queries (never for chitchat/general explanations)
     is_doc_upload = "[Uploaded " in req.message
     is_weather_q = any(k in req.message.lower() for k in ["weather", "temperature", "forecast", "raining", "rain today", "climate on campus"])
 
-    if not is_doc_upload and not is_weather_q:
+    if not is_doc_upload and not is_weather_q and conv_ctx.is_university_specific:
         cached_entry = QueryResponseCache.get(effective_query, context_prefix=req.category_slug or "")
         if cached_entry:
             cache_latency_ms = max(2, int((time.time() - start_time) * 1000))
@@ -973,6 +971,16 @@ async def chat_stream_endpoint(
     db.add(user_msg)
     await db.commit()
 
+    # Fetch recent conversation history for multi-turn context
+    history_stmt = (
+        select(Message)
+        .where(Message.conversation_id == conversation.id)
+        .order_by(Message.created_at.asc())
+    )
+    hist_res = await db.execute(history_stmt)
+    all_msgs = hist_res.scalars().all()
+    history_turns = [{"role": m.role, "content": m.content} for m in all_msgs[:-1]]
+
     return StreamingResponse(
         StreamingService.stream_chat_turn(
             message=req.message,
@@ -985,7 +993,10 @@ async def chat_stream_endpoint(
             category_slug=req.category_slug,
             provider=req.provider,
             reasoning_mode=req.reasoning_mode,
-            thinking_level=req.thinking_level or "medium",
+            thinking_level=req.thinking_level or "Balanced",
+            selected_intelligence=req.agent_id or "auto",
+            conversation_history=history_turns,
+            web_research=getattr(req, "web_research", False) or getattr(req, "web_search", False),
         ),
         media_type="text/event-stream",
         headers={
@@ -994,6 +1005,16 @@ async def chat_stream_endpoint(
             "X-Conversation-Id": str(conversation.id)
         }
     )
+
+
+@router.post("/chat/stop/{conversation_id}")
+async def stop_chat_generation(conversation_id: str):
+    """
+    Stops an ongoing streaming chat generation immediately.
+    """
+    from app.intelligence.conversation_engine import ConversationEngine
+    ConversationEngine.register_cancellation(conversation_id)
+    return {"status": "stopped", "conversation_id": conversation_id}
 
 
 @router.post("/chat/upload")

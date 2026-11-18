@@ -1,25 +1,25 @@
+"""
+Streaming Service for CampusConnect.
+Manages Server-Sent Events (SSE) streaming for real conversational turns.
+Supports cancellation via ConversationEngine, token-level streaming,
+thinking step progress, and action card delivery.
+"""
+
 import json
 import asyncio
 import logging
 from typing import AsyncGenerator, Dict, Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.session import Message
-from app.ai.conversation_orchestrator import ConversationOrchestrator
-from app.ai.gemini_provider import GeminiProvider, circuit_breaker
-from app.ai.llm_registry import LLMRegistry
-from app.ai.response_generator import ResponseGenerator, CAMPUSCONNECT_V8_SYSTEM_PROMPT
-from app.ai.tool_executor import ToolExecutor
-from app.ai.context_manager import ContextManager
-from app.ai.response_validator import ResponseValidator
-from app.ai.proactive_intelligence import ProactiveStudentIntelligence
+from app.intelligence.conversation_engine import ConversationEngine
+from app.schemas.chat import ThinkingStep, Citation
 
 logger = logging.getLogger(__name__)
 
 
 class StreamingService:
     """
-    Manages Server-Sent Events (SSE) streaming for real Gemini-powered chat turns.
+    Manages Server-Sent Events (SSE) streaming for real chat turns.
     Yields JSON event blocks conforming to SSE protocol:
     event: <event_name>\ndata: <json_payload>\n\n
     """
@@ -37,128 +37,92 @@ class StreamingService:
         category_slug: Optional[str] = None,
         provider: Optional[str] = None,
         reasoning_mode: Optional[str] = "balanced",
-        thinking_level: Optional[str] = "medium",
+        thinking_level: Optional[str] = "Balanced",
+        selected_intelligence: str = "auto",
+        conversation_history: Optional[list] = None,
+        web_research: bool = False
     ) -> AsyncGenerator[str, None]:
         q_clean = message.strip()
+        ConversationEngine.clear_cancellation(conversation_id)
 
-        # Event 1: Understanding task
-        yield f"event: thinking\ndata: {json.dumps({'step': 1, 'title': 'Understanding task', 'status': 'completed'})}\n\n"
-        await asyncio.sleep(0.02)
+        # Map thinking level string cleanly
+        th_level = thinking_level.title() if thinking_level else "Balanced"
+        if th_level not in ["Low", "Balanced", "High"]:
+            th_level = "Balanced"
 
-        # Event 2: Planning
-        yield f"event: thinking\ndata: {json.dumps({'step': 2, 'title': 'Planning', 'status': 'completed'})}\n\n"
-        await asyncio.sleep(0.02)
+        # Emit initial thinking step
+        yield f"event: thinking\ndata: {json.dumps({'step': 1, 'title': 'Understanding conversation', 'status': 'in_progress'})}\n\n"
+        await asyncio.sleep(0.01)
 
-        # Event 3: Retrieving knowledge
-        yield f"event: thinking\ndata: {json.dumps({'step': 3, 'title': 'Retrieving knowledge', 'status': 'in_progress'})}\n\n"
+        # Check early cancellation
+        if ConversationEngine.is_cancelled(conversation_id):
+            yield f"event: done\ndata: {json.dumps({'cancelled': True})}\n\n"
+            return
 
-        tool_results = await ToolExecutor.execute_all_relevant_tools(
-            query=q_clean,
-            db=db,
-            user_lat=user_lat,
-            user_lon=user_lon,
-            landmark=landmark,
-            category_slug=category_slug
-        )
-
-        # Emit cards as soon as tools finish
-        cards_payload = {
-            "food_card": tool_results["food_card"].model_dump() if tool_results["food_card"] else None,
-            "person_card": tool_results["person_card"].model_dump() if tool_results["person_card"] else None,
-            "who_to_meet_card": tool_results["who_to_meet_card"].model_dump() if tool_results["who_to_meet_card"] else None,
-            "academic_benefit_card": tool_results["academic_benefit_card"].model_dump() if tool_results["academic_benefit_card"] else None,
-            "place_card": tool_results["place_card"].model_dump() if tool_results["place_card"] else None,
-            "nav_card": tool_results["nav_card"].model_dump() if tool_results["nav_card"] else None,
-        }
-        yield f"event: cards\ndata: {json.dumps(cards_payload)}\n\n"
-
-        # Emit citations
-        if tool_results.get("citations"):
-            citations_data = [c.model_dump() if hasattr(c, "model_dump") else dict(c) for c in tool_results["citations"]]
-            yield f"event: citations\ndata: {json.dumps(citations_data)}\n\n"
-
-        # Event 4: Selecting model & Event 5: Running tools completed
-        yield f"event: thinking\ndata: {json.dumps({'step': 4, 'title': 'Selecting model', 'status': 'completed'})}\n\n"
-        yield f"event: thinking\ndata: {json.dumps({'step': 5, 'title': 'Running tools', 'status': 'completed'})}\n\n"
-        yield f"event: thinking\ndata: {json.dumps({'step': 6, 'title': 'Verifying results', 'status': 'completed'})}\n\n"
-        yield f"event: thinking\ndata: {json.dumps({'step': 7, 'title': 'Preparing response', 'status': 'in_progress'})}\n\n"
-
-        history_turns = await ContextManager.get_conversation_history(conversation_id, db)
-        history_text = "\n".join([f"{h['role'].title()}: {h['content']}" for h in history_turns]) if history_turns else "None (New Thread)"
-
-        # Evaluate proactive opportunity intelligence
-        proactive_eval = await ProactiveStudentIntelligence.evaluate_turn(
-            user_message=q_clean,
-            conversation_history=history_turns
-        )
-
-        full_prompt = f"""APPROVED INSTITUTIONAL EVIDENCE FROM LOVELY PROFESSIONAL UNIVERSITY:
-================================================================================
-{tool_results.get('evidence_context', 'No specific institutional records retrieved.')}
-================================================================================
-
-PROACTIVE OPPORTUNITY & POLICY ASSESSMENT:
---------------------------------------------------------------------------------
-{proactive_eval.proactive_guidance_text}
---------------------------------------------------------------------------------
-
-CONVERSATION CONTEXT:
-{history_text}
-
-STUDENT QUERY:
-{q_clean}
-
-TASK:
-Provide a clear, accurate, and professional response to the student's query based strictly on the approved institutional evidence above."""
-
-        target_provider_name = provider or "gemini"
         try:
-            active_provider = LLMRegistry.get_provider(target_provider_name)
-        except Exception:
-            active_provider = GeminiProvider()
-
-        full_generated_text = ""
-
-        # Stream tokens
-        try:
-            if not active_provider.is_available() or (target_provider_name == "gemini" and circuit_breaker.is_open()):
-                # Fallback to secondary or direct knowledge base
-                fallback_text = (
-                    f"⚠️ Notice: Provider '{target_provider_name}' currently unavailable. Displaying verified institutional records directly:\n\n"
-                    + (tool_results.get("evidence_context") or "Please check https://ums.lpu.in for official details.")
-                )
-                for word in fallback_text.split(" "):
-                    yield f"event: token\ndata: {json.dumps({'token': word + ' '})}\n\n"
-                    await asyncio.sleep(0.02)
-                full_generated_text = fallback_text
-            else:
-                async for chunk in active_provider.generate_stream(
-                    prompt=full_prompt,
-                    system_instruction=CAMPUSCONNECT_V8_SYSTEM_PROMPT,
-                    conversation_history=history_turns
-                ):
-                    full_generated_text += chunk
-                    yield f"event: token\ndata: {json.dumps({'token': chunk})}\n\n"
-
+            from app.intelligence.intelligence_system import IntelligenceSystem
+            intel_res = await IntelligenceSystem.process_turn(
+                query=q_clean,
+                selected_intelligence=selected_intelligence,
+                thinking_level=th_level,
+                user_identifier=session_id,
+                conversation_history=conversation_history,
+                db=db,
+                user_lat=user_lat,
+                user_lon=user_lon,
+                landmark=landmark,
+                category_slug=category_slug,
+                web_research=web_research
+            )
         except Exception as e:
-            logger.error(f"Error during token streaming: {e}")
-            err_msg = "\n\n⚠️ Encountered a temporary connection delay. Please consult https://ums.lpu.in."
-            yield f"event: token\ndata: {json.dumps({'token': err_msg})}\n\n"
-            full_generated_text += err_msg
+            logger.error(f"Error executing intelligence turn: {e}", exc_info=True)
+            yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
+            return
 
-        # Save assistant message to database
-        sanitized_text, _, _ = ResponseValidator.validate_and_sanitize(full_generated_text)
-        assistant_msg = Message(
-            conversation_id=conversation_id,
-            role="assistant",
-            content=sanitized_text,
-            thinking_steps=[],
-            citations=[c.model_dump() if hasattr(c, "model_dump") else dict(c) for c in tool_results.get("citations", [])],
-            confidence_score=tool_results["confidence"].score,
-            latency_ms=100
-        )
-        db.add(assistant_msg)
-        await db.commit()
+        # Stream the thinking steps
+        for step in intel_res.thinking_steps:
+            if ConversationEngine.is_cancelled(conversation_id):
+                yield f"event: done\ndata: {json.dumps({'cancelled': True})}\n\n"
+                return
+            yield f"event: thinking\ndata: {json.dumps(step.model_dump())}\n\n"
+            await asyncio.sleep(0.01)
 
-        # Emit completion
-        yield f"event: done\ndata: {json.dumps({'message_id': str(assistant_msg.id), 'status': 'completed'})}\n\n"
+        # Stream content tokens (chunked for realistic natural typing cadence)
+        full_text = intel_res.content
+        words = full_text.split(" ")
+        chunk_size = 4  # 4 words per chunk
+
+        for i in range(0, len(words), chunk_size):
+            if ConversationEngine.is_cancelled(conversation_id):
+                logger.info(f"Generation cancelled mid-stream for {conversation_id}")
+                yield f"event: done\ndata: {json.dumps({'cancelled': True, 'interrupted': True})}\n\n"
+                return
+
+            chunk = " ".join(words[i:i + chunk_size])
+            if i + chunk_size < len(words):
+                chunk += " "
+            yield f"event: token\ndata: {json.dumps({'token': chunk})}\n\n"
+            await asyncio.sleep(0.02)
+
+        # Emit cards if present
+        if intel_res.cards:
+            for card_type, card_data in intel_res.cards.items():
+                if card_data:
+                    yield f"event: card\ndata: {json.dumps({'type': card_type, 'data': card_data if isinstance(card_data, dict) else getattr(card_data, 'model_dump', lambda: str(card_data))()})}\n\n"
+
+        # Emit citations if present
+        if intel_res.citations:
+            citations_data = [c.model_dump() if hasattr(c, "model_dump") else c for c in intel_res.citations]
+            yield f"event: citations\ndata: {json.dumps({'citations': citations_data})}\n\n"
+
+        # Final done event
+        done_payload = {
+            "content": full_text,
+            "intelligence_id": intel_res.intelligence_id,
+            "intelligence_name": intel_res.intelligence_name,
+            "follow_ups": intel_res.follow_ups,
+            "latency_ms": intel_res.latency_ms,
+            "confidence_score": intel_res.confidence_score,
+            "is_ai_generated": intel_res.is_ai_generated
+        }
+        yield f"event: done\ndata: {json.dumps(done_payload)}\n\n"

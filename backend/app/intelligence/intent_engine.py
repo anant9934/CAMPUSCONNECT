@@ -1,3 +1,9 @@
+"""
+Intent Analysis Engine for CampusConnect.
+Classifies query intent, detected language, complexity, and resource requirements.
+Ensures zero unnecessary RAG or multi-agent calls for general chitchat or explanations.
+"""
+
 import re
 import logging
 from typing import Dict, Any, List, Optional
@@ -7,12 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 class IntentAnalysisResult(BaseModel):
-    primary_intent: str  # everyday_query, policy_compliance, academic_benefit, ums_workflow, technical_reasoning, research_investigation, campus_spatial, emergency_medical
+    primary_intent: str  # greeting_chitchat, general_knowledge, career_coaching, technical_coding, policy_compliance, academic_benefit, ums_workflow, campus_spatial, research_investigation, emergency_medical
     detected_language: str  # "en", "hi", "hinglish"
     complexity: str  # "simple", "moderate", "complex"
     recommended_intelligence: str  # "nova", "themis", "athena", "oracle"
+    is_general_conversation: bool = True
     needs_web_search: bool = False
-    needs_rag_knowledge: bool = True
+    needs_rag_knowledge: bool = False
     needs_spatial_tools: bool = False
     needs_code_execution: bool = False
     is_emergency: bool = False
@@ -23,7 +30,8 @@ class IntentEngine:
     """
     LAYER 2 — INTENT ENGINE
     Deterministic, zero-latency intent understanding and language detection.
-    Prevents unnecessary LLM calls for straightforward intent classification.
+    Guarantees that general conversations, greetings, and conceptual questions
+    never trigger unnecessary institutional vector searches or multi-agent bloat.
     """
 
     HINDI_HINGLISH_KEYWORDS = [
@@ -34,20 +42,24 @@ class IntentEngine:
         "emergency", "ambulance", "collapsed", "heart attack", "bleeding", "severe accident", "unconscious", "hospital urgently"
     ]
 
+    GREETING_KEYWORDS = [
+        "hi", "hii", "hiii", "hello", "hey", "good morning", "good afternoon", "good evening", "how are you", "who are you", "what can you do", "thank you", "thanks", "bye"
+    ]
+
     POLICY_KEYWORDS = [
-        "attendance", "condonation", "shortage", "debarred", "75%", "65%", "medical leave", "duty leave", "hospitalization", "exam debar"
+        "attendance", "condonation", "shortage", "debarred", "75%", "65%", "medical leave", "duty leave", "hospitalization", "exam debar", "attendance criteria"
     ]
 
     BENEFIT_KEYWORDS = [
-        "edurev", "edu-revolution", "academic benefit", "ai project", "built a project", "startup revenue", "patent", "hackathon exemption"
+        "edurev", "edu-revolution", "academic benefit", "ai project", "built a project", "startup revenue", "patent", "hackathon exemption", "academic benefits for it"
     ]
 
     TECHNICAL_KEYWORDS = [
-        "code", "function", "debug", "bug", "algorithm", "time complexity", "big o", "python", "typescript", "c++", "java", "sql query", "system design", "neural network", "database schema"
+        "code", "function", "debug", "bug", "algorithm", "time complexity", "big o", "python", "typescript", "c++", "java", "sql query", "system design", "neural network", "database schema", "recursion", "compiler"
     ]
 
     RESEARCH_KEYWORDS = [
-        "research paper", "ieee", "springer", "citations", "literature review", "web research", "sih 2026", "smart india hackathon", "verify source"
+        "research paper", "ieee", "springer", "citations", "literature review", "web research", "sih 2026", "smart india hackathon", "verify source", "university regulation"
     ]
 
     SPATIAL_KEYWORDS = [
@@ -56,6 +68,14 @@ class IntentEngine:
         "block 14", "block 53", "block 01", "block", "hostel", "boys hostel", "girls hostel",
         "campus map", "pedestrian", "uni-hospital", "unihospital", "uni-centre", "unimall",
         "food court", "cabin", "dean office", "chancellor office", "academic block"
+    ]
+
+    UMS_WORKFLOW_KEYWORDS = [
+        "datesheet", "date sheet", "hall ticket", "admit card", "download", "ums", "fee payment", "fee slip", "hostel leave", "rms", "grade card"
+    ]
+
+    CAREER_KEYWORDS = [
+        "career", "confused about my career", "job advice", "which path should i choose", "software engineering vs data science", "placement preparation"
     ]
 
     @classmethod
@@ -75,80 +95,121 @@ class IntentEngine:
                 detected_language=lang,
                 complexity="simple",
                 recommended_intelligence="nova",
+                is_general_conversation=False,
                 needs_spatial_tools=True,
+                needs_rag_knowledge=True,
                 is_emergency=True,
                 rationale="Critical campus health or medical emergency detected."
             )
 
-        # 3. Policy & Attendance check
+        # 3. Pure Greetings & Chitchat Check
+        tokens = q_lower.split()
+        if len(tokens) <= 5 and any(k in q_lower for k in cls.GREETING_KEYWORDS):
+            return IntentAnalysisResult(
+                primary_intent="greeting_chitchat",
+                detected_language=lang,
+                complexity="simple",
+                recommended_intelligence="nova",
+                is_general_conversation=True,
+                needs_rag_knowledge=False,
+                rationale="Natural conversational greeting or chitchat."
+            )
+
+        # 4. Career Guidance & Brainstorming
+        if any(k in q_lower for k in cls.CAREER_KEYWORDS) and not any(k in q_lower for k in ["placement drive", "t&p"]):
+            return IntentAnalysisResult(
+                primary_intent="career_coaching",
+                detected_language=lang,
+                complexity="moderate",
+                recommended_intelligence="nova",
+                is_general_conversation=True,
+                needs_rag_knowledge=False,
+                rationale="General career exploration, advising, and brainstorming."
+            )
+
+        # 5. University Policy & Attendance check
         if any(k in q_lower for k in cls.POLICY_KEYWORDS):
             return IntentAnalysisResult(
                 primary_intent="policy_compliance",
                 detected_language=lang,
                 complexity="complex" if any(num in q_lower for num in ["%", "percent", "6", "7"]) else "moderate",
                 recommended_intelligence="themis",
+                is_general_conversation=False,
                 needs_rag_knowledge=True,
-                rationale="Institutional academic regulation and attendance policy evaluation."
+                rationale="Attendance regulations, debarment, or medical condonation."
             )
 
-        # 4. Academic Benefit / EDU-Revolution check
-        if any(k in q_lower for k in cls.BENEFIT_KEYWORDS):
+        # 6. Academic Benefits & Project Innovation check
+        if any(k in q_lower for k in cls.BENEFIT_KEYWORDS) or ("benefit" in q_lower and any(p in q_lower for p in ["project", "it", "patent", "hackathon"])):
             return IntentAnalysisResult(
                 primary_intent="academic_benefit",
                 detected_language=lang,
                 complexity="complex",
                 recommended_intelligence="themis",
+                is_general_conversation=False,
                 needs_rag_knowledge=True,
-                rationale="Student innovation and EDU-Revolution academic benefit mapping."
+                rationale="Student innovation and EDU-Revolution academic benefit evaluation."
             )
 
-        # 5. Technical & Coding check
-        if any(k in q_lower for k in cls.TECHNICAL_KEYWORDS):
+        # 7. UMS Workflow check
+        if any(k in q_lower for k in cls.UMS_WORKFLOW_KEYWORDS):
             return IntentAnalysisResult(
-                primary_intent="technical_reasoning",
+                primary_intent="ums_workflow",
                 detected_language=lang,
-                complexity="complex" if any(k in q_lower for k in ["architecture", "optimize", "debug", "algorithm"]) else "moderate",
-                recommended_intelligence="athena",
-                needs_code_execution=True,
-                rationale="Software engineering, mathematics, or technical code reasoning."
+                complexity="simple",
+                recommended_intelligence="themis",
+                is_general_conversation=False,
+                needs_rag_knowledge=True,
+                rationale="UMS self-service navigation, datesheet download, or administrative workflow."
             )
 
-        # 6. Research & Web search check
-        if any(k in q_lower for k in cls.RESEARCH_KEYWORDS) or context and context.get("web_research"):
-            return IntentAnalysisResult(
-                primary_intent="research_investigation",
-                detected_language=lang,
-                complexity="complex",
-                recommended_intelligence="oracle",
-                needs_web_search=True,
-                rationale="External academic research, web investigation, and source verification."
-            )
-
-        # 7. Spatial & Wayfinding check
+        # 8. Spatial & Wayfinding check
         if any(k in q_lower for k in cls.SPATIAL_KEYWORDS):
-            rec_intel = "nova"
-            if any(w in q_lower for w in ["chancellor", "administrative", "admin", "office", "dean", "examination", "coe", "helpdesk"]):
-                rec_intel = "themis"
-            elif any(w in q_lower for w in ["distance", "shortest", "algorithm", "wheelchair", "metric", "spatial analysis", "meters"]):
-                rec_intel = "athena"
-            elif any(w in q_lower for w in ["source", "site plan", "discrepancy", "verified record", "legend", "conflicting"]):
-                rec_intel = "oracle"
-
+            rec_intel = "themis" if any(w in q_lower for w in ["office", "dean", "chancellor", "admin"]) else "nova"
             return IntentAnalysisResult(
                 primary_intent="campus_spatial",
                 detected_language=lang,
                 complexity="simple",
                 recommended_intelligence=rec_intel,
+                is_general_conversation=False,
                 needs_spatial_tools=True,
-                rationale=f"Campus wayfinding, block discovery, or route inquiry directed to {rec_intel.upper()}."
+                needs_rag_knowledge=True,
+                rationale="Campus block discovery, wayfinding, or pedestrian navigation."
             )
 
-        # 8. Default: Everyday general query
+        # 9. Research & Source Verification check
+        if any(k in q_lower for k in cls.RESEARCH_KEYWORDS) or (context and context.get("web_research")):
+            return IntentAnalysisResult(
+                primary_intent="research_investigation",
+                detected_language=lang,
+                complexity="complex",
+                recommended_intelligence="oracle",
+                is_general_conversation=False,
+                needs_web_search=True,
+                needs_rag_knowledge=True,
+                rationale="External academic research, web investigation, and source verification."
+            )
+
+        # 10. Technical & Coding check
+        if any(k in q_lower for k in cls.TECHNICAL_KEYWORDS) or any(k in q_lower for k in ["recursion", "machine learning", "compiler", "algorithm"]):
+            return IntentAnalysisResult(
+                primary_intent="technical_coding",
+                detected_language=lang,
+                complexity="complex" if any(k in q_lower for k in ["architecture", "optimize", "debug", "algorithm"]) else "moderate",
+                recommended_intelligence="athena",
+                is_general_conversation=True,
+                needs_code_execution=True,
+                needs_rag_knowledge=False,
+                rationale="Software engineering, mathematics, or conceptual technical explanation."
+            )
+
+        # 11. Default: Everyday General Conversation
         return IntentAnalysisResult(
-            primary_intent="everyday_query",
+            primary_intent="general_knowledge",
             detected_language=lang,
             complexity="simple",
             recommended_intelligence="nova",
-            needs_rag_knowledge=True,
-            rationale="General campus routine or everyday student conversation."
+            is_general_conversation=True,
+            needs_rag_knowledge=False,
+            rationale="General everyday conversational query."
         )
