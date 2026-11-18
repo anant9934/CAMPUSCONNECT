@@ -279,7 +279,7 @@ async def chat_endpoint(
             user_lon=req.user_lon,
             landmark=req.user_landmark,
             category_slug=req.category_slug,
-            web_research=req.web_search,
+            web_research=getattr(req, "web_research", False) or getattr(req, "web_search", False),
         )
 
         assistant_msg = Message(

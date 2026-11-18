@@ -55,6 +55,7 @@ class RoutingEngine:
                 db.add(rec)
                 await db.flush()
             except Exception as e:
+                await db.rollback()
                 logger.warning(f"Could not persist RoutingDecision log: {e}")
 
         logger.info(
