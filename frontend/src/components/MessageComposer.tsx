@@ -189,11 +189,11 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
   );
 
   // Current active thinking option (auto-normalize if unsupported)
-  const normalizedThinkingLevel = (
+  const normalizedThinkingLevel: 'Low' | 'Balanced' | 'High' = (
     availableThinkingOptions.some((lvl) => lvl.id.toLowerCase() === thinkingLevel.toLowerCase())
-      ? thinkingLevel.charAt(0).toUpperCase() + thinkingLevel.slice(1).toLowerCase()
+      ? (thinkingLevel.charAt(0).toUpperCase() + thinkingLevel.slice(1).toLowerCase()) as 'Low' | 'Balanced' | 'High'
       : activeSpecialist.defaultThinking
-  ) as 'Low' | 'Medium' | 'High' | 'Research';
+  );
 
   const activeThinkingOption =
     availableThinkingOptions.find((lvl) => lvl.id === normalizedThinkingLevel) ||
@@ -349,12 +349,12 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
     setIsAgentDropdownOpen(false);
   };
 
-  const handleSelectThinking = (lvl: 'Low' | 'Medium' | 'High' | 'Research') => {
+  const handleSelectThinking = (lvl: 'Low' | 'Balanced' | 'High') => {
     if (onSelectThinkingLevel) {
       onSelectThinkingLevel(lvl);
     }
     if (onSelectReasoningMode) {
-      onSelectReasoningMode(lvl === 'Low' ? 'Quick answer' : lvl === 'Research' ? 'Research' : lvl === 'High' ? 'DeepThink' : 'Balanced');
+      onSelectReasoningMode(lvl === 'Low' ? 'Quick answer' : lvl === 'High' ? 'DeepThink' : 'Balanced');
     }
     setIsThinkingDropdownOpen(false);
   };

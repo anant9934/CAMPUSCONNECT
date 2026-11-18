@@ -112,13 +112,13 @@ export const CampusPlaceCardView: React.FC<Props> = ({ card, onOpenMap, onNaviga
       )}
 
       {/* Facilities & Services */}
-      {(card.verified_facilities?.length > 0 || card.services?.length > 0) && (
+      {(((card.verified_facilities?.length ?? 0) > 0) || ((card.services?.length ?? 0) > 0)) && (
         <div className="mt-3">
           <span className="text-xs font-semibold text-neutral-800 block mb-1.5">
             Key Facilities & Services:
           </span>
           <div className="flex flex-wrap gap-1.5">
-            {(card.verified_facilities?.length ? card.verified_facilities : card.services).map((svc, idx) => (
+            {((card.verified_facilities && card.verified_facilities.length > 0) ? card.verified_facilities : (card.services || [])).map((svc, idx) => (
               <span
                 key={idx}
                 className="inline-flex items-center gap-1 rounded-md bg-sky-50 border border-sky-100 px-2 py-0.5 text-[11px] text-sky-800 font-medium"
