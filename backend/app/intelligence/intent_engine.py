@@ -51,7 +51,11 @@ class IntentEngine:
     ]
 
     SPATIAL_KEYWORDS = [
-        "where is", "how to reach", "block 32", "block 34", "block 30", "uni-hospital", "uni-centre", "food court", "cabin", "dean office"
+        "where is", "how to reach", "take me to", "take me from", "directions to", "route to",
+        "navigate to", "walk to", "walking distance", "block 32", "block 34", "block 30",
+        "block 14", "block 53", "block 01", "block", "hostel", "boys hostel", "girls hostel",
+        "campus map", "pedestrian", "uni-hospital", "unihospital", "uni-centre", "unimall",
+        "food court", "cabin", "dean office", "chancellor office", "academic block"
     ]
 
     @classmethod
@@ -120,15 +124,23 @@ class IntentEngine:
                 rationale="External academic research, web investigation, and source verification."
             )
 
-        # 7. Spatial & Dining check
+        # 7. Spatial & Wayfinding check
         if any(k in q_lower for k in cls.SPATIAL_KEYWORDS):
+            rec_intel = "nova"
+            if any(w in q_lower for w in ["chancellor", "administrative", "admin", "office", "dean", "examination", "coe", "helpdesk"]):
+                rec_intel = "themis"
+            elif any(w in q_lower for w in ["distance", "shortest", "algorithm", "wheelchair", "metric", "spatial analysis", "meters"]):
+                rec_intel = "athena"
+            elif any(w in q_lower for w in ["source", "site plan", "discrepancy", "verified record", "legend", "conflicting"]):
+                rec_intel = "oracle"
+
             return IntentAnalysisResult(
                 primary_intent="campus_spatial",
                 detected_language=lang,
                 complexity="simple",
-                recommended_intelligence="themis",
+                recommended_intelligence=rec_intel,
                 needs_spatial_tools=True,
-                rationale="Campus POI, building wayfinding, or food outlet inquiry."
+                rationale=f"Campus wayfinding, block discovery, or route inquiry directed to {rec_intel.upper()}."
             )
 
         # 8. Default: Everyday general query
