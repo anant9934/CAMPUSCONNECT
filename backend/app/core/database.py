@@ -19,6 +19,16 @@ def normalize_database_url(url: str) -> str:
         return clean.replace("postgresql://", "postgresql+asyncpg://", 1)
     elif clean.startswith("sqlite://") and not clean.startswith("sqlite+aiosqlite://"):
         return clean.replace("sqlite://", "sqlite+aiosqlite://", 1)
+    
+    # Resolve relative sqlite path to absolute path anchored at workspace root
+    if clean.startswith("sqlite+aiosqlite:///"):
+        path_part = clean[len("sqlite+aiosqlite:///"):]
+        if not (len(path_part) >= 2 and path_part[1] == ":"):
+            rel_path = path_part.lstrip("./\\")
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+            abs_db_path = os.path.join(base_dir, rel_path).replace("\\", "/")
+            return f"sqlite+aiosqlite:///{abs_db_path}"
+        
     return clean
 
 async_db_url = normalize_database_url(raw_url)
