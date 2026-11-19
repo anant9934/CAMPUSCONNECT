@@ -61,6 +61,7 @@ class ConversationEngine:
     UNIVERSITY_SPECIFIC_PATTERNS = [
         r"\b(attendance|condonation|shortage|debar|75%|65%|medical leave|duty leave|hospitalization|exam debar)\b",
         r"\b(ums|datesheet|date sheet|hall ticket|admit card|fee slip|grade card|cgpa calculator|transcript|lpu touch)\b",
+        r"\b(grade upgradation|grade improvement|re-appear|reappear|backlog|credit transfer|nptel|swayam|course equivalence|credit substitution|moocs?)\b",
         r"\b(block \d+|block|audi|auditorium|uni-mall|unimall|uni-hospital|unihospital|hostel|bh\d+|gh\d+|mac\b|kiosk|campus cafe|hospital)\b",
         r"\b(edurev|edu-revolution|academic benefits?|exemption|patent|hackathon benefits?|startup revenue)\b",
         r"\b(faculty|hod|dean|chancellor|pro chancellor|mentor|warden|cabin|department)\b",

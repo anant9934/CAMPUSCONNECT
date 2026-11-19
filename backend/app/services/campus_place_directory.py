@@ -1691,3 +1691,4 @@ class CampusPlaceDirectory:
 
 # Self-initialize on import
 CampusPlaceDirectory.initialize()
+

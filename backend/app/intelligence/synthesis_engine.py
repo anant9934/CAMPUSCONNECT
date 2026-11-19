@@ -128,7 +128,21 @@ Format your response with clean markdown."""
 
             # University-specific fallbacks take precedence if university intent was detected
             if is_university_specific:
-                if "benefit" in q_lower or "project" in q_lower:
+                if any(k in q_lower for k in ["upgradation", "improvement", "reappear", "re-appear", "backlog", "nptel", "swayam", "credit transfer", "course equivalence"]):
+                    fallback_text = (
+                        "### LPU Python Grade Upgradation & Course Improvement Pathways\n\n"
+                        "At Lovely Professional University, there are three recognized official pathways for **Python grade upgradation, course enhancement, and credit substitution**:\n\n"
+                        "#### 1. Approved NPTEL / SWAYAM / Coursera Proctored Courses (EDU-Revolution MOOC Policy)\n"
+                        "- **Eligible Courses**: Approved proctored online courses such as *Programming, Data Structures and Algorithms Using Python* (NPTEL / IIT Madras) or *Joy of Computing using Python*.\n"
+                        "- **Grade Upgradation Criteria**: Under LPU Regulation DOC-EDREV-2026 (Section 5.1–5.3), completing an approved course with an **Elite / Gold certificate (score >= 75%)** grants **grade upgradation (up to 1 letter grade higher)** or credit substitution for departmental/open electives.\n"
+                        "- **UMS Procedure**: Prior approval required from School Academic Committee (SAC) before registration -> Submit verified certificate and score card via `UMS Navigation -> Academic Operations -> Credit Transfer / MOOCs Equivalence`.\n\n"
+                        "#### 2. UMS Grade Improvement / Re-Appear Examination\n"
+                        "- **Eligibility**: Students with passing grades (such as D or E) wishing to improve course grades and CGPA can register for **Grade Improvement** during the regular End-Term Examination cycle.\n"
+                        "- **UMS Workflow**: Log in to UMS (`https://ums.lpu.in`) -> Navigate to `Examination -> Re-appear / Grade Improvement Registration` -> Select Python course code (e.g., INT108 / CSE326) -> Pay the prescribed examination fee -> Higher of the two earned grades is updated on the transcript.\n\n"
+                        "#### 3. Research Publication or Patent Equivalence (EDU-Rev Category 08)\n"
+                        "- Developing a verified software tool with a Scopus-indexed research paper or registered patent allows direct practical/capstone course grade upgradation approved by the Project Review Committee (PRC)."
+                    )
+                elif "benefit" in q_lower or "project" in q_lower:
                     fallback_text = (
                         "Under Lovely Professional University's EDU-Revolution policy, student-developed technical projects "
                         "(such as software tools, AI systems, and prototypes) can be submitted for academic benefit evaluation under CAT-01 (AI/Tech Products) "

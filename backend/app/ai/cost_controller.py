@@ -207,3 +207,4 @@ class CostController:
             }
             cls._user_quotas[user_key] = record
         return record
+

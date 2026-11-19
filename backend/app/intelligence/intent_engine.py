@@ -47,11 +47,11 @@ class IntentEngine:
     ]
 
     POLICY_KEYWORDS = [
-        "attendance", "condonation", "shortage", "debarred", "75%", "65%", "medical leave", "duty leave", "hospitalization", "exam debar", "attendance criteria"
+        "attendance", "condonation", "shortage", "debarred", "75%", "65%", "medical leave", "duty leave", "hospitalization", "exam debar", "attendance criteria", "grade improvement", "re-appear", "reappear", "backlog"
     ]
 
     BENEFIT_KEYWORDS = [
-        "edurev", "edu-revolution", "academic benefit", "ai project", "built a project", "startup revenue", "patent", "hackathon exemption", "academic benefits for it"
+        "edurev", "edu-revolution", "academic benefit", "ai project", "built a project", "startup revenue", "patent", "hackathon exemption", "academic benefits for it", "grade upgradation", "credit transfer", "nptel", "swayam", "course equivalence", "credit substitution"
     ]
 
     TECHNICAL_KEYWORDS = [

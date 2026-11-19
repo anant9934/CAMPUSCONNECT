@@ -280,3 +280,4 @@ def test_14_prevent_invented_room_numbers_and_facilities():
     assert len(blk27["rooms"]) == 1
     assert blk27["rooms"][0]["room_number"] == "Room 102"
     assert blk27["rooms"][0]["verification_status"] == "OFFICIAL_CURRENT_VERIFIED"
+

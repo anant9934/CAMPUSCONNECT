@@ -748,3 +748,4 @@ export const CampusMapPanel: React.FC<Props> = ({
     </div>
   );
 };
+

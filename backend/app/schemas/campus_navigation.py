@@ -105,3 +105,4 @@ class CampusBlockDirectoryCard(BaseModel):
     filter_applied: str
     places: List[CampusDirectoryItem] = Field(default_factory=list)
     provenance_note: str = "Sourced from reconciled LPU Campus Directory (01-55 site plan and official records)"
+

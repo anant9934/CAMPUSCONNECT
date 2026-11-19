@@ -179,3 +179,4 @@ class ModelRouter:
             return eligible[0]
 
         return None
+

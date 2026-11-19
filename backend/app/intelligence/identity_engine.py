@@ -159,9 +159,3 @@ class IdentityEngine:
     @classmethod
     def list_identities(cls) -> list:
         return list(cls._identities.values())
-
-# HERMES capability expansion: Placement Cell (T&P), Drive Venues, and UMS NOC
-
-# FORGE capability expansion: Technical skill gaps, project roadmaps, and LeetCode/DSA prep
-
-# NOVA capability expansion: Fast internship searches, stipends, and company profiles

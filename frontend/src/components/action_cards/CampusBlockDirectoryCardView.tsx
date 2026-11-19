@@ -101,3 +101,4 @@ export const CampusBlockDirectoryCardView: React.FC<Props> = ({ card, onSelectPl
     </div>
   );
 };
+

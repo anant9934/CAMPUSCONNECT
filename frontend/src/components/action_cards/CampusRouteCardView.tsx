@@ -155,3 +155,4 @@ export const CampusRouteCardView: React.FC<Props> = ({ card, onOpenMap }) => {
     </div>
   );
 };
+

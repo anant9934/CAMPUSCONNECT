@@ -669,3 +669,4 @@ class CampusRoutingEngine:
             "route_confidence": "VERIFIED_PEDESTRIAN_PATH",
             "data_limitations": "Walking distance calculated along verified pedestrian walkways at 1.2 m/s average pace."
         }
+
